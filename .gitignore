@@ -1,0 +1,5 @@
+/vendor
+.idea
+api.paw
+composer.phar
+shared
