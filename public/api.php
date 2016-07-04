@@ -5,15 +5,15 @@ use Symfony\Component\HttpFoundation\Response;
 $app = require_once __DIR__ . '/../bootstrap.php';
 $app['debug'] = true;
 
-$app->get('/api/menus', 'lunches.controller.menus:getList');
-$app->get('/api/menus/week/current', 'lunches.controller.menus:getOnCurrentWeek');
-$app->get('/api/menus/today', 'lunches.controller.menus:getToday');
-$app->get('/api/menus/tomorrow', 'lunches.controller.menus:getTomorrow');
-$app->get('/api/products', 'lunches.controller.products:getList');
-$app->get('/api/products/{productId}/ingredients', 'lunches.controller.ingredients:getList');
-$app->get('/api/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
-$app->post('/api/orders', 'lunches.controller.orders:create');
-$app->get('/api/ingredients', 'lunches.controller.ingredients:getList');
+$app->get('/menus', 'lunches.controller.menus:getList');
+$app->get('/menus/week/current', 'lunches.controller.menus:getOnCurrentWeek');
+$app->get('/menus/today', 'lunches.controller.menus:getToday');
+$app->get('/menus/tomorrow', 'lunches.controller.menus:getTomorrow');
+$app->get('/products', 'lunches.controller.products:getList');
+$app->get('/products/{productId}/ingredients', 'lunches.controller.ingredients:getList');
+$app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
+$app->post('/orders', 'lunches.controller.orders:create');
+$app->get('/ingredients', 'lunches.controller.ingredients:getList');
 
 
 $app->before(function (Symfony\Component\HttpFoundation\Request $request) {
