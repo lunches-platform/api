@@ -10,10 +10,11 @@
 ## Installation
 
 - create virtual host, document root needs to be pointed to `public` directory
-- `chmod -R 777 shared`
-- `composer install`
+- `$ mkdir -p shared/apache`
+- `$ chmod -R 777 shared`
+- `$ composer install`
 - create database
 - edit bootstrap.php at line 10 and edit db.options
-- run `vendor/bin/doctrine orm:schema-tool:update --force` from project root to create database schema
+- run `$ vendor/bin/doctrine orm:schema-tool:update --force` from project root to create database schema
 - run application in browser 
 
