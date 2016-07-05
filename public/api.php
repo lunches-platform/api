@@ -3,7 +3,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 $app = require_once __DIR__ . '/../bootstrap.php';
-$app['debug'] = true;
+$app['debug'] = isset($_GET['debug_s']);
 
 $app->get('/menus', 'lunches.controller.menus:getList');
 $app->get('/menus/week/current', 'lunches.controller.menus:getOnCurrentWeek');
@@ -29,8 +29,10 @@ $app->before(function (Symfony\Component\HttpFoundation\Request $request) {
 $app->after(function (Request $request, Response $response) {
     $response->headers->set('Access-Control-Allow-Origin', '*');
 });
-$app->error(function (\Exception $e, $code) {
-
+$app->error(function (\Exception $e, $code) use ($app) {
+    if ($app['debug']) {
+        return;
+    }
     $message = 'Server error';
     if ($code === 404) {
         $message = 'The requested page could not be found.';
