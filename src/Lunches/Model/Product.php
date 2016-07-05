@@ -209,15 +209,19 @@ class Product
     }
 
     /**
-     * @return SizeWeights
+     * @return SizeWeight[]
      */
     public function getSizeWeights()
     {
         return $this->sizeWeights;
     }
+    public function getSizeWeightsCollection()
+    {
+        return new SizeWeights($this->sizeWeights->getValues());
+    }
 
     /**
-     * @param SizeWeights $sizeWeights
+     * @param SizeWeight[] $sizeWeights
      */
     public function setSizeWeights($sizeWeights)
     {

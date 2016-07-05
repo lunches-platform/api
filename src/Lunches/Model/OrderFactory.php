@@ -2,7 +2,7 @@
 
 namespace Lunches\Model;
 
-use Lunches\Validator\OrderValidator;
+use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
 
 class OrderFactory
@@ -30,6 +30,7 @@ class OrderFactory
     /**
      * @param array $data
      * @return Order
+     * @throws \Lunches\Exception\RuntimeException
      */
     public function createNewFromArray(array $data)
     {
@@ -56,6 +57,7 @@ class OrderFactory
     /**
      * @param array $data
      * @return LineItem[]
+     * @throws \Lunches\Exception\RuntimeException
      */
     private function createLineItems($data)
     {
@@ -79,34 +81,50 @@ class OrderFactory
                 continue;
             }
             $orderedProductIds[] = $productId;
-            
-            $product = $this->productRepo->find($line['productId']);
-            if (!$product instanceof Product) {
+
+            try {
+                $lineItems[] = $this->createLineItem($line);
+            } catch (ValidationException $e) {
                 continue;
             }
-
-            $lineItem = new LineItem();
-            $lineItem->setProduct($product);
-
-            $quantity = 1;
-            if (array_key_exists('quantity', $line)) {
-                $quantity = $line['quantity'];
-            }
-            $lineItem->setQuantity($quantity);
-
-            if (array_key_exists('date', $line)) {
-                $lineItem->setDate(new \DateTime($line['date']));
-            }
-
-            if (array_key_exists('size', $line) && in_array($line['size'], ['small', 'medium', 'big'], true)) {
-                $lineItem->setSize($line['size']);
-            } else {
-                $lineItem->setSize('medium');
-            }
-
-            $lineItems[] = $lineItem;
         }
+        $lineItems = array_filter($lineItems);
 
         return $lineItems;
+    }
+
+    /**
+     * @param array $line
+     * @return LineItem|bool
+     * @throws \Lunches\Exception\ValidationException
+     * @throws \Lunches\Exception\RuntimeException
+     */
+    private function createLineItem(array $line)
+    {
+        $product = $this->productRepo->find($line['productId']);
+        if (!$product instanceof Product) {
+            return false;
+        }
+
+        $lineItem = new LineItem();
+        $lineItem->setProduct($product);
+
+        $quantity = 1;
+        if (array_key_exists('quantity', $line)) {
+            $quantity = $line['quantity'];
+        }
+        $lineItem->setQuantity($quantity);
+
+        if (array_key_exists('date', $line)) {
+            $lineItem->setDate(new \DateTime($line['date']));
+        }
+
+        if (array_key_exists('size', $line)) {
+            $lineItem->setSize($line['size']);
+        } else {
+            $lineItem->setSize('medium');
+        }
+
+        return $lineItem;
     }
 }
