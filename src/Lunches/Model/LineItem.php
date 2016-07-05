@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Lunches\Exception\ValidationException;
 
 /**
  * @Entity(repositoryClass="Lunches\Model\LineItemRepository")
@@ -86,6 +87,8 @@ class LineItem
 
     /**
      * @param Product $product
+     * @throws \Lunches\Exception\ValidationException
+     * @throws \Lunches\Exception\RuntimeException
      */
     public function setProduct(Product $product)
     {
@@ -112,9 +115,13 @@ class LineItem
 
     /**
      * @param float $price
+     * @throws ValidationException
      */
     protected function setPrice($price)
     {
+        if ($price < 0) {
+            throw ValidationException::invalidPrice();
+        }
         $this->price = $price;
     }
 
@@ -128,11 +135,13 @@ class LineItem
 
     /**
      * @param string $size
+     * @throws \Lunches\Exception\ValidationException
+     * @throws \Lunches\Exception\RuntimeException
      */
     public function setSize($size)
     {
-        $this->recalculatePrice();
         $this->size = $size;
+        $this->recalculatePrice();
     }
 
     /**
@@ -161,17 +170,13 @@ class LineItem
 
     /**
      * @param int $quantity
+     * @throws \Lunches\Exception\ValidationException
+     * @throws \Lunches\Exception\RuntimeException
      */
     public function setQuantity($quantity)
     {
         $this->recalculatePrice();
         $this->quantity = $quantity;
-    }
-
-    private function recalculatePrice()
-    {
-        $pricePer100 = $this->product->getPricePer100();
-        $this->setPrice($pricePer100 * $this->quantity);
     }
 
     /**
@@ -188,5 +193,19 @@ class LineItem
     public function setDate(\DateTime $date)
     {
         $this->date = $date;
+    }
+
+    /**
+     * Recalculate price of LineItem that consists of product quantity and its weight
+     * @throws \Lunches\Exception\ValidationException
+     * @throws \Lunches\Exception\RuntimeException
+     */
+    private function recalculatePrice()
+    {
+        if ($this->product && $this->size && $this->quantity) {
+            $pricePer100 = $this->product->getPricePer100();
+            $weight = $this->product->getSizeWeightsCollection()->getWeightFromSize($this->size);
+            $this->setPrice($pricePer100 / 100 * $weight * $this->quantity);
+        }
     }
 }
