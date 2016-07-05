@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Lunches\Exception\ValidationException;
 
 /**
  * @Entity(repositoryClass="Lunches\Model\ProductRepository")
@@ -42,6 +43,16 @@ class SizeWeight
      */
     protected $product;
 
+    const SIZE_SMALL = 'small';
+    const SIZE_MEDIUM = 'medium';
+    const SIZE_BIG = 'big';
+
+    protected static $availableSizes = [
+        self::SIZE_SMALL,
+        self::SIZE_MEDIUM,
+        self::SIZE_BIG,
+    ];
+
     /**
      * @return array
      */
@@ -54,7 +65,6 @@ class SizeWeight
             'product' => $this->product,
         ];
     }
-
     /**
      * @return int
      */
@@ -73,10 +83,11 @@ class SizeWeight
 
     /**
      * @param string $size
+     * @throws ValidationException
      */
     public function setSize($size)
     {
-        // TODO валидация на enum (big,small,medium)
+        $this->assertSizeValid($size);
         $this->size = $size;
     }
 
@@ -112,4 +123,10 @@ class SizeWeight
         $this->product = $product;
     }
 
+    private function assertSizeValid($size)
+    {
+        if (!in_array($size, self::$availableSizes, true)) {
+            throw ValidationException::invalidSize(self::$availableSizes);
+        }
+    }
 }
