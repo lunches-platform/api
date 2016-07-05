@@ -82,7 +82,7 @@ class Product
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
-        $this->sizeWeights = new ArrayCollection();
+        $this->sizeWeights = new SizeWeights();
     }
 
     /**
@@ -95,17 +95,12 @@ class Product
              $ingredients[] = $ingredient->getName();
         }
 
-        $sizeToWeight = [];
-        foreach ($this->getSizeWeights() as $sizeWeight) {
-            $sizeToWeight[$sizeWeight->getSize()] = $sizeWeight->getWeight();
-        }
-
         return [
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->pricePer100,
             'ingredients' => $ingredients,
-            'sizeToWait' => $sizeToWeight
+            'sizeToWeight' => $this->getSizeWeights()->toArray(),
         ];
     }
 
@@ -214,7 +209,7 @@ class Product
     }
 
     /**
-     * @return SizeWeight[]
+     * @return SizeWeights
      */
     public function getSizeWeights()
     {
@@ -222,7 +217,7 @@ class Product
     }
 
     /**
-     * @param SizeWeight[] $sizeWeights
+     * @param SizeWeights $sizeWeights
      */
     public function setSizeWeights($sizeWeights)
     {
