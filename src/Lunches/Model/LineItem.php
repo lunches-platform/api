@@ -58,7 +58,7 @@ class LineItem
 
     /**
      * @var \DateTime
-     * @Column(type="datetime")
+     * @Column(type="date")
      */
     protected $date;
 
