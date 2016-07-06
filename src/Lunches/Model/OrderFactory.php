@@ -30,6 +30,7 @@ class OrderFactory
     /**
      * @param array $data
      * @return Order
+     * @throws \Lunches\Exception\ValidationException
      * @throws \Lunches\Exception\RuntimeException
      */
     public function createNewFromArray(array $data)
@@ -58,6 +59,7 @@ class OrderFactory
      * @param array $data
      * @return LineItem[]
      * @throws \Lunches\Exception\RuntimeException
+     * @throws ValidationException
      */
     private function createLineItems($data)
     {
@@ -80,15 +82,19 @@ class OrderFactory
             if (in_array($productId, $orderedProductIds, true)) {
                 continue;
             }
-            $orderedProductIds[] = $productId;
 
             try {
                 $lineItems[] = $this->createLineItem($line);
             } catch (ValidationException $e) {
                 continue;
             }
+            $orderedProductIds[] = $productId;
         }
         $lineItems = array_filter($lineItems);
+
+        if (count($lineItems) === 0) {
+            throw ValidationException::invalidOrder('There are no valid LineItems provided');
+        }
 
         return $lineItems;
     }
@@ -115,8 +121,9 @@ class OrderFactory
         }
         $lineItem->setQuantity($quantity);
 
+
         if (array_key_exists('date', $line)) {
-            $lineItem->setDate(new \DateTime($line['date']));
+            $lineItem->setDate($this->createDate($line['date']));
         }
 
         if (array_key_exists('size', $line)) {
@@ -126,5 +133,30 @@ class OrderFactory
         }
 
         return $lineItem;
+    }
+
+    private function createDate($dateStr)
+    {
+        try {
+            $date = new \DateTime($dateStr);
+        } catch (\Exception $e) {
+            throw ValidationException::invalidDate();
+        }
+
+
+        $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
+        if ($date < $currentDate) {
+            throw ValidationException::invalidDate('Date in the past is not allowed');
+        }
+
+        $menu = $this->menuRepo->findBy([
+            'date' => $date
+        ]);
+
+        if (!$menu) {
+            throw ValidationException::invalidDate('There is no menu for specified date');
+        }
+
+        return $date;
     }
 }

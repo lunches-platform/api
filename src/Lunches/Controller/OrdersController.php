@@ -2,6 +2,7 @@
 
 namespace Lunches\Controller;
 
+use Lunches\Exception\ValidationException;
 use Lunches\Model\OrderFactory;
 use Lunches\Model\OrderRepository;
 use Lunches\Validator\OrderValidator;
@@ -65,22 +66,33 @@ class OrdersController extends ControllerAbstract
     /**
      * @param Request $request
      * @param Application $app
-     * @return JsonResponse
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     * @throws \Lunches\Exception\RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function create(Request $request, Application $app)
     {
         $data = (array) $request->request->all();
 
-        $order = $this->orderFactory->createNewFromArray($data);
+        try {
+            $order = $this->orderFactory->createNewFromArray($data);
 
-        if ($this->validator->isValid($order)) {
-            $this->em->persist($order);
-            $this->em->flush();
+            if ($this->validator->isValid($order)) {
+                $this->em->persist($order);
+                $this->em->flush();
 
-            return new Response(null, 201, [
-                'Location' => $app->url('order', ['orderId' => $order->getId()])
-            ]);
+                return new Response(null, 201, [
+                    'Location' => $app->url('order', ['orderId' => $order->getId()])
+                ]);
+            } else {
+                $errors = $this->validator->getErrors();
+            }
+        } catch (ValidationException $e) {
+            $errors['order'] = $e->getMessage();
         }
-        return $this->failResponse('Invalid input data provided', 400, $this->validator->getErrors());
+
+        return $this->failResponse('Invalid input data provided', 400, $errors);
     }
 }
