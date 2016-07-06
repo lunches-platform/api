@@ -16,4 +16,14 @@ class ValidationException extends \Exception
     {
         return new static('Price must be positive');
     }
+
+    public static function invalidDate($msg = '')
+    {
+        return new static('Invalid date provided. '.$msg);
+    }
+
+    public static function invalidOrder($msg)
+    {
+        return new static('Invalid order. '.$msg);
+    }
 }
