@@ -16,12 +16,12 @@ class SizeWeights extends ArrayCollection
      */
     public function toArray()
     {
-        $sizes = $this->map(function (SizeWeight $sizeWeight) {
+        $sizes = array_map(function (SizeWeight $sizeWeight) {
             return $sizeWeight->getSize();
-        })->toArray();
-        $weights = $this->map(function (SizeWeight $sizeWeight) {
+        }, $this->getValues());
+        $weights = array_map(function (SizeWeight $sizeWeight) {
             return $sizeWeight->getWeight();
-        })->toArray();
+        }, $this->getValues());
 
         return array_combine($sizes, $weights);
     }

@@ -100,7 +100,7 @@ class Product
             'name' => $this->name,
             'price' => $this->pricePer100,
             'ingredients' => $ingredients,
-            'sizeToWeight' => $this->getSizeWeights()->toArray(),
+            'sizeToWeight' => $this->getSizeWeightsCollection()->toArray(),
         ];
     }
 
