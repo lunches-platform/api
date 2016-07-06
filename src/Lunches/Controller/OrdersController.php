@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Lunches\Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class OrdersController
@@ -76,7 +77,7 @@ class OrdersController extends ControllerAbstract
             $this->em->persist($order);
             $this->em->flush();
 
-            return $this->successResponse(null, 201, [
+            return new Response(null, 201, [
                 'Location' => $app->url('order', ['orderId' => $order->getId()])
             ]);
         }
