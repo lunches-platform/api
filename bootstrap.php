@@ -18,18 +18,18 @@ $app['db.options'] = [
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
-$app['doctrine.em'] = $app::share(function () use ($app) {
+$app['doctrine.em'] = function () use ($app) {
     return \Doctrine\ORM\EntityManager::create(
         $app['db.options'],
         $app['doctrine.config'],
         $app['doctrine.event_manager']
     );
-});
-$app['doctrine.config'] = $app::share(function () use ($app) {
+};
+$app['doctrine.config'] = function () use ($app) {
     return Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__.'/src'], true, $app['shared_dir']);
-});
+};
 
-$app['doctrine.event_manager'] = $app::share(function () use ($app) {
+$app['doctrine.event_manager'] = function () use ($app) {
 
     /** @var \Doctrine\ORM\Configuration $config */
     $config = $app['doctrine.config'];
@@ -42,36 +42,36 @@ $app['doctrine.event_manager'] = $app::share(function () use ($app) {
     $events->addEventSubscriber($timestampable);
 
     return $events;
-});
+};
 
-$app['lunches.controller.products'] = $app::share(function () use ($app) {
+$app['lunches.controller.products'] = function () use ($app) {
     return new \Lunches\Controller\ProductsController(
         $app['doctrine.em']
     );
-});
-$app['lunches.controller.ingredients'] = $app::share(function () use ($app) {
+};
+$app['lunches.controller.ingredients'] = function () use ($app) {
     return new \Lunches\Controller\IngredientsController(
         $app['doctrine.em']
     );
-});
-$app['lunches.controller.menus'] = $app::share(function () use ($app) {
+};
+$app['lunches.controller.menus'] = function () use ($app) {
     return new \Lunches\Controller\MenusController(
         $app['doctrine.em']
     );
-});
-$app['lunches.controller.orders'] = $app::share(function () use ($app) {
+};
+$app['lunches.controller.orders'] = function () use ($app) {
     return new \Lunches\Controller\OrdersController(
         $app['doctrine.em'],
         $app['lunches.factory.order'],
         $app['lunches.validator.order']
     );
-});
-$app['lunches.validator.order'] = $app::share(function () use ($app) {
+};
+$app['lunches.validator.order'] = function () use ($app) {
     return new \Lunches\Validator\OrderValidator();
-});
+};
 
-$app['lunches.factory.order'] = $app::share(function () use ($app) {
+$app['lunches.factory.order'] = function () use ($app) {
     return new \Lunches\Model\OrderFactory($app['doctrine.em']);
-});
+};
 
 return $app;
