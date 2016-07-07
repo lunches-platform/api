@@ -175,8 +175,8 @@ class LineItem
      */
     public function setQuantity($quantity)
     {
+        $this->quantity = (int) $quantity;
         $this->recalculatePrice();
-        $this->quantity = $quantity;
     }
 
     /**
