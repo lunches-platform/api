@@ -16,7 +16,9 @@ $app['db.options'] = [
     'driverOptions' => [ 1002=>'SET NAMES utf8' ]
 ];
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
-$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
+    'cors.allowOrigin' => '*',
+]);
 
 $app['doctrine.em'] = function () use ($app) {
     return \Doctrine\ORM\EntityManager::create(
