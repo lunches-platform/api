@@ -7,7 +7,7 @@ class ValidationException extends \Exception
 {
     public static function invalidSize(array $allowed = [])
     {
-        $allowedMsg = 'One of '.implode(', ', $allowed).' allowed.';
+        $allowedMsg = count($allowed) ? 'One of '.implode(', ', $allowed).' allowed.' : '';
 
         return new static('Invalid size provided.'.$allowedMsg);
     }

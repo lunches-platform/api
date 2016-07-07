@@ -101,19 +101,15 @@ class OrderFactory
     {
         $lineItem = new LineItem();
 
-        $required = ['date', 'productId'];
+        $required = ['date', 'productId', 'quantity', 'size'];
 
-        if (count(array_diff($required, array_keys($line))) !== 0)  {
+        $emptyRequired = array_diff($required, array_keys($line));
+        if (count($emptyRequired) !== 0)  {
             throw ValidationException::requiredEmpty('Invalid LineItem', $required);
         }
 
-        $quantity = 1;
-        if (array_key_exists('quantity', $line)) {
-            $quantity = $line['quantity'];
-        }
-        $lineItem->setQuantity($quantity);
-
-
+        $lineItem->setQuantity($line['quantity']);
+        $lineItem->setSize($line['size']);
         $lineItem->setDate($this->createDate($line['date']));
 
         $menus = $this->menuRepo->findBy([
@@ -131,12 +127,6 @@ class OrderFactory
         }
 
         $lineItem->setProduct($product);
-
-        if (array_key_exists('size', $line)) {
-            $lineItem->setSize($line['size']);
-        } else {
-            $lineItem->setSize('medium');
-        }
 
         return $lineItem;
     }
