@@ -113,4 +113,19 @@ class Menu
     {
         $this->date = $date;
     }
+
+    /**
+     * @param int $productId
+     * @return Product|null
+     */
+    public function getProductById($productId)
+    {
+        foreach ($this->getProducts() as $product) {
+            if ($productId === $product->getId()) {
+                return $product;
+            }
+        }
+
+        return null;
+    }
 }
