@@ -26,4 +26,14 @@ class ValidationException extends \Exception
     {
         return new static('Invalid order. '.$msg);
     }
+
+    public static function requiredEmpty($msg, array $required)
+    {
+        return new static($msg.'. There are no required fields. Required are '.implode(', ', $required));
+    }
+
+    public static function invalidLineItem($msg)
+    {
+        return new static('Invalid LineItem. '.$msg);
+    }
 }

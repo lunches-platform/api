@@ -67,24 +67,16 @@ class OrderFactory
             return [];
         }
 
-        $data = array_filter($data, function ($row) {
-            return
-                is_array($row) &&
-                array_key_exists('productId', $row) && is_numeric($row['productId'])
-                ;
-        });
-
         $lineItems = $orderedProductIds = [];
         foreach ($data as $line) {
 
-            $productId = (int) $line['productId'];
-            // order only unique products
-            if (in_array($productId, $orderedProductIds, true)) {
-                continue;
-            }
-
             try {
-                $lineItems[] = $this->createLineItem($line);
+                $lineItems[] = $lineItem = $this->createLineItem($line);
+
+                // order only unique products
+                if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
+                    continue;
+                }
             } catch (ValidationException $e) {
                 continue;
             }
@@ -107,13 +99,13 @@ class OrderFactory
      */
     private function createLineItem(array $line)
     {
-        $product = $this->productRepo->find($line['productId']);
-        if (!$product instanceof Product) {
-            return false;
-        }
-
         $lineItem = new LineItem();
-        $lineItem->setProduct($product);
+
+        $required = ['date', 'productId'];
+
+        if (count(array_diff($required, array_keys($line))) !== 0)  {
+            throw ValidationException::requiredEmpty('Invalid LineItem', $required);
+        }
 
         $quantity = 1;
         if (array_key_exists('quantity', $line)) {
@@ -122,9 +114,23 @@ class OrderFactory
         $lineItem->setQuantity($quantity);
 
 
-        if (array_key_exists('date', $line)) {
-            $lineItem->setDate($this->createDate($line['date']));
+        $lineItem->setDate($this->createDate($line['date']));
+
+        $menus = $this->menuRepo->findBy([
+            'date' => $lineItem->getDate(),
+        ]);
+        /** @var Menu $menu */
+        $menu = array_shift($menus);
+
+        if (!$menu) {
+            throw ValidationException::invalidLineItem('There is no menu for specified date');
         }
+        $product = $menu->getProductById((int)$line['productId']);
+        if (!$product instanceof Product) {
+            throw ValidationException::invalidLineItem('Menu for specified date doest have such product');
+        }
+
+        $lineItem->setProduct($product);
 
         if (array_key_exists('size', $line)) {
             $lineItem->setSize($line['size']);
@@ -143,18 +149,9 @@ class OrderFactory
             throw ValidationException::invalidDate();
         }
 
-
         $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
         if ($date < $currentDate) {
             throw ValidationException::invalidDate('Date in the past is not allowed');
-        }
-
-        $menu = $this->menuRepo->findBy([
-            'date' => $date
-        ]);
-
-        if (!$menu) {
-            throw ValidationException::invalidDate('There is no menu for specified date');
         }
 
         return $date;

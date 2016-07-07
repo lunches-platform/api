@@ -15,4 +15,13 @@ class RuntimeException extends \Exception
 
         return new static('Internal error. Required property'.$propertyName.'is not initialized');
     }
+
+    /**
+     * @param string $objectName
+     * @return static
+     */
+    public static function notFound($objectName)
+    {
+        return new static($objectName.' not found');
+    }
 }
