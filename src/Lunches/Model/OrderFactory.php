@@ -140,8 +140,8 @@ class OrderFactory
         }
 
         $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
-        if ($date < $currentDate) {
-            throw ValidationException::invalidDate('Date in the past is not allowed');
+        if ($date <= $currentDate) {
+            throw ValidationException::invalidDate('Can not order product for today or in the past');
         }
 
         return $date;
