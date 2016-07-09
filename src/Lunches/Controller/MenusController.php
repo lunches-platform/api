@@ -83,8 +83,8 @@ class MenusController extends ControllerAbstract
     }
     public function getOnNextWeek()
     {
-        $startDay = new \DateTime('monday next week');
-        $endDay = new \DateTime('sunday next week');
+        $startDay = new \DateTime('last friday');
+        $endDay = new \DateTime('next thursday');
 
         return $this->getByDateRange($startDay, $endDay);
     }
