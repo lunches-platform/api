@@ -27,9 +27,7 @@ $app->before(function (Symfony\Component\HttpFoundation\Request $request) {
         $request->request->add(is_array($data) ? $data : []);
     }
 }, 10000) ;
-$app->after(function (Request $request, Response $response) {
-    $response->headers->set('Access-Control-Allow-Origin', '*');
-});
+$app->after($app["cors"]);
 $app->error(function (\Exception $e, $code) use ($app) {
     if ($app['debug']) {
         return;
