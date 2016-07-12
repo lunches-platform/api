@@ -19,6 +19,7 @@ $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
     'cors.allowOrigin' => '*',
 ]);
+$app->register(new \Lunches\Silex\CloudinaryServiceProvider('df0ff62zx', '182632897348152', 'oNJJFfwvphafDODbTYyMbVQZXPc'));
 
 $app['doctrine.em'] = function () use ($app) {
     return \Doctrine\ORM\EntityManager::create(
@@ -53,6 +54,11 @@ $app['lunches.controller.products'] = function () use ($app) {
 };
 $app['lunches.controller.ingredients'] = function () use ($app) {
     return new \Lunches\Controller\IngredientsController(
+        $app['doctrine.em']
+    );
+};
+$app['lunches.controller.images'] = function () use ($app) {
+    return new \Lunches\Controller\ImagesController(
         $app['doctrine.em']
     );
 };
