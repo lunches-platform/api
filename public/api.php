@@ -1,6 +1,4 @@
 <?php
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 $app = require_once __DIR__ . '/../bootstrap.php';
 $app['debug'] = isset($_GET['debug_s']);
@@ -15,6 +13,8 @@ $app->get('/products/{productId}/ingredients', 'lunches.controller.ingredients:g
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');
 $app->get('/ingredients', 'lunches.controller.ingredients:getList');
+$app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
+$app->post('/images', 'lunches.controller.images:create');
 
 
 $app->before(function (Symfony\Component\HttpFoundation\Request $request) {
