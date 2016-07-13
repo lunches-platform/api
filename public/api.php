@@ -8,11 +8,17 @@ $app->get('/menus/week/current', 'lunches.controller.menus:getOnCurrentWeek');
 $app->get('/menus/week/next', 'lunches.controller.menus:getOnNextWeek');
 $app->get('/menus/today', 'lunches.controller.menus:getToday');
 $app->get('/menus/tomorrow', 'lunches.controller.menus:getTomorrow');
+
 $app->get('/products', 'lunches.controller.products:getList');
 $app->get('/products/{productId}/ingredients', 'lunches.controller.ingredients:getList');
+$app->get('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:get')->bind('product-image');
+$app->put('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:create');
+$app->get('/products/{productId}/images', 'lunches.controller.product-images:getList');
+
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');
 $app->get('/ingredients', 'lunches.controller.ingredients:getList');
+
 $app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
 $app->post('/images', 'lunches.controller.images:create');
 
