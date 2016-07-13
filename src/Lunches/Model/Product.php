@@ -59,10 +59,10 @@ class Product
     private $pricePer100;
 
     /**
-     * @var string
-     * @Column(type="string", length=255)
+     * @var ProductImage[]
+     * @OneToMany(targetEntity="ProductImage", mappedBy="product", cascade={"persist"})
      */
-    protected $image;
+    protected $images;
 
     /**
      * @var SizeWeight[]
@@ -83,6 +83,7 @@ class Product
     {
         $this->ingredients = new ArrayCollection();
         $this->sizeWeights = new SizeWeights();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -95,12 +96,19 @@ class Product
              $ingredients[] = $ingredient->getName();
         }
 
+        $images = [];
+        foreach ($this->images as $image) {
+            /** @var $image ProductImage */
+            $images[] = $image->toArray(true);
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->pricePer100,
             'ingredients' => $ingredients,
             'sizeToWeight' => $this->getSizeWeightsCollection()->toArray(),
+            'images' => $images,
         ];
     }
 
@@ -192,22 +200,11 @@ class Product
         $this->pricePer100 = $pricePer100;
     }
 
-    /**
-     * @return string
-     */
-    public function getImage()
+    public function addImage(ProductImage $image)
     {
-        return $this->image;
+        $this->images[] = $image;
+        $image->setProduct($this);
     }
-
-    /**
-     * @param string $image
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
-
     /**
      * @return SizeWeight[]
      */
@@ -226,5 +223,16 @@ class Product
     public function setSizeWeights($sizeWeights)
     {
         $this->sizeWeights = $sizeWeights;
+    }
+
+    public function hasImage(ProductImage $productImage)
+    {
+        foreach ($this->images as $image) {
+            if ($image->getImage()->getId() === $productImage->getImage()->getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
