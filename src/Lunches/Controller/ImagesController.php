@@ -42,11 +42,11 @@ class ImagesController extends ControllerAbstract
      */
     public function get($imageId)
     {
-        $order = $this->repo->find($imageId);
-        if (!$order) {
+        $image = $this->repo->find($imageId);
+        if (!$image) {
             return $this->failResponse('Image not found', 404);
         }
-        return $this->successResponse($order->toArray());
+        return $this->successResponse($image->toArray());
     }
 
     public function create(Request $request, Application $app)
