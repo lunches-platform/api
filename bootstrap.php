@@ -62,6 +62,11 @@ $app['lunches.controller.images'] = function () use ($app) {
         $app['doctrine.em']
     );
 };
+$app['lunches.controller.product-images'] = function () use ($app) {
+    return new \Lunches\Controller\ProductImagesController(
+        $app['doctrine.em']
+    );
+};
 $app['lunches.controller.menus'] = function () use ($app) {
     return new \Lunches\Controller\MenusController(
         $app['doctrine.em']
