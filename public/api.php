@@ -18,6 +18,8 @@ $app->get('/products/{productId}/images', 'lunches.controller.product-images:get
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');
 $app->get('/ingredients', 'lunches.controller.ingredients:getList');
+$app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
+$app->post('/images', 'lunches.controller.images:create');
 
 $app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
 $app->post('/images', 'lunches.controller.images:create');
