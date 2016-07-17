@@ -3,6 +3,7 @@
 namespace Lunches\Controller;
 
 use Lunches\Exception\ValidationException;
+use Lunches\Model\Order;
 use Lunches\Model\OrderFactory;
 use Lunches\Model\OrderRepository;
 use Lunches\Validator\OrderValidator;
@@ -61,6 +62,21 @@ class OrdersController extends ControllerAbstract
             return $this->failResponse('Order not found', 404);
         }
         return $this->successResponse($order->toArray());
+    }
+
+    public function getByCustomer($customer)
+    {
+        $orders = $this->repo->findBy([
+            'customer' => $customer,
+            
+        ]);
+        if (!count($orders)) {
+            return $this->failResponse('Orders not found', 404);
+        }
+
+        return $this->successResponse(array_map(function(Order $order) {
+            return $order->toArray();
+        }, $orders));
     }
 
     /**
