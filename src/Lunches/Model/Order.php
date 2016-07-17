@@ -129,9 +129,9 @@ class Order
             'price' => $this->price,
             'number' => $this->number,
             'customer' => $this->customer,
-            'createdAt' => $this->createdAt,
-            'closedAt' => $this->closedAt,
-            'canceledAt' => $this->canceledAt,
+            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+//            'closedAt' => $this->closedAt,
+//            'canceledAt' => $this->canceledAt,
             'lineItems' => $lineItems
         ];
     }
