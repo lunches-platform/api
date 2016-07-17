@@ -71,7 +71,7 @@ class LineItem
             'id' => $this->id,
             'price' => $this->price,
             'productId' => $this->product->getId(),
-            'date' => $this->date,
+            'date' => $this->date->format('Y-m-d H:i:s'),
             'size' => $this->size,
             'quantity' => $this->quantity,
         ];
