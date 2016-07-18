@@ -107,6 +107,10 @@ class OrderFactory
         if (count($emptyRequired) !== 0)  {
             throw ValidationException::requiredEmpty('Invalid LineItem', $required);
         }
+        $quantity = (int) $line['quantity'];
+        if (!$quantity) {
+            throw ValidationException::invalidLineItem('Quantity field must be greater than zero');
+        }
 
         $lineItem->setQuantity($line['quantity']);
         $lineItem->setSize($line['size']);
