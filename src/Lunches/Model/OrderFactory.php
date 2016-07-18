@@ -123,8 +123,8 @@ class OrderFactory
             throw ValidationException::requiredEmpty('Invalid LineItem', $required);
         }
         $quantity = (int) $line['quantity'];
-        if (!$quantity) {
-            throw ValidationException::invalidLineItem('Quantity field must be greater than zero');
+        if (!$quantity || $quantity > 100) {
+            throw ValidationException::invalidLineItem('Quantity field must be greater than zero and less than 100');
         }
 
         $lineItem->setQuantity($line['quantity']);
