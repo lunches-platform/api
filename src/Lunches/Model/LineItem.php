@@ -57,12 +57,6 @@ class LineItem
     protected $order;
 
     /**
-     * @var \DateTime
-     * @Column(type="date")
-     */
-    protected $date;
-
-    /**
      * @return array
      */
     public function toArray()
@@ -71,7 +65,6 @@ class LineItem
             'id' => $this->id,
             'price' => $this->price,
             'productId' => $this->product->getId(),
-            'date' => $this->date->format('Y-m-d H:i:s'),
             'size' => $this->size,
             'quantity' => $this->quantity,
         ];
@@ -177,22 +170,6 @@ class LineItem
     {
         $this->quantity = (int) $quantity;
         $this->recalculatePrice();
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param \DateTime $date
-     */
-    public function setDate(\DateTime $date)
-    {
-        $this->date = $date;
     }
 
     /**
