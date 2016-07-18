@@ -36,7 +36,6 @@ class OrderFactory
     public function createNewFromArray(array $data)
     {
         $order = new Order();
-        $order->setCreatedAt(new \DateTime());
 
         if (count($data) === 0) {
             return $order;
@@ -46,9 +45,23 @@ class OrderFactory
         if (array_key_exists('customer', $data)) {
             $order->setCustomer($data['customer']);
         }
+        if (!array_key_exists('shipmentDate', $data)) {
+            throw ValidationException::invalidOrder('Date field is not provided');
+        }
+        $order->setShipmentDate($this->createDate($data['shipmentDate']));
+
+        $menus = $this->menuRepo->findBy([
+            'date' => $order->getShipmentDate(),
+        ]);
+        /** @var Menu $menu */
+        $menu = array_shift($menus);
+
+        if (!$menu) {
+            throw ValidationException::invalidLineItem('There is no menu for specified date');
+        }
 
         if (array_key_exists('items', $data)) {
-            $lineItems = $this->createLineItems($data['items']);
+            $lineItems = $this->createLineItems($data['items'], $menu);
             array_map([$order, 'addLineItem'], $lineItems);
         }
 
@@ -57,11 +70,12 @@ class OrderFactory
 
     /**
      * @param array $data
+     * @param Menu  $menu
      * @return LineItem[]
      * @throws \Lunches\Exception\RuntimeException
      * @throws ValidationException
      */
-    private function createLineItems($data)
+    private function createLineItems($data, Menu $menu)
     {
         if (!is_array($data)) {
             return [];
@@ -71,7 +85,7 @@ class OrderFactory
         foreach ($data as $line) {
 
             try {
-                $lineItems[] = $lineItem = $this->createLineItem($line);
+                $lineItems[] = $lineItem = $this->createLineItem($line, $menu);
 
                 // order only unique products
                 if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
@@ -93,15 +107,16 @@ class OrderFactory
 
     /**
      * @param array $line
+     * @param Menu  $menu
      * @return LineItem|bool
      * @throws \Lunches\Exception\ValidationException
      * @throws \Lunches\Exception\RuntimeException
      */
-    private function createLineItem(array $line)
+    private function createLineItem(array $line, Menu $menu)
     {
         $lineItem = new LineItem();
 
-        $required = ['date', 'productId', 'quantity', 'size'];
+        $required = ['productId', 'quantity', 'size'];
 
         $emptyRequired = array_diff($required, array_keys($line));
         if (count($emptyRequired) !== 0)  {
@@ -110,17 +125,7 @@ class OrderFactory
 
         $lineItem->setQuantity($line['quantity']);
         $lineItem->setSize($line['size']);
-        $lineItem->setDate($this->createDate($line['date']));
 
-        $menus = $this->menuRepo->findBy([
-            'date' => $lineItem->getDate(),
-        ]);
-        /** @var Menu $menu */
-        $menu = array_shift($menus);
-
-        if (!$menu) {
-            throw ValidationException::invalidLineItem('There is no menu for specified date');
-        }
         $product = $menu->getProductById((int)$line['productId']);
         if (!$product instanceof Product) {
             throw ValidationException::invalidLineItem('Menu for specified date doest have such product');
@@ -133,6 +138,9 @@ class OrderFactory
 
     private function createDate($dateStr)
     {
+        if (!$dateStr) {
+            throw ValidationException::invalidDate('Date must be specified');
+        }
         try {
             $date = new \DateTime($dateStr);
         } catch (\Exception $e) {

@@ -32,9 +32,6 @@ class OrderValidator
         }
 
         foreach ($order->getLineItems() as $lineItem) {
-            if (!$lineItem->getDate()) {
-                $this->addError('lineItems', 'One of LineItem does not have "date" field');
-            }
 
             if (!$lineItem->getSize()) {
                 $this->addError('lineItems', 'One of LineItem does not have "size" field');
