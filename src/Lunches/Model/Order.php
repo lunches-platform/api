@@ -48,18 +48,10 @@ class Order
     private $createdAt;
 
     /**
-     * @var \DateTime $closedAt
-     *
-     * @Column(type="datetime", nullable=true)
+     * @var \DateTime
+     * @Column(type="date", name="shipment_date")
      */
-    private $closedAt;
-
-    /**
-     * @var \DateTime $canceledAt
-     *
-     * @Column(type="datetime", nullable=true)
-     */
-    private $canceledAt;
+    protected $shipmentDate;
 
     /**
      * @var float $price
@@ -75,42 +67,11 @@ class Order
     protected $lineItems;
 
     /**
-     * @param array $data
-     * @return Order
-     */
-    public static function factory(array $data)
-    {
-        $order = new self();
-
-        if (array_key_exists('number', $data)) {
-            $order->setNumber($data['number']);
-        }
-        if (array_key_exists('createdAt', $data)) {
-            $order->setCreatedAt($data['createdAt']);
-        } else {
-            $order->setCreatedAt(new \DateTime());
-        }
-        if (array_key_exists('closedAt', $data)) {
-            $order->setClosedAt($data['closedAt']);
-        }
-        if (array_key_exists('canceledAt', $data)) {
-            $order->setCanceledAt($data['canceledAt']);
-        }
-        if (array_key_exists('price', $data)) {
-            $order->setPrice($data['price']);
-        }
-        if (array_key_exists('customer', $data)) {
-            $order->setCustomer($data['customer']);
-        }
-
-        return $order;
-    }
-
-    /**
      * Order constructor.
      */
     public function __construct()
     {
+        $this->setCreatedAt(new \DateTime());
         $this->lineItems = new ArrayCollection();
     }
 
@@ -130,8 +91,7 @@ class Order
             'number' => $this->number,
             'customer' => $this->customer,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-//            'closedAt' => $this->closedAt,
-//            'canceledAt' => $this->canceledAt,
+            'shipmentDate' => $this->shipmentDate->format('Y-m-d H:i:s'),
             'lineItems' => $lineItems
         ];
     }
@@ -200,38 +160,6 @@ class Order
     }
 
     /**
-     * @return \DateTime
-     */
-    public function getClosedAt()
-    {
-        return $this->closedAt;
-    }
-
-    /**
-     * @param \DateTime $closedAt
-     */
-    public function setClosedAt($closedAt)
-    {
-        $this->closedAt = $closedAt;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCanceledAt()
-    {
-        return $this->canceledAt;
-    }
-
-    /**
-     * @param \DateTime $canceledAt
-     */
-    public function setCanceledAt($canceledAt)
-    {
-        $this->canceledAt = $canceledAt;
-    }
-
-    /**
      * @return string
      */
     public function getCustomer()
@@ -261,6 +189,22 @@ class Order
     public function setNumber($number)
     {
         $this->number = $number;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getShipmentDate()
+    {
+        return $this->shipmentDate;
+    }
+
+    /**
+     * @param \DateTime $shipmentDate
+     */
+    public function setShipmentDate($shipmentDate)
+    {
+        $this->shipmentDate = $shipmentDate;
     }
 
 }
