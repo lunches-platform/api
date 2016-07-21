@@ -40,6 +40,12 @@ class Order
     protected $customer;
 
     /**
+     * @var string
+     * @Column(type="string", nullable=false)
+     */
+    protected $address;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -205,6 +211,22 @@ class Order
     public function setShipmentDate($shipmentDate)
     {
         $this->shipmentDate = $shipmentDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
     }
 
 }
