@@ -45,6 +45,10 @@ class OrderFactory
         if (array_key_exists('customer', $data)) {
             $order->setCustomer($data['customer']);
         }
+
+        if (array_key_exists('address', $data)) {
+            $order->setAddress($data['address']);
+        }
         if (!array_key_exists('shipmentDate', $data)) {
             throw ValidationException::invalidOrder('Date field is not provided');
         }
