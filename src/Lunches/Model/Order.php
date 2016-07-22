@@ -97,7 +97,7 @@ class Order
             'number' => $this->number,
             'customer' => $this->customer,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'shipmentDate' => $this->shipmentDate->format('Y-m-d H:i:s'),
+            'shipmentDate' => $this->shipmentDate->format('Y-m-d'),
             'lineItems' => $lineItems
         ];
     }
