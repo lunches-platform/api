@@ -2,10 +2,12 @@
 
 namespace Lunches\Controller;
 
+use Lunches\Exception\ValidationException;
 use Lunches\Model\MenuRepository;
 use Doctrine\ORM\EntityManager;
 use Lunches\Model\Menu;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class MenusController    
@@ -34,21 +36,26 @@ class MenusController extends ControllerAbstract
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
+     * @throws ValidationException
      */
-    public function getList()
+    public function getList(Request $request)
     {
-        $menus = $this->repo->getMenus();
-
-        if (0 === count($menus)) {
-            return $this->failResponse('Menus not found', 404);
+        try {
+            $startDate = new \DateTime($request->get('startDate'));
+            $endDate = new \DateTime($request->get('endDate'));
+        } catch (\Exception $e) {
+            return $this->failResponse('Invalid startDate or endDate provided', 400);
+        }
+        if ($startDate > $endDate) {
+            return $this->failResponse('startDate must be greater than endDate', 400);
+        }
+        if ($startDate < new \DateTime('-2 week')) {
+            return $this->failResponse('Can not access menu older than two weeks ago', 400);
         }
 
-        $menus = array_map(function (Menu $menu) {
-            return $menu->toArray();
-        }, $menus);
-
-        return $this->successResponse($menus);
+        return $this->getByDateRange($startDate, $endDate);
     }
 
     public function getByDateRange(\DateTime $startDate = null, \DateTime $endDate = null)
