@@ -66,10 +66,7 @@ class OrdersController extends ControllerAbstract
 
     public function getByCustomer($customer)
     {
-        $orders = $this->repo->findBy([
-            'customer' => $customer,
-            
-        ]);
+        $orders = $this->repo->getActiveOrders($customer);
         if (!count($orders)) {
             return $this->failResponse('Orders not found', 404);
         }
