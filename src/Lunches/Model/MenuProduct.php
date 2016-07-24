@@ -27,7 +27,7 @@ class MenuProduct
 
     /**
      * @var Menu
-     * @ManyToOne(targetEntity="Menu")
+     * @ManyToOne(targetEntity="Menu", inversedBy="menuProducts")
      */
     protected $menu;
 

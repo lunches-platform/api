@@ -5,9 +5,7 @@ namespace Lunches\Model;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 
 /**
@@ -23,14 +21,10 @@ class Menu
     protected $id;
 
     /**
-     * @var Product[]
-     * @ManyToMany(targetEntity="Product")
-     * @JoinTable(name="menu_product",
-     *      joinColumns={@JoinColumn(name="menu_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="product_id", referencedColumnName="id")}
-     *      )
+     * @var MenuProduct[]
+     * @OneToMany(targetEntity="MenuProduct", mappedBy="menu")
      */
-    protected $products;
+    protected $menuProducts;
 
     /**
      * @var \DateTime $created
@@ -45,15 +39,15 @@ class Menu
      */
     public function __construct()
     {
-        $this->products = new Products();
+        $this->menuProducts = new MenuProducts();
     }
 
     /**
-     * @param Product $product
+     * @param MenuProduct $product
      */
-    public function addProduct(Product $product)
+    public function addProduct(MenuProduct $product)
     {
-        $this->products[] = $product;
+        $this->menuProducts[] = $product;
     }
     /**
      * @return array
@@ -61,8 +55,8 @@ class Menu
     public function toArray()
     {
         $products = [];
-        foreach ($this->getProducts() as $product) {
-            $products[] = $product->toArray();
+        foreach ($this->getMenuProducts() as $menuProduct) {
+            $products[] = $menuProduct->getProduct()->toArray();
         }
 
         return [
@@ -83,19 +77,19 @@ class Menu
 
 
     /**
-     * @return Product[]
+     * @return MenuProducts
      */
-    public function getProducts()
+    public function getMenuProducts()
     {
-        return $this->products;
+        return $this->menuProducts;
     }
 
     /**
-     * @param string $products
+     * @param MenuProduct[] $menuProducts
      */
-    public function setProducts($products)
+    public function setMenuProducts($menuProducts)
     {
-        $this->products = $products;
+        $this->menuProducts = $menuProducts;
     }
 
     /**
@@ -120,9 +114,10 @@ class Menu
      */
     public function getProductById($productId)
     {
-        foreach ($this->getProducts() as $product) {
-            if ($productId === $product->getId()) {
-                return $product;
+        foreach ($this->getMenuProducts() as $menuProduct) {
+            /** @var $menuProduct MenuProduct */
+            if ($productId === $menuProduct->getProduct()->getId()) {
+                return $menuProduct;
             }
         }
 
