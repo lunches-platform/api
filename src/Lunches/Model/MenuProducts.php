@@ -18,4 +18,16 @@ class MenuProducts extends ArrayCollection
             return $product->getProduct()->toArray();
         }, parent::toArray());
     }
+
+    /**
+     * @return MenuProducts
+     */
+    public function sort()
+    {
+        $menuProducts = $this->getValues();
+        usort($menuProducts, function (MenuProduct $a, MenuProduct $b) {
+            return $a->getPosition() - $b->getPosition();
+        });
+        return new static($menuProducts);
+    }
 }
