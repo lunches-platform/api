@@ -117,7 +117,7 @@ class Menu
         foreach ($this->getMenuProducts() as $menuProduct) {
             /** @var $menuProduct MenuProduct */
             if ($productId === $menuProduct->getProduct()->getId()) {
-                return $menuProduct;
+                return $menuProduct->getProduct();
             }
         }
 
