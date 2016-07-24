@@ -54,8 +54,9 @@ class Menu
      */
     public function toArray()
     {
+        $menuProducts = new MenuProducts($this->getMenuProducts()->toArray());
         $products = [];
-        foreach ($this->getMenuProducts() as $menuProduct) {
+        foreach ($menuProducts->sort() as $menuProduct) {
             $products[] = $menuProduct->getProduct()->toArray();
         }
 
