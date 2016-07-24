@@ -39,9 +39,9 @@ class MenuProduct
 
     /**
      * @var integer
-     * @Column(type="integer", name="order_number")
+     * @Column(type="integer", name="position")
      */
-    protected $orderNumber;
+    protected $position;
 
     /**
      * @return int
@@ -86,16 +86,16 @@ class MenuProduct
     /**
      * @return int
      */
-    public function getOrderNumber()
+    public function getPosition()
     {
-        return $this->orderNumber;
+        return $this->position;
     }
 
     /**
-     * @param int $orderNumber
+     * @param int $position
      */
-    public function setOrderNumber($orderNumber)
+    public function setPosition($position)
     {
-        $this->orderNumber = $orderNumber;
+        $this->position = $position;
     }
 }
