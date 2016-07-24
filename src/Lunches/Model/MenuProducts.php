@@ -5,17 +5,17 @@ namespace Lunches\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class Products.
+ * Class MenuProducts.
  */
-class Products extends ArrayCollection
+class MenuProducts extends ArrayCollection
 {
     /**
      * @return mixed
      */
     public function toArray()
     {
-        return array_map(function (Product $product) {
-            return $product->toArray();
+        return array_map(function (MenuProduct $product) {
+            return $product->getProduct()->toArray();
         }, parent::toArray());
     }
 }
