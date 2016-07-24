@@ -17,9 +17,10 @@ class MenuRepository extends EntityRepository
     public function getMenus(\DateTime $startDate = null, \DateTime $endDate = null)
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select(['m', 'p', 'i'])
+        $qb->select(['m', 'mp', 'p', 'i'])
             ->from('Lunches\Model\Menu', 'm')
-            ->join('m.products', 'p')
+            ->join('m.menuProducts', 'mp')
+            ->join('mp.product', 'p')
             ->leftJoin('p.ingredients', 'i')
 //            ->orderBy('m.created', 'DESC')
             ->setMaxResults(100);
