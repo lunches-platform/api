@@ -13,7 +13,7 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * Class Price
- * @Entity
+ * @Entity(repositoryClass="PriceRepository")
  * @Table(name="price")
  */
 class Price
