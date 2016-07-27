@@ -4,7 +4,8 @@
         "doctrine/orm": "2.5.0",
         "gedmo/doctrine-extensions": "2.4.9",
         "jdesrosiers/silex-cors-provider":"~1.0",
-        "cloudinary/cloudinary_php":"1.4.0"
+        "cloudinary/cloudinary_php":"1.4.0",
+        "ramsey/uuid-doctrine": "1.2.*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.*"
