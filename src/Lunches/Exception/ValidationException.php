@@ -12,9 +12,9 @@ class ValidationException extends \Exception
         return new static('Invalid size provided.'.$allowedMsg);
     }
 
-    public static function invalidPrice()
+    public static function invalidPrice($msg = '')
     {
-        return new static('Price must be positive');
+        return new static('Invalid price provided. '.$msg);
     }
 
     public static function invalidDate($msg = '')
