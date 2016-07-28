@@ -1,4 +1,7 @@
-# Lunches REST API
+# Lunches REST API 
+
+[![Code Climate](https://codeclimate.com/github/lunches-platform/api/badges/gpa.svg)](https://codeclimate.com/github/lunches-platform/api)
+[![Test Coverage](https://codeclimate.com/github/lunches-platform/api/badges/coverage.svg)](https://codeclimate.com/github/lunches-platform/api/coverage)
 
 ## Requirements
 
