@@ -64,7 +64,7 @@ class LineItem
         return [
             'id' => $this->id,
             'price' => $this->price,
-            'productId' => $this->product->getId(),
+            'product' => $this->product->toArray(),
             'size' => $this->size,
             'quantity' => $this->quantity,
         ];
