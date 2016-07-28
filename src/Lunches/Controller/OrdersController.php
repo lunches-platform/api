@@ -96,7 +96,7 @@ class OrdersController extends ControllerAbstract
                 $this->em->persist($order);
                 $this->em->flush();
 
-                return new Response(null, 201, [
+                return $this->successResponse($order->toArray(), 201, [
                     'Location' => $app->url('order', ['orderId' => $order->getId()])
                 ]);
             } else {
