@@ -90,7 +90,7 @@ class Price
         }
 
         if (count($this->items) === 0) {
-            throw ValidationException::invalidPrice('Price must be assigned to one or more products');
+            throw ValidationException::invalidPrice('Price must be assigned to one or more items but zero given. Probably some of items are invalid');
         }
     }
 
@@ -117,4 +117,38 @@ class Price
         $this->date = $date;
     }
 
+    public function equalsTo(Price $current)
+    {
+        if ($this->value !== $current->getValue()) {
+            return false;
+        }
+        if ($this->date != $current->getDate()) {
+            return false;
+        }
+
+        return $this->areItemsEquals($current->getItems());
+    }
+
+    private function areItemsEquals($currentItems)
+    {
+        /** @var $currentItems ArrayCollection */
+        if (count($this->items) !== $currentItems->count()) {
+            return false;
+        }
+
+        foreach ($this->items as $priceItem) {
+            $equals = 0;
+            foreach ($currentItems as $currentPriceItem)  {
+                if ($priceItem->equalsTo($currentPriceItem)) {
+                    $equals++;
+                    break;
+                }
+            }
+            if (!$equals || $equals > 1) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
 }
