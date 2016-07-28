@@ -29,7 +29,7 @@ class Order
      * Number of order. Starts from 1000
      *
      * @var string
-     * @Column(type="string", nullable=false)
+     * @Column(type="string", name="order_number", nullable=false)
      */
     protected $number;
 
