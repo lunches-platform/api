@@ -79,6 +79,11 @@ $app['lunches.controller.orders'] = function () use ($app) {
         $app['lunches.validator.order']
     );
 };
+$app['lunches.controller.prices'] = function () use ($app) {
+    return new \Lunches\Controller\PricesController(
+        $app['doctrine.em']
+    );
+};
 $app['lunches.validator.order'] = function () use ($app) {
     return new \Lunches\Validator\OrderValidator();
 };
