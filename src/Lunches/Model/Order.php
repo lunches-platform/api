@@ -31,7 +31,7 @@ class Order
      * @var string
      * @Column(type="string", name="order_number", nullable=false)
      */
-    protected $number;
+    protected $orderNumber;
 
     /**
      * @var string
@@ -94,11 +94,12 @@ class Order
         return [
             'id' => $this->id,
             'price' => $this->price,
-            'number' => $this->number,
+            'orderNumber' => $this->orderNumber,
             'customer' => $this->customer,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'shipmentDate' => $this->shipmentDate->format('Y-m-d'),
-            'lineItems' => $lineItems
+            'address' => $this->address,
+            'items' => $lineItems
         ];
     }
 
@@ -184,17 +185,17 @@ class Order
     /**
      * @return mixed
      */
-    public function getNumber()
+    public function getOrderNumber()
     {
-        return $this->number;
+        return $this->orderNumber;
     }
 
     /**
-     * @param string $number
+     * @param string $orderNumber
      */
-    public function setNumber($number)
+    public function setOrderNumber($orderNumber)
     {
-        $this->number = $number;
+        $this->orderNumber = $orderNumber;
     }
 
     /**

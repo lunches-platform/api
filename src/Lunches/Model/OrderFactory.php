@@ -41,7 +41,7 @@ class OrderFactory
             return $order;
         }
 
-        $order->setNumber($this->orderRepo->generateOrderNumber());
+        $order->setOrderNumber($this->orderRepo->generateOrderNumber());
         if (array_key_exists('customer', $data)) {
             $order->setCustomer($data['customer']);
         }
