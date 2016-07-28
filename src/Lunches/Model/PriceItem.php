@@ -43,11 +43,45 @@ class PriceItem
      */
     protected $size;
 
+
+    public function equalsTo(PriceItem $priceItem)
+    {
+        if ($this->size !== $priceItem->getSize()) {
+            return false;
+        }
+
+        return $this->product->getId() === $priceItem->getProduct()->getId();
+    }
+
     public function __construct(Price $price, Product $product, $size)
     {
         $this->id = Uuid::uuid4();
         $this->price = $price;
         $this->product = $product;
         $this->size = $size;
+    }
+
+    /**
+     * @return Price
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @return Product
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->size;
     }
 }

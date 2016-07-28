@@ -47,7 +47,7 @@ class SizeWeight
     const SIZE_MEDIUM = 'medium';
     const SIZE_BIG = 'big';
 
-    protected static $availableSizes = [
+    public static $availableSizes = [
         self::SIZE_SMALL,
         self::SIZE_MEDIUM,
         self::SIZE_BIG,

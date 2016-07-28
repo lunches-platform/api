@@ -15,6 +15,8 @@ $app->get('/products/{productId}/images/{imageId}', 'lunches.controller.product-
 $app->put('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:create');
 $app->get('/products/{productId}/images', 'lunches.controller.product-images:getList');
 
+$app->put('/prices/{date}', 'lunches.controller.prices:create');
+
 $app->get('/customers/{customer}/orders', 'lunches.controller.orders:getByCustomer');
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');

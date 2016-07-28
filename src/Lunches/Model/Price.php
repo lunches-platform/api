@@ -1,6 +1,7 @@
 <?php
 
 namespace Lunches\Model;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -30,18 +31,46 @@ class Price
      * @Column(type="float")
      */
     protected $value;
-
     /**
      * @var PriceItem[]
      * @OneToMany(targetEntity="PriceItem", mappedBy="price", cascade={"persist"})
      */
     protected $items;
+    /**
+     * @var \DateTime
+     * @Column(type="date")
+     */
+    protected $date;
 
-    public function __construct($value, $items)
+    public function __construct($value, \DateTime $date, $items)
     {
         $this->id = Uuid::uuid4();
+        $this->setDate($date);
         $this->setItems($items);
         $this->setValue($value);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+    /**
+     * @return float
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getItems()
+    {
+        return $this->items;
     }
 
     private function setValue($value)
@@ -61,7 +90,7 @@ class Price
         }
 
         if (count($this->items) === 0) {
-            throw ValidationException::invalidPrice('Price must be assigned to one or more products');
+            throw ValidationException::invalidPrice('Price must be assigned to one or more items but zero given. Probably some of items are invalid');
         }
     }
 
@@ -76,5 +105,50 @@ class Price
         }
 
         return new PriceItem($this, $item['product'], $item['size']);
+    }
+
+    private function setDate(\DateTime $date)
+    {
+        $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
+        if ($date <= $currentDate) {
+            throw ValidationException::invalidDate('Price date can not be today or in the past');
+        }
+        
+        $this->date = $date;
+    }
+
+    public function equalsTo(Price $current)
+    {
+        if ($this->value !== $current->getValue()) {
+            return false;
+        }
+        if ($this->date != $current->getDate()) {
+            return false;
+        }
+
+        return $this->areItemsEquals($current->getItems());
+    }
+
+    private function areItemsEquals($currentItems)
+    {
+        /** @var $currentItems ArrayCollection */
+        if (count($this->items) !== $currentItems->count()) {
+            return false;
+        }
+
+        foreach ($this->items as $priceItem) {
+            $equals = 0;
+            foreach ($currentItems as $currentPriceItem)  {
+                if ($priceItem->equalsTo($currentPriceItem)) {
+                    $equals++;
+                    break;
+                }
+            }
+            if (!$equals || $equals > 1) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
