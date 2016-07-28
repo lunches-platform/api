@@ -24,7 +24,7 @@ class OrderValidator
             $this->addError('customer', 'Invalid customer: length of customer name must be greater than 2 and less than 50');
         }
         $len = mb_strlen($order->getAddress());
-        if ($len <= 2 || $len > 150) {
+        if ($len < 1 || $len > 150) {
             $this->addError('address', 'Invalid address');
         }
         if ($order->getPrice() <= 0) {
