@@ -30,16 +30,21 @@ class Price
      * @Column(type="float")
      */
     protected $value;
-
     /**
      * @var PriceItem[]
      * @OneToMany(targetEntity="PriceItem", mappedBy="price", cascade={"persist"})
      */
     protected $items;
+    /**
+     * @var \DateTime
+     * @Column(type="date")
+     */
+    protected $date;
 
-    public function __construct($value, $items)
+    public function __construct($value, \DateTime $date, $items)
     {
         $this->id = Uuid::uuid4();
+        $this->setDate($date);
         $this->setItems($items);
         $this->setValue($value);
     }
@@ -77,4 +82,15 @@ class Price
 
         return new PriceItem($this, $item['product'], $item['size']);
     }
+
+    private function setDate(\DateTime $date)
+    {
+        $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
+        if ($date <= $currentDate) {
+            throw ValidationException::invalidDate('Price date can not be today or in the past');
+        }
+        
+        $this->date = $date;
+    }
+
 }
