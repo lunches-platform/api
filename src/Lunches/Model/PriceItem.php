@@ -50,4 +50,28 @@ class PriceItem
         $this->product = $product;
         $this->size = $size;
     }
+
+    /**
+     * @return Price
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @return Product
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
 }
