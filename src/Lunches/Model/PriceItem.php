@@ -61,6 +61,14 @@ class PriceItem
         $this->size = $size;
     }
 
+    public function toArray()
+    {
+        return [
+            'size' => $this->size,
+            'productId' => $this->getProduct()->getId(),
+        ];
+    }
+
     /**
      * @return Price
      */

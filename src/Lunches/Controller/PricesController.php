@@ -36,6 +36,24 @@ class PricesController extends ControllerAbstract
         $this->repo = $em->getRepository($this->priceClass);
     }
 
+    public function get($date)
+    {
+        try {
+            $date = new \DateTime($date);
+        } catch (\Exception $e) {
+            return $this->failResponse('Invalid date provided', 400);
+        }
+        $price = $this->repo->findBy([
+            'date' => $date,
+        ]);
+        $price = array_shift($price);
+        if (!$price instanceof Price) {
+            return $this->failResponse('There are no prices for this date', 404);
+        }
+
+        return $this->successResponse($price->toArray());
+    }
+
     public function create($date, Request $request)
     {
         try {

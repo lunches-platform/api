@@ -235,4 +235,12 @@ class Product
 
         return false;
     }
+
+    /**
+     * @return ProductImage[]
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
 }
