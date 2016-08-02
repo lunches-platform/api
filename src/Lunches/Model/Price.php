@@ -128,6 +128,23 @@ class Price
 
         return $this->areItemsEquals($current->getItems());
     }
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $items = [];
+        foreach ($this->items as $item) {
+            /** @var $image PriceItem */
+            $items[] = $item->toArray();
+        }
+
+        return [
+            'date' => $this->date->format('Y-m-d'),
+            'price' => $this->value,
+            'items' => $items,
+        ];
+    }
 
     private function areItemsEquals($currentItems)
     {
