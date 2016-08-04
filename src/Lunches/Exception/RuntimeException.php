@@ -2,6 +2,7 @@
 
 namespace Lunches\Exception;
 
+use Lunches\Model\Product;
 
 class RuntimeException extends \Exception
 {
@@ -24,4 +25,17 @@ class RuntimeException extends \Exception
     {
         return new static($objectName.' not found');
     }
+
+    public static function priceNotFound($type = '')
+    {
+        $msg = 'Price not found';
+        if ($type instanceof \DateTime) {
+            $msg .= ' for specified date';
+        }
+        if ($type instanceof Product) {
+            $msg .= ' for product #'.$type->getId();
+        }
+        return new static($msg);
+    }
+
 }
