@@ -5,8 +5,8 @@ namespace Lunches\Controller;
 use Doctrine\ORM\EntityManager;
 use Lunches\Exception\ValidationException;
 use Lunches\Model\Price;
+use Lunches\Model\PriceFactory;
 use Lunches\Model\PriceRepository;
-use Lunches\Model\SizeWeight;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,16 +24,21 @@ class PricesController extends ControllerAbstract
     /** @var string  */
     protected $priceClass;
 
+    /** @var PriceFactory  */
+    protected $priceFactory;
+
     /**
      * ProductsController constructor.
      *
      * @param EntityManager $em
+     * @param PriceFactory $priceFactory
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, PriceFactory $priceFactory)
     {
         $this->priceClass = '\Lunches\Model\Price';
         $this->em = $em;
         $this->repo = $em->getRepository($this->priceClass);
+        $this->priceFactory = $priceFactory;
     }
 
     public function get($date)
@@ -43,61 +48,27 @@ class PricesController extends ControllerAbstract
         } catch (\Exception $e) {
             return $this->failResponse('Invalid date provided', 400);
         }
-        $price = $this->repo->findBy([
-            'date' => $date,
-        ]);
-        $price = array_shift($price);
-        if (!$price instanceof Price) {
+        $prices = $this->repo->findByDate($date);
+        if ($prices->count() === 0) {
             return $this->failResponse('There are no prices for this date', 404);
         }
 
-        return $this->successResponse($price->toArray());
+        return $this->successResponse($prices->toArray());
     }
 
     public function create($date, Request $request)
     {
         try {
-            $date = new \DateTime($date);
-        } catch (\Exception $e) {
-            return $this->failResponse('Invalid date provided', 400);
-        }
-        try {
-            $price = new Price($request->get('price'), $date, $this->createItems($request));
-            if (!$this->exists($price)) {
-                $this->em->persist($price);
-                $this->em->flush();
-            }
+            $price = $this->priceFactory->createFromArray(array_merge($request->request->all(), ['date' => $date]));
         } catch (ValidationException $e) {
-            return $this->failResponse('Can not create price:'.$e->getMessage());
+            return $this->failResponse('Can not create price:'.$e->getMessage(), 400);
+        }
+        if (!$this->exists($price)) {
+            $this->em->persist($price);
+            $this->em->flush();
         }
 
         return new Response(null, 201);
-    }
-
-    private function createItems(Request $request)
-    {
-        $items = (array) $request->get('items');
-
-        $productRepo = $this->em->getRepository('\Lunches\Model\Product');
-        foreach ($items as $key => $item) {
-            if (!array_key_exists('productId', $item) || !array_key_exists('size', $item)) {
-                unset($items[$key]);
-                continue;
-            }
-            $products = $productRepo->findBy(['id' => $item['productId']]);
-            $product = array_shift($products);
-            if (!$product) {
-                unset($items[$key]);
-                continue;
-            }
-            if (!in_array($item['size'], SizeWeight::$availableSizes, true)) {
-                unset($items[$key]);
-                continue;
-            }
-            $items[$key]['product'] = $product;
-        }
-
-        return $items;
     }
 
     private function exists(Price $price)
