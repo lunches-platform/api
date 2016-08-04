@@ -41,4 +41,16 @@ class MenuRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @param \DateTime|string $date
+     * @return Menu
+     */
+    public function findByDate($date)
+    {
+        $menus = $this->findBy([
+            'date' => $date,
+        ]);
+        return array_shift($menus);
+    }
 }
