@@ -9,4 +9,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class PriceRepository extends EntityRepository
 {
+    public function findByDate(\DateTime $date)
+    {
+        $prices = $this->findBy([
+            'date' => $date,
+        ]);
+
+        return new Prices($prices);
+    }
 }

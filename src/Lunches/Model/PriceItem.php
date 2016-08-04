@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Lunches\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
 
 
@@ -58,7 +59,7 @@ class PriceItem
         $this->id = Uuid::uuid4();
         $this->price = $price;
         $this->product = $product;
-        $this->size = $size;
+        $this->setSize($size);
     }
 
     public function toArray()
@@ -91,5 +92,13 @@ class PriceItem
     public function getSize()
     {
         return $this->size;
+    }
+
+    private function setSize($size)
+    {
+        if (!in_array($size, SizeWeight::$availableSizes, true)) {
+            throw ValidationException::invalidSize();
+        }
+        $this->size = $size;
     }
 }

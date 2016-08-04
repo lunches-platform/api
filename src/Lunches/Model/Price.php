@@ -32,7 +32,7 @@ class Price
      */
     protected $value;
     /**
-     * @var PriceItem[]
+     * @var ArrayCollection
      * @OneToMany(targetEntity="PriceItem", mappedBy="price", cascade={"persist"})
      */
     protected $items;
@@ -42,12 +42,23 @@ class Price
      */
     protected $date;
 
-    public function __construct($value, \DateTime $date, $items)
+    public function __construct($value, \DateTime $date)
     {
         $this->id = Uuid::uuid4();
         $this->setDate($date);
-        $this->setItems($items);
         $this->setValue($value);
+        $this->items = new ArrayCollection();
+    }
+
+    public function hasPriceItem(PriceItem $priceItem)
+    {
+        foreach ($this->items as $item) {
+            if ($item->equalsTo($priceItem)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -57,12 +68,21 @@ class Price
     {
         return $this->date;
     }
+
     /**
      * @return float
+     * @throws ValidationException
      */
     public function getValue()
     {
+        if (count($this->items) === 0) {
+            throw ValidationException::invalidPrice('Price must be assigned to one or more items but zero given. Probably some of items are invalid');
+        }
         return $this->value;
+    }
+    public function setItems(array $items)
+    {
+        array_map([$this, 'addItem'], $items);
     }
 
     /**
@@ -82,30 +102,11 @@ class Price
         $this->value = $value;
     }
 
-    private function setItems(array $items)
+    private function addItem(PriceItem $priceItem)
     {
-        $this->items = [];
-        foreach ($items as $item) {
-            $this->items[] = $this->createItem($item);
-        }
-
-        if (count($this->items) === 0) {
-            throw ValidationException::invalidPrice('Price must be assigned to one or more items but zero given. Probably some of items are invalid');
-        }
+        $this->items[] = $priceItem;
     }
 
-    private function createItem(array $item)
-    {
-        if (!array_key_exists('size', $item)) {
-            throw ValidationException::invalidPrice('Price item must have "size" of product specified');
-        }
-
-        if (!array_key_exists('product', $item)) {
-            throw ValidationException::invalidPrice('Price item must contain valid product');
-        }
-
-        return new PriceItem($this, $item['product'], $item['size']);
-    }
 
     private function setDate(\DateTime $date)
     {
@@ -117,16 +118,16 @@ class Price
         $this->date = $date;
     }
 
-    public function equalsTo(Price $current)
+    public function equalsTo(Price $price)
     {
-        if ($this->value !== $current->getValue()) {
+        if ($this->value !== $price->getValue()) {
             return false;
         }
-        if ($this->date != $current->getDate()) {
+        if ($this->date != $price->getDate()) {
             return false;
         }
 
-        return $this->areItemsEquals($current->getItems());
+        return $this->areItemsEquals($price->getItems());
     }
     /**
      * @return array
@@ -146,16 +147,15 @@ class Price
         ];
     }
 
-    private function areItemsEquals($currentItems)
+    public function areItemsEquals($items)
     {
-        /** @var $currentItems ArrayCollection */
-        if (count($this->items) !== $currentItems->count()) {
+        if ($this->items->count() !== $items->count()) {
             return false;
         }
 
         foreach ($this->items as $priceItem) {
             $equals = 0;
-            foreach ($currentItems as $currentPriceItem)  {
+            foreach ($items as $currentPriceItem)  {
                 if ($priceItem->equalsTo($currentPriceItem)) {
                     $equals++;
                     break;

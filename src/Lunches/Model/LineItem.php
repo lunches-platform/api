@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Lunches\Exception\ValidationException;
 
 /**
  * @Entity(repositoryClass="Lunches\Model\LineItemRepository")
@@ -28,21 +27,9 @@ class LineItem
 
     /**
      * @var string
-     * @Column(type="float")
-     */
-    protected $price;
-
-    /**
-     * @var string
      * @Column(type="string")
      */
     protected $size;
-
-    /**
-     * @var int
-     * @Column(type="integer")
-     */
-    protected $quantity;
 
     /**
      * @var Product
@@ -63,10 +50,8 @@ class LineItem
     {
         return [
             'id' => $this->id,
-            'price' => $this->price,
             'product' => $this->product->toArray(),
             'size' => $this->size,
-            'quantity' => $this->quantity,
         ];
     }
 
@@ -86,7 +71,6 @@ class LineItem
     public function setProduct(Product $product)
     {
         $this->product = $product;
-        $this->recalculatePrice();
     }
 
     /**
@@ -95,27 +79,6 @@ class LineItem
     public function getId()
     {
         return $this->id;
-    }
-
-
-    /**
-     * @return float
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     * @throws ValidationException
-     */
-    protected function setPrice($price)
-    {
-        if ($price < 0) {
-            throw ValidationException::invalidPrice();
-        }
-        $this->price = $price;
     }
 
     /**
@@ -134,7 +97,6 @@ class LineItem
     public function setSize($size)
     {
         $this->size = $size;
-        $this->recalculatePrice();
     }
 
     /**
@@ -151,38 +113,5 @@ class LineItem
     public function setOrder($order)
     {
         $this->order = $order;
-    }
-
-    /**
-     * @return int
-     */
-    public function getQuantity()
-    {
-        return $this->quantity ?: 1;
-    }
-
-    /**
-     * @param int $quantity
-     * @throws \Lunches\Exception\ValidationException
-     * @throws \Lunches\Exception\RuntimeException
-     */
-    public function setQuantity($quantity)
-    {
-        $this->quantity = (int) $quantity;
-        $this->recalculatePrice();
-    }
-
-    /**
-     * Recalculate price of LineItem that consists of product quantity and its weight
-     * @throws \Lunches\Exception\ValidationException
-     * @throws \Lunches\Exception\RuntimeException
-     */
-    private function recalculatePrice()
-    {
-        if ($this->product && $this->size && $this->quantity) {
-            $pricePer100 = $this->product->getPricePer100();
-            $weight = $this->product->getSizeWeightsCollection()->getWeightFromSize($this->size);
-            $this->setPrice($pricePer100 / 100 * $weight * $this->quantity);
-        }
     }
 }
