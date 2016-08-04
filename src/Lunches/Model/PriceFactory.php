@@ -2,6 +2,7 @@
 
 namespace Lunches\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
 
@@ -37,9 +38,9 @@ class PriceFactory
     }
     public static function createPriceItemsFromOrder(Order $order, Price $price)
     {
-        return array_map(function (LineItem $lineItem) use ($price) {
+        return new ArrayCollection(array_map(function (LineItem $lineItem) use ($price) {
             return new PriceItem($price, $lineItem->getProduct(), $lineItem->getSize());
-        }, $order->getLineItems());
+        }, $order->getLineItems()->getValues()));
     }
 
     private function createDate($date)

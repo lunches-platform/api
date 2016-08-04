@@ -2,6 +2,7 @@
 
 namespace Lunches\Model;
 
+use Lunches\Exception\RuntimeException;
 use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
 
@@ -16,6 +17,9 @@ class OrderFactory
     /** @var MenuRepository  */
     protected $menuRepo;
 
+    /** @var PriceRepository  */
+    protected $priceRepo;
+
     /** @var  EntityManager */
     protected $em;
 
@@ -25,6 +29,7 @@ class OrderFactory
         $this->orderRepo = $entityManager->getRepository('Lunches\Model\Order');
         $this->productRepo = $entityManager->getRepository('Lunches\Model\Product');
         $this->menuRepo = $entityManager->getRepository('Lunches\Model\Menu');
+        $this->priceRepo = $entityManager->getRepository('Lunches\Model\Price');
     }
 
     /**
@@ -69,7 +74,20 @@ class OrderFactory
             array_map([$order, 'addLineItem'], $lineItems);
         }
 
+        $order->setPrice($this->calculatePrice($order));
+
         return $order;
+    }
+
+    private function calculatePrice(Order $order)
+    {
+        $prices = $this->priceRepo->findByDate($order->getShipmentDate());
+
+        if ($prices->count() === 0) {
+            throw RuntimeException::priceNotFound($order->getShipmentDate());
+        }
+
+        return $prices->getOrderPrice($order);
     }
 
     /**
@@ -120,18 +138,13 @@ class OrderFactory
     {
         $lineItem = new LineItem();
 
-        $required = ['productId', 'quantity', 'size'];
+        $required = ['productId', 'size'];
 
         $emptyRequired = array_diff($required, array_keys($line));
         if (count($emptyRequired) !== 0)  {
             throw ValidationException::requiredEmpty('Invalid LineItem', $required);
         }
-        $quantity = (int) $line['quantity'];
-        if (!$quantity || $quantity > 100) {
-            throw ValidationException::invalidLineItem('Quantity field must be greater than zero and less than 100');
-        }
 
-        $lineItem->setQuantity($line['quantity']);
         $lineItem->setSize($line['size']);
 
         $product = $menu->getProductById((int)$line['productId']);

@@ -45,7 +45,7 @@ class Prices extends ArrayCollection
             $priceItem = new PriceItem($price, $lineItem->getProduct(), $lineItem->getSize());
 
             if ($price->hasPriceItem($priceItem)) {
-                return $price->getValue();
+                return $price;
             }
         }
         throw RuntimeException::priceNotFound($lineItem->getProduct());
@@ -65,9 +65,12 @@ class Prices extends ArrayCollection
     }
     private function sumByProducts(Order $order)
     {
-        return array_reduce($order->getLineItems(), function ($priceValue, LineItem $lineItem) {
-            return $priceValue + $this->getLineItemPrice($lineItem)->getValue();
-        }, 0);
+        $price = 0;
+        foreach ($order->getLineItems() as $lineItem) {
+            $price += $this->getLineItemPrice($lineItem)->getValue();
+        }
+
+        return $price;
     }
 
 }

@@ -70,7 +70,7 @@ class Order
      * @var LineItem[]
      * @OneToMany(targetEntity="LineItem", mappedBy="order", cascade={"persist"})
      */
-    protected $lineItems;
+    protected $lineItems = [];
 
     /**
      * Order constructor.
@@ -107,7 +107,6 @@ class Order
     {
         $this->lineItems[] = $lineItem;
         $lineItem->setOrder($this);
-        $this->price += $lineItem->getPrice();
     }
 
     /**
@@ -135,7 +134,7 @@ class Order
     }
 
     /**
-     * @return LineItem[] 
+     * @return ArrayCollection
      */
     public function getLineItems()
     {
