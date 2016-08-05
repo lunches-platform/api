@@ -36,4 +36,9 @@ class ValidationException extends \Exception
     {
         return new static('Invalid LineItem. '.$msg);
     }
+
+    public static function invalidUser($msg)
+    {
+        return new static('Invalid User. '.$msg);
+    }
 }

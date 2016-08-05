@@ -85,6 +85,11 @@ $app['lunches.controller.prices'] = function () use ($app) {
         $app['lunches.factory.price']
     );
 };
+$app['lunches.controller.users'] = function () use ($app) {
+    return new \Lunches\Controller\UsersController(
+        $app['doctrine.em']
+    );
+};
 $app['lunches.validator.order'] = function () use ($app) {
     return new \Lunches\Validator\OrderValidator();
 };
