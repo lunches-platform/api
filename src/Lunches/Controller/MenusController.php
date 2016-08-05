@@ -3,6 +3,7 @@
 namespace Lunches\Controller;
 
 use Lunches\Exception\ValidationException;
+use Lunches\Model\DateRange;
 use Lunches\Model\MenuRepository;
 use Doctrine\ORM\EntityManager;
 use Lunches\Model\Menu;
@@ -43,19 +44,15 @@ class MenusController extends ControllerAbstract
     public function getList(Request $request)
     {
         try {
-            $startDate = new \DateTime($request->get('startDate'));
-            $endDate = new \DateTime($request->get('endDate'));
-        } catch (\Exception $e) {
-            return $this->failResponse('Invalid startDate or endDate provided', 400);
+            $range = new DateRange($request->get('startDate'), $request->get('endDate'));
+        } catch (ValidationException $e) {
+            return $this->failResponse($e->getMessage(), 400);
         }
-        if ($startDate > $endDate) {
-            return $this->failResponse('startDate must be greater than endDate', 400);
-        }
-        if ($startDate < new \DateTime('-2 week')) {
+        if ($range->getStart() < new \DateTime('-2 week')) {
             return $this->failResponse('Can not access menu older than two weeks ago', 400);
         }
 
-        return $this->getByDateRange($startDate, $endDate);
+        return $this->getByDateRange($range->getStart(), $range->getEnd());
     }
 
     public function getByDateRange(\DateTime $startDate = null, \DateTime $endDate = null)
