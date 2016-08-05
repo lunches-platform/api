@@ -2,6 +2,7 @@
 
 namespace Lunches\Model;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
@@ -25,6 +26,12 @@ class Menu
      * @OneToMany(targetEntity="MenuProduct", mappedBy="menu")
      */
     protected $menuProducts;
+
+    /**
+     * @var string
+     * @Column(type="string")
+     */
+    protected $type;
 
     /**
      * @var \DateTime $created
@@ -63,6 +70,7 @@ class Menu
         return [
             'id' => $this->id,
             'date' => $this->date->format('Y-m-d'),
+            'type' => $this->type,
 //            'created' => $this->created->format('Y-m-d H:i:s'),
             'products' => $products
         ];
