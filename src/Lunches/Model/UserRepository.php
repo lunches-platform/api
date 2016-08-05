@@ -9,4 +9,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserRepository extends EntityRepository
 {
+    /**
+     * @param string $fullname
+     * @return User
+     */
+    public function findByUsername($fullname)
+    {
+        $fullname = (string) $fullname;
+
+        return $this->findOneBy([
+            'fullname' => $fullname,
+        ]);
+    }
 }

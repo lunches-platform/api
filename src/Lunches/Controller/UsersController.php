@@ -3,9 +3,9 @@
 namespace Lunches\Controller;
 
 use Lunches\Exception\ValidationException;
-use Lunches\Model\MenuRepository;
 use Doctrine\ORM\EntityManager;
 use Lunches\Model\User;
+use Lunches\Model\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,7 +17,7 @@ class UsersController extends ControllerAbstract
     /** @var EntityManager */
     protected $em;
 
-    /** @var MenuRepository */
+    /** @var UserRepository */
     protected $repo;
 
     /** @var string  */
@@ -53,5 +53,16 @@ class UsersController extends ControllerAbstract
         }, $products);
 
         return $this->successResponse($products);
+    }
+
+    public function get($username)
+    {
+        $user = $this->repo->findByUsername($username);
+
+        if (!$user instanceof User) {
+            return $this->failResponse('User not found', 404);
+        }
+
+        return $this->successResponse($user->toArray());
     }
 }
