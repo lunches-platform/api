@@ -21,4 +21,11 @@ class UserRepository extends EntityRepository
             'fullname' => $fullname,
         ]);
     }
+
+    public function findByLikePattern($like)
+    {
+        $dql = 'SELECT u FROM Lunches\Model\User u WHERE u.fullname LIKE :like';
+
+        return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
+    }
 }

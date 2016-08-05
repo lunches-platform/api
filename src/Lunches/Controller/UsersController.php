@@ -42,7 +42,12 @@ class UsersController extends ControllerAbstract
      */
     public function getList(Request $request)
     {
-        $products = $this->repo->findAll();
+        $like = $request->get('like');
+        if ($like) {
+            $products = $this->repo->findByLikePattern($like);
+        } else {
+            $products = $this->repo->findAll();
+        }
 
         if (0 === count($products)) {
             return $this->failResponse('Users not found', 404);
