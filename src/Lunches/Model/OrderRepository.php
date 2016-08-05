@@ -20,16 +20,26 @@ class OrderRepository extends EntityRepository
     /**
      * Order is considered active when it had shipment date greater than current
      *
-     * @param string $customer
+     * @param string $user
+     * @param DateRange $dateRange
      * @return array
      */
-    public function getActiveOrders($customer)
+    public function findByUser($user, DateRange $dateRange = null)
     {
-        $dql = 'SELECT o FROM Lunches\Model\Order o WHERE o.shipmentDate >= :date AND o.customer = :customer';
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select(['o'])
+            ->from('Lunches\Model\Order', 'o')
+            ->where('o.customer = :user')
+        ;
+        $qb->setParameter('user', $user);
 
-        return $this->_em->createQuery($dql)->setParameters([
-            'customer' =>  $customer,
-            'date' => new \DateTime(),
-        ])->getResult();
+        if ($dateRange instanceof DateRange) {
+            $qb->andWhere('o.shipmentDate >= :start');
+            $qb->andWhere('o.shipmentDate <= :end');
+            $qb->setParameter('start', $dateRange->getStart());
+            $qb->setParameter('end', $dateRange->getEnd());
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
