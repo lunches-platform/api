@@ -2,6 +2,7 @@
 
 namespace Lunches\Controller;
 
+use Lunches\Exception\RuntimeException;
 use Lunches\Exception\ValidationException;
 use Lunches\Model\DateRange;
 use Lunches\Model\Order;
@@ -65,7 +66,7 @@ class OrdersController extends ControllerAbstract
         return $this->successResponse($order->toArray());
     }
 
-    public function getByCustomer($customer, Request $request)
+    public function getByUser($user, Request $request)
     {
         $range = null;
         $start = $request->get('startDate') ?: new \DateTime('monday last week');
@@ -78,7 +79,7 @@ class OrdersController extends ControllerAbstract
                 return $this->failResponse($e->getMessage(), 400);
             }
         }
-        $orders = $this->repo->findByUser($customer, $range);
+        $orders = $this->repo->findByUsername($user, $range);
         if (!count($orders)) {
             return $this->failResponse('Orders not found', 404);
         }
@@ -115,6 +116,8 @@ class OrdersController extends ControllerAbstract
                 $errors = $this->validator->getErrors();
             }
         } catch (ValidationException $e) {
+            $errors['order'] = $e->getMessage();
+        } catch (RuntimeException $e) {
             $errors['order'] = $e->getMessage();
         }
 
