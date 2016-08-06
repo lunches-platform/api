@@ -60,9 +60,10 @@ class User
     public function __construct($name, $address)
     {
         $this->id = Uuid::uuid4();
-        $this->setName($name);
+        $this->setUsername($name);
         $this->setAddress($address);
         $this->created = new \DateTime();
+        $this->balance = 0;
     }
 
     /**
@@ -73,6 +74,8 @@ class User
         return [
             'id' => $this->id,
             'fullname' => $this->fullname,
+            'address' => $this->address,
+            'balance' => $this->balance,
         ];
     }
 
@@ -81,23 +84,30 @@ class User
         return $this->address;
     }
 
-    private function setName($name)
+    private function setUsername($name)
     {
+        if (empty($name)) {
+            throw ValidationException::invalidUser('Username is required');
+        }
         if (!is_string($name)) {
-            throw ValidationException::invalidUser('username must have string data type');
+            throw ValidationException::invalidUser('Username must have string data type');
         }
         $len = mb_strlen($name);
         if ($len <= 2 || $len > 50) {
-            throw ValidationException::invalidUser('length of user name must be greater than 2 and less than 50');
+            throw ValidationException::invalidUser('Length of user name must be greater than 2 and less than 50');
         }
         $this->fullname = $name;
     }
 
     private function setAddress($address)
     {
+        if (empty($address)) {
+            throw ValidationException::invalidUser('Address is required');
+        }
         $len = mb_strlen($address);
         if ($len < 1 || $len > 150) {
-            throw ValidationException::invalidUser('address must be greater than zero and less than 150 characters');
+            throw ValidationException::invalidUser('Address must be greater than zero and less than 150 characters');
         }
+        $this->address = $address;
     }
 }

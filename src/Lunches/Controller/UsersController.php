@@ -70,4 +70,22 @@ class UsersController extends ControllerAbstract
 
         return $this->successResponse($user->toArray());
     }
+    public function create(Request $request)
+    {
+        $username = $request->get('username');
+        $registeredUser = $this->repo->findByUsername($username);
+        if ($registeredUser instanceof User) {
+            return $this->failResponse('Such user is already registered');
+        }
+        $address = $request->get('address');
+        try {
+            $user = new User($username, $address);
+        } catch (ValidationException $e) {
+            return $this->failResponse('Registration failed: '.$e->getMessage(), 400);
+        }
+        $this->em->persist($user);
+        $this->em->flush();
+
+        return new JsonResponse($user->toArray(), 201);
+    }
 }
