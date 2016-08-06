@@ -20,6 +20,9 @@ class OrderFactory
     /** @var PriceRepository  */
     protected $priceRepo;
 
+    /** @var UserRepository  */
+    protected $userRepo;
+
     /** @var  EntityManager */
     protected $em;
 
@@ -30,6 +33,7 @@ class OrderFactory
         $this->productRepo = $entityManager->getRepository('Lunches\Model\Product');
         $this->menuRepo = $entityManager->getRepository('Lunches\Model\Menu');
         $this->priceRepo = $entityManager->getRepository('Lunches\Model\Price');
+        $this->userRepo = $entityManager->getRepository('Lunches\Model\User');
     }
 
     /**
@@ -47,36 +51,50 @@ class OrderFactory
         }
 
         $order->setOrderNumber($this->orderRepo->generateOrderNumber());
-        if (array_key_exists('customer', $data)) {
-            $order->setCustomer($data['customer']);
-        }
+        $order->setUser($this->getUser($data));
+        $order->setAddress($this->getAddress($data, $order->getUser()));
+        $order->setShipmentDate($this->createDate($data));
 
-        if (array_key_exists('address', $data)) {
-            $order->setAddress($data['address']);
-        }
-        if (!array_key_exists('shipmentDate', $data)) {
-            throw ValidationException::invalidOrder('Date field is not provided');
-        }
-        $order->setShipmentDate($this->createDate($data['shipmentDate']));
-
-        $menus = $this->menuRepo->findBy([
-            'date' => $order->getShipmentDate(),
-        ]);
-        /** @var Menu $menu */
-        $menu = array_shift($menus);
-
-        if (!$menu) {
-            throw ValidationException::invalidLineItem('There is no menu for specified date');
-        }
-
-        if (array_key_exists('items', $data)) {
-            $lineItems = $this->createLineItems($data['items'], $menu);
-            array_map([$order, 'addLineItem'], $lineItems);
-        }
-
+        array_map([$order, 'addLineItem'],
+            $this->createLineItems($data, $order->getShipmentDate())
+        );
         $order->setPrice($this->calculatePrice($order));
 
         return $order;
+    }
+
+    private function getAddress(array $data, User $user)
+    {
+        return array_key_exists('address', $data) ? $data['address'] : $user->getAddress();
+    }
+
+    /**
+     * @param array $data
+     * @return User
+     * @throws RuntimeException
+     * @throws ValidationException
+     */
+    private function getUser(array $data)
+    {
+        if (!array_key_exists('userId', $data)) {
+            throw ValidationException::invalidOrder('Each order must have userId');
+        }
+        $user = $this->userRepo->find($data['userId']);
+
+        if (!$user instanceof User) {
+            throw RuntimeException::notFound('User');
+        }
+
+        return $user;
+    }
+
+    private function getMenu(\DateTime $shipmentDate)
+    {
+        $menu = $this->menuRepo->findByDate($shipmentDate);
+        if (!$menu) {
+            throw RuntimeException::notFound('Menu', 'There is no menu for specified date' );
+        }
+        return $menu;
     }
 
     private function calculatePrice(Order $order)
@@ -92,19 +110,21 @@ class OrderFactory
 
     /**
      * @param array $data
-     * @param Menu  $menu
+     * @param \DateTime $shipmentDate
+     *
      * @return LineItem[]
-     * @throws \Lunches\Exception\RuntimeException
+     *
      * @throws ValidationException
      */
-    private function createLineItems($data, Menu $menu)
+    private function createLineItems($data, $shipmentDate)
     {
-        if (!is_array($data)) {
+        if (!array_key_exists('items', $data) || !is_array($data['items'])) {
             return [];
         }
+        $menu = $this->getMenu($shipmentDate);
 
         $lineItems = $orderedProductIds = [];
-        foreach ($data as $line) {
+        foreach ($data['items'] as $line) {
 
             try {
                 $lineItems[] = $lineItem = $this->createLineItem($line, $menu);
@@ -114,6 +134,8 @@ class OrderFactory
                     continue;
                 }
             } catch (ValidationException $e) {
+                continue;
+            } catch (RuntimeException $e) {
                 continue;
             }
             $orderedProductIds[] = $productId;
@@ -157,8 +179,12 @@ class OrderFactory
         return $lineItem;
     }
 
-    private function createDate($dateStr)
+    private function createDate($data)
     {
+        if (!array_key_exists('shipmentDate', $data)) {
+            throw ValidationException::invalidOrder('Date field is not provided');
+        }
+        $dateStr = $data['shipmentDate'];
         if (!$dateStr) {
             throw ValidationException::invalidDate('Date must be specified');
         }

@@ -29,7 +29,7 @@ class User
 
     /**
      * @var string
-     * @Column(type="string", length=255, nullable=false)
+     * @Column(type="string", name="full_name", length=255, nullable=false)
      */
     protected $fullname;
     /**
@@ -53,15 +53,15 @@ class User
 
     /**
      * Product constructor.
-     * @param $name
+     * @param string $name
+     * @param string $address
+     * @throws ValidationException
      */
-    public function __construct($name)
+    public function __construct($name, $address)
     {
         $this->id = Uuid::uuid4();
-        if (!is_string($name)) {
-            ValidationException::invalidUser('username must have string data type');
-        }
-        $this->fullname = $name;
+        $this->setName($name);
+        $this->setAddress($address);
         $this->created = new \DateTime();
     }
 
@@ -74,5 +74,30 @@ class User
             'id' => $this->id,
             'fullname' => $this->fullname,
         ];
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    private function setName($name)
+    {
+        if (!is_string($name)) {
+            throw ValidationException::invalidUser('username must have string data type');
+        }
+        $len = mb_strlen($name);
+        if ($len <= 2 || $len > 50) {
+            throw ValidationException::invalidUser('length of user name must be greater than 2 and less than 50');
+        }
+        $this->fullname = $name;
+    }
+
+    private function setAddress($address)
+    {
+        $len = mb_strlen($address);
+        if ($len < 1 || $len > 150) {
+            throw ValidationException::invalidUser('address must be greater than zero and less than 150 characters');
+        }
     }
 }

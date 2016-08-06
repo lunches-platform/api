@@ -3,13 +3,16 @@
 namespace Lunches\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Lunches\Exception\ValidationException;
 
 /**
  * @Entity(repositoryClass="Lunches\Model\OrderRepository")
@@ -34,10 +37,10 @@ class Order
     protected $orderNumber;
 
     /**
-     * @var string
-     * @Column(type="string", nullable=false)
+     * @var User
+     * @ManyToOne(targetEntity="User")
      */
-    protected $customer;
+    protected $user;
 
     /**
      * @var string
@@ -95,7 +98,7 @@ class Order
             'id' => $this->id,
             'price' => $this->price,
             'orderNumber' => $this->orderNumber,
-            'customer' => $this->customer,
+            'user' => $this->user->toArray(),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'shipmentDate' => $this->shipmentDate->format('Y-m-d'),
             'address' => $this->address,
@@ -166,19 +169,19 @@ class Order
     }
 
     /**
-     * @return string
+     * @return User
      */
-    public function getCustomer()
+    public function getUser()
     {
-        return $this->customer;
+        return $this->user;
     }
 
     /**
-     * @param string $customer
+     * @param User $user
      */
-    public function setCustomer($customer)
+    public function setUser(User $user)
     {
-        $this->customer = $customer;
+        $this->user = $user;
     }
 
     /**
@@ -223,9 +226,14 @@ class Order
 
     /**
      * @param string $address
+     * @throws ValidationException
      */
     public function setAddress($address)
     {
+        $len = mb_strlen($address);
+        if ($len < 1 || $len > 150) {
+            throw ValidationException::invalidOrder('address must be greater than zero and less than 150 characters');
+        }
         $this->address = $address;
     }
 

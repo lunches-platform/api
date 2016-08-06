@@ -19,11 +19,12 @@ class RuntimeException extends \Exception
 
     /**
      * @param string $objectName
+     * @param string $msg
      * @return static
      */
-    public static function notFound($objectName)
+    public static function notFound($objectName, $msg = '')
     {
-        return new static($objectName.' not found');
+        return new static($objectName.' not found. '.$msg);
     }
 
     public static function priceNotFound($type = '')
@@ -37,5 +38,4 @@ class RuntimeException extends \Exception
         }
         return new static($msg);
     }
-
 }
