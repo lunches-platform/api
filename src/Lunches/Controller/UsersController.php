@@ -49,10 +49,6 @@ class UsersController extends ControllerAbstract
             $products = $this->repo->findAll();
         }
 
-        if (0 === count($products)) {
-            return $this->failResponse('Users not found', 404);
-        }
-
         $products = array_map(function (User $user) {
             return $user->toArray();
         }, $products);
