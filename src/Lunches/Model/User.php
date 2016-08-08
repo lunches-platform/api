@@ -65,6 +65,10 @@ class User
         $this->created = new \DateTime();
         $this->balance = 0;
     }
+    public function changeAddress($address)
+    {
+        $this->setAddress($address);
+    }
 
     /**
      * @return array
@@ -110,4 +114,5 @@ class User
         }
         $this->address = $address;
     }
+
 }

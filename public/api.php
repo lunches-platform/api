@@ -21,6 +21,7 @@ $app->put('/prices/{date}', 'lunches.controller.prices:create');
 $app->get('/users/{user}/orders', 'lunches.controller.orders:getByUser');
 $app->get('/users', 'lunches.controller.users:getList');
 $app->get('/users/{username}', 'lunches.controller.users:get');
+$app->put('/users/{username}', 'lunches.controller.users:update');
 $app->post('/users', 'lunches.controller.users:create');
 
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
