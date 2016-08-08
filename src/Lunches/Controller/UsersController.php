@@ -88,4 +88,23 @@ class UsersController extends ControllerAbstract
 
         return new JsonResponse($user->toArray(), 201);
     }
+    public function update(Request $request)
+    {
+        $username = $request->get('username');
+        $user = $this->repo->findByUsername($username);
+        if (!$user instanceof User) {
+            return $this->failResponse('User not found');
+        }
+        $address = $request->get('address');
+        try {
+            if ($address) {
+                $user->changeAddress($address);
+                $this->em->flush();
+            }
+        } catch (ValidationException $e) {
+            return $this->failResponse('Update failed: '.$e->getMessage(), 400);
+        }
+
+        return new JsonResponse($user->toArray());
+    }
 }
