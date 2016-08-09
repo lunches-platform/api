@@ -19,6 +19,9 @@ class DateRange
 
     public function __construct($start, $end)
     {
+        if (!$start || !$end) {
+            throw ValidationException::invalidDate('Both startDate and endDate are required');
+        }
         try {
             $start = $start instanceof \DateTime ? $start : new \DateTime($start);
             $end = $end instanceof \DateTime ? $end : new \DateTime($end);
