@@ -4,6 +4,7 @@ namespace Lunches\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Lunches\Exception\ValidationException;
+use Lunches\Model\DateRange;
 use Lunches\Model\Price;
 use Lunches\Model\PriceFactory;
 use Lunches\Model\PriceRepository;
@@ -52,6 +53,24 @@ class PricesController extends ControllerAbstract
         if ($prices->count() === 0) {
             return $this->failResponse('There are no prices for this date', 404);
         }
+
+        return $this->successResponse($prices->toArray());
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws ValidationException
+     */
+    public function getList(Request $request)
+    {
+        try {
+            $range = new DateRange($request->get('startDate'), $request->get('endDate'));
+        } catch (ValidationException $e) {
+            return $this->failResponse($e->getMessage(), 400);
+        }
+
+        $prices = $this->repo->findByDateRange($range);
 
         return $this->successResponse($prices->toArray());
     }
