@@ -72,7 +72,7 @@ class PricesController extends ControllerAbstract
 
         $prices = $this->repo->findByDateRange($range);
 
-        return $this->successResponse($prices->toArray());
+        return $this->successResponse($prices->toArray(true));
     }
 
     public function create($date, Request $request)

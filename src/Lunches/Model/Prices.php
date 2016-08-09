@@ -4,6 +4,7 @@ namespace Lunches\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Lunches\Exception\RuntimeException;
+use Underscore\Types\Arrays;
 
 /**
  * Class Prices.
@@ -11,13 +12,22 @@ use Lunches\Exception\RuntimeException;
 class Prices extends ArrayCollection
 {
     /**
+     * @param bool $groupByPrice
      * @return array
      */
-    public function toArray()
+    public function toArray($groupByPrice = false)
     {
-        return array_map(function (Price $price) {
+        $prices = array_map(function (Price $price) {
             return $price->toArray();
         }, $this->getValues());
+
+        if ($groupByPrice === true) {
+            $prices = Arrays::group($prices, function($price) {
+                return $price['date'];
+            });
+        }
+
+        return $prices;
     }
 
     public function getOrderPrice(Order $order)
