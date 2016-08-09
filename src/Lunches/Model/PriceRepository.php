@@ -24,6 +24,7 @@ class PriceRepository extends EntityRepository
             ->from('Lunches\Model\Price', 'p')
             ->where('p.date >= :start')
             ->andWhere('p.date <= :end')
+            ->orderBy('p.date', 'ASC')
             ->setParameters([
                 'start' => $dateRange->getStart()->format('Y-m-d'),
                 'end' => $dateRange->getEnd()->format('Y-m-d'),
