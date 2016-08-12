@@ -22,7 +22,7 @@ class MenuRepository extends EntityRepository
             ->join('m.menuProducts', 'mp')
             ->join('mp.product', 'p')
             ->leftJoin('p.ingredients', 'i')
-//            ->orderBy('m.created', 'DESC')
+            ->orderBy('m.date', 'ASC')
             ->setMaxResults(100);
 
         if ($startDate && !$endDate) {
