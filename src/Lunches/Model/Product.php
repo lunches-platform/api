@@ -36,6 +36,14 @@ class Product
     protected $name;
 
     /**
+     * Allowed three values: meat, garnish, salad
+     *
+     * @var string
+     * @Column(type="string", length=10, nullable=false)
+     */
+    protected $type;
+
+    /**
      * @var \DateTime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -105,7 +113,7 @@ class Product
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'price' => $this->pricePer100,
+            'type' => $this->type,
             'ingredients' => $ingredients,
             'sizeToWeight' => $this->getSizeWeightsCollection()->toArray(),
             'images' => $images,
