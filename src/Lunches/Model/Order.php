@@ -68,6 +68,7 @@ class Order
     protected $deliveredOrder;
     /**
      * @var string
+     * @Column(type="string")
      */
     protected $status;
     /**
@@ -147,10 +148,14 @@ class Order
         $this->status = self::STATUS_DELIVERED;
     }
 
+    /**
+     * @param string $reason
+     * @throws OrderException
+     */
     public function cancel($reason = '')
     {
         if ($this->status !== self::STATUS_CREATED) {
-            throw OrderException::failedToChangeStatus('Just new orders can be canceled');
+            throw OrderException::failedToChangeStatus('Just "created" orders can be canceled');
         }
         $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
         $this->status = self::STATUS_CANCELED;
