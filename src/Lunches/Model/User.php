@@ -38,6 +38,11 @@ class User
      */
     protected $balance;
     /**
+     * @var int
+     * @Column(type="integer", nullable=false)
+     */
+    protected $clientId;
+    /**
      * @var float
      * @Column(type="string", nullable=false)
      */
@@ -53,13 +58,15 @@ class User
 
     /**
      * Product constructor.
+     * @param int $clientId
      * @param string $name
      * @param string $address
      * @throws ValidationException
      */
-    public function __construct($name, $address)
+    public function __construct($clientId, $name, $address)
     {
         $this->id = Uuid::uuid4();
+        $this->clientId = $clientId;
         $this->setUsername($name);
         $this->setAddress($address);
         $this->created = new \DateTime();
@@ -77,6 +84,7 @@ class User
     {
         return [
             'id' => $this->id,
+            'clientId' => $this->clientId,
             'fullname' => $this->fullname,
             'address' => $this->address,
             'balance' => $this->balance,
