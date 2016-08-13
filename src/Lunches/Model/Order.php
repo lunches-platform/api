@@ -96,6 +96,13 @@ class Order
         $this->lineItems = new ArrayCollection();
         $this->orderCreated();
     }
+    public function changeAddress($address)
+    {
+        if ($this->status !== self::STATUS_CREATED) {
+            throw OrderException::updateFailed('can not change address as of status of Order is not "created"');
+        }
+        $this->setAddress($address);
+    }
 
     /**
      * @return array
@@ -137,7 +144,7 @@ class Order
     public function startProgress()
     {
         if ($this->status !== self::STATUS_CREATED) {
-            throw OrderException::failedToChangeStatus('Just new orders can became in progress');
+            throw OrderException::failedToChangeStatus('Just "created" orders can became in progress');
         }
         $this->status = self::STATUS_IN_PROGRESS;
     }
