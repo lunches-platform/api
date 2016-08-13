@@ -123,4 +123,20 @@ class OrdersController extends ControllerAbstract
 
         return $this->failResponse('Invalid input data provided', 400, $errors);
     }
+
+    public function cancel($orderId, Request $request)
+    {
+        /** @var Order $order */
+        $order = $this->repo->find($orderId);
+        if (!$order) {
+            return $this->failResponse('Order not found', 404);
+        }
+        try {
+            $order->cancel($request->get('reason'));
+            $this->em->flush();
+        } catch (\Exception $e) {
+            return $this->failResponse($e->getMessage(), 400);
+        }
+        return $this->successResponse($order->toArray());
+    }
 }
