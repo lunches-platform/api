@@ -28,4 +28,11 @@ class UserRepository extends EntityRepository
 
         return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
     }
+    public function generateClientId()
+    {
+        $dql = 'SELECT MAX(u.clientId) FROM Lunches\Model\User u';
+        $number = $this->_em->createQuery($dql)->getSingleScalarResult();
+
+        return !$number ? 1000 : ++$number;
+    }
 }

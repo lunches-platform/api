@@ -75,7 +75,7 @@ class UsersController extends ControllerAbstract
         }
         $address = $request->get('address');
         try {
-            $user = new User($username, $address);
+            $user = new User($this->repo->generateClientId(), $username, $address);
         } catch (ValidationException $e) {
             return $this->failResponse('Registration failed: '.$e->getMessage(), 400);
         }
