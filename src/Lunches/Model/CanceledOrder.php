@@ -47,7 +47,7 @@ class CanceledOrder
     {
         $errMsg = 'Provide valid cancel "reason"';
         if (!is_string($reason)) {
-            ValidationException::invalidOrder($errMsg);
+            throw ValidationException::invalidOrder($errMsg);
         }
         $len = mb_strlen($reason);
         if ($len > 150) {
