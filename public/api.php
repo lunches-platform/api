@@ -28,6 +28,7 @@ $app->post('/users', 'lunches.controller.users:create');
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');
 $app->post('/orders/{orderId}/cancel', 'lunches.controller.orders:cancel');
+$app->put('/orders/{orderId}', 'lunches.controller.orders:update');
 
 $app->get('/ingredients', 'lunches.controller.ingredients:getList');
 $app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');

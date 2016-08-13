@@ -139,4 +139,23 @@ class OrdersController extends ControllerAbstract
         }
         return $this->successResponse($order->toArray());
     }
+    public function update($orderId, Request $request)
+    {
+        /** @var Order $order */
+        $order = $this->repo->find($orderId);
+        if (!$order) {
+            return $this->failResponse('Order not found', 404);
+        }
+        $address = $request->get('address');
+        try {
+            if ($address) {
+                $order->changeAddress($address);
+                $this->em->flush();
+            }
+        } catch (ValidationException $e) {
+            return $this->failResponse($e->getMessage(), 400);
+        }
+
+        return new JsonResponse($order->toArray());
+    }
 }
