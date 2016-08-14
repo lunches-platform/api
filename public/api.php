@@ -1,5 +1,7 @@
 <?php
 
+use Lunches\Silex\Application;
+
 $app = require_once __DIR__ . '/../bootstrap.php';
 $app['debug'] = isset($_GET['debug_s']);
 
@@ -71,6 +73,15 @@ $app->post('/images', 'lunches.controller.images:create');
 
 $app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
 $app->post('/images', 'lunches.controller.images:create');
+
+$app->get('/paymentCard', function(Application $app) {
+    $card = $app['db']->fetchAssoc('SELECT number, holder FROM payment_card');
+
+    return new \Symfony\Component\HttpFoundation\JsonResponse([
+        'number' => $card['number'],
+        'holder' => $card['holder'],
+    ]);
+});
 
 
 $app->before(function (Symfony\Component\HttpFoundation\Request $request) {
