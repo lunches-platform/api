@@ -52,11 +52,21 @@ class OrdersController extends ControllerAbstract
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getList()
+    public function getList(Request $request)
     {
-        $orders = $this->repo->findAll();
+        try {
+            if ($shipmentDate = $request->get('shipmentDate')) {
+                $shipmentDate = new \DateTime($shipmentDate);
+                $orders = $this->repo->findByShipmentDate($shipmentDate);
+            } else {
+                $orders = $this->repo->findAll();
+            }
+        } catch (ValidationException $e) {
+            return $this->failResponse('Invalid shipmentDate', 400);
+        }
 
         $orders = array_map(function (Order $order) {
             return $order->toArray();
