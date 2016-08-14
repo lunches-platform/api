@@ -21,6 +21,8 @@ use Ramsey\Uuid\Uuid;
  */
 class Transaction
 {
+    const TYPE_INCOME = 'income';
+    const TYPE_OUTCOME = 'outcome';
     /**
      * @var string
      * @Id
@@ -67,6 +69,7 @@ class Transaction
         $this->setAmount($amount);
         $this->user = $user;
         $this->created = new \DateTime();
+        $this->updateUserBalance();
     }
 
     /**
@@ -81,6 +84,15 @@ class Transaction
 //            'user' => $this->user->toArray(),
             'created' => $this->created->format('Y-m-d H:i:s'),
         ];
+    }
+    private function updateUserBalance()
+    {
+        if ($this->type === self::TYPE_INCOME) {
+            $this->user->rechargeBalance($this->amount);
+        }
+        if ($this->type === self::TYPE_OUTCOME) {
+            $this->user->chargeBalance($this->amount);
+        }
     }
 
     private function setAmount($amount)
@@ -101,7 +113,7 @@ class Transaction
             throw ValidationException::invalidTransaction('Type of transaction is required. "income" or "outcome" is allowed');
         }
 
-        if (!in_array($type, ['income', 'outcome'], true)) {
+        if (!in_array($type, [self::TYPE_INCOME, self::TYPE_OUTCOME], true)) {
             throw ValidationException::invalidTransaction('Only "income" or "outcome" transaction type is allowed');
         }
         $this->type = $type;

@@ -77,6 +77,16 @@ class User
         $this->setAddress($address);
     }
 
+    public function rechargeBalance($amount)
+    {
+        $this->balance += (float) $amount;
+    }
+
+    public function chargeBalance($amount)
+    {
+        $this->balance -= (float) $amount;
+    }
+
     /**
      * @return array
      */
