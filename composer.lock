@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "13fb7615664113dd7d611d4b605e1209",
-    "content-hash": "976c6fbaa4e97ab00ca2c0b7c840d0b7",
+    "hash": "dc4a3bf57c372916e15b8fec1784559a",
+    "content-hash": "a87426e5f9897ac787947983740362aa",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -877,6 +877,48 @@
                 "silex"
             ],
             "time": "2016-06-05 21:39:17"
+        },
+        {
+            "name": "knplabs/console-service-provider",
+            "version": "2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/ConsoleServiceProvider.git",
+                "reference": "ac3498030bb54ec1d7e79043fe984fc3aeb48bfb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/ConsoleServiceProvider/zipball/ac3498030bb54ec1d7e79043fe984fc3aeb48bfb",
+                "reference": "ac3498030bb54ec1d7e79043fe984fc3aeb48bfb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/console": "~2.3|~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Knp\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Knplabs",
+                    "homepage": "http://knplabs.com"
+                }
+            ],
+            "description": "console service provider for Silex",
+            "homepage": "http://knplabs.com",
+            "keywords": [
+                "console",
+                "silex"
+            ],
+            "time": "2016-06-01 05:51:46"
         },
         {
             "name": "paragonie/random_compat",
