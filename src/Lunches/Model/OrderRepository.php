@@ -66,6 +66,13 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findCreatedOrders()
+    {
+        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.status = 'created'";
+
+        return $this->_em->createQuery($dql)->iterate();
+    }
+
     private function filterByDateRange(QueryBuilder $qb, $dateRange)
     {
         if ($dateRange instanceof DateRange) {
