@@ -19,6 +19,9 @@ $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
     'cors.allowOrigin' => '*',
 ]);
+$app->register(new Silex\Provider\DoctrineServiceProvider(), [
+    'db.options' => $app['db.options'],
+]);
 $app->register(new \Lunches\Silex\CloudinaryServiceProvider('df0ff62zx', '182632897348152', 'oNJJFfwvphafDODbTYyMbVQZXPc'));
 
 $app['doctrine.em'] = function () use ($app) {
