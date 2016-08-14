@@ -57,7 +57,7 @@ class User
     protected $created;
 
     /**
-     * Product constructor.
+     * User constructor.
      * @param int $clientId
      * @param string $name
      * @param string $address

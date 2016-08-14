@@ -78,7 +78,7 @@ class Transaction
             'id' => $this->id,
             'type' => $this->type,
             'amount' => $this->amount,
-            'user' => $this->user->toArray(),
+//            'user' => $this->user->toArray(),
             'created' => $this->created->format('Y-m-d H:i:s'),
         ];
     }
@@ -86,7 +86,7 @@ class Transaction
     private function setAmount($amount)
     {
         $amount = (float) $amount;
-        if ($amount === 0) {
+        if ($amount == 0.0) {
             throw ValidationException::invalidTransaction('Amount of transaction can not be zero');
         }
         if ($amount > 100000) {
@@ -98,7 +98,7 @@ class Transaction
     private function setType($type)
     {
         if (empty($type)) {
-            throw ValidationException::invalidTransaction('Type of transaction is required');
+            throw ValidationException::invalidTransaction('Type of transaction is required. "income" or "outcome" is allowed');
         }
 
         if (!in_array($type, ['income', 'outcome'], true)) {
