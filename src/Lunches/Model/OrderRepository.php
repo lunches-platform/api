@@ -18,6 +18,18 @@ class OrderRepository extends EntityRepository
         return !$number ? 1000 : ++$number;
     }
 
+    public function findByShipmentDate(\DateTime $shipmentDate)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select(['o'])
+            ->from('Lunches\Model\Order', 'o')
+            ->where('o.shipmentDate = :date')
+        ;
+        $qb->setParameter('date', $shipmentDate);
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * Order is considered active when it had shipment date greater than current
      *
