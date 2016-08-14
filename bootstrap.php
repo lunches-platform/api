@@ -108,5 +108,10 @@ $app['lunches.factory.order'] = function () use ($app) {
 $app['lunches.factory.price'] = function () use ($app) {
     return new \Lunches\Model\PriceFactory($app['doctrine.em']);
 };
+$app->register(new Knp\Provider\ConsoleServiceProvider(), array(
+    'console.name'              => 'MyApplication',
+    'console.version'           => '1.0.0',
+    'console.project_directory' => __DIR__.'/..'
+));
 
 return $app;
