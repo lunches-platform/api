@@ -88,13 +88,13 @@ class OrderFactory
         return $user;
     }
 
-    private function getMenu(\DateTime $shipmentDate)
+    private function getMenus(\DateTime $shipmentDate)
     {
-        $menu = $this->menuRepo->findByDate($shipmentDate);
-        if (!$menu) {
+        $menus = $this->menuRepo->findByDate($shipmentDate);
+        if (!$menus) {
             throw RuntimeException::notFound('Menu', 'There is no menu for specified date' );
         }
-        return $menu;
+        return $menus;
     }
 
     private function calculatePrice(Order $order)
@@ -121,13 +121,13 @@ class OrderFactory
         if (!array_key_exists('items', $data) || !is_array($data['items'])) {
             return [];
         }
-        $menu = $this->getMenu($shipmentDate);
+        $menus = $this->getMenus($shipmentDate);
 
         $lineItems = $orderedProductIds = [];
         foreach ($data['items'] as $line) {
 
             try {
-                $lineItems[] = $lineItem = $this->createLineItem($line, $menu);
+                $lineItems[] = $lineItem = $this->createLineItem($line, $menus);
 
                 // order only unique products
                 if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
@@ -151,12 +151,12 @@ class OrderFactory
 
     /**
      * @param array $line
-     * @param Menu  $menu
+     * @param Menu[] $menus
      * @return LineItem|bool
      * @throws \Lunches\Exception\ValidationException
      * @throws \Lunches\Exception\RuntimeException
      */
-    private function createLineItem(array $line, Menu $menu)
+    private function createLineItem(array $line, $menus)
     {
         $lineItem = new LineItem();
 
@@ -169,9 +169,12 @@ class OrderFactory
 
         $lineItem->setSize($line['size']);
 
-        $product = $menu->getProductById((int)$line['productId']);
+        $product = null;
+        foreach ($menus as $menu) {
+            $product = $menu->getProductById((int)$line['productId']);
+        }
         if (!$product instanceof Product) {
-            throw ValidationException::invalidLineItem('Menu for specified date doest have such product');
+            throw ValidationException::invalidLineItem('Any of Menus for specified date doest have such product');
         }
 
         $lineItem->setProduct($product);

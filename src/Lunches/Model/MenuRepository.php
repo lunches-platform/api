@@ -44,13 +44,12 @@ class MenuRepository extends EntityRepository
 
     /**
      * @param \DateTime|string $date
-     * @return Menu
+     * @return Menu[]
      */
     public function findByDate($date)
     {
-        $menus = $this->findBy([
+        return $this->findBy([
             'date' => $date,
         ]);
-        return array_shift($menus);
     }
 }
