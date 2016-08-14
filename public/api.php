@@ -58,6 +58,7 @@ $app->delete('/transactions/{transactionId}', 'lunches.controller.transactions:d
 /**
  * Orders
  */
+$app->get('/orders', 'lunches.controller.orders:getList');
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');
 $app->post('/orders/{orderId}/cancel', 'lunches.controller.orders:cancel');

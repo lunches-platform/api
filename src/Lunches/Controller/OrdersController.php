@@ -52,6 +52,20 @@ class OrdersController extends ControllerAbstract
     }
 
     /**
+     * @return JsonResponse
+     */
+    public function getList()
+    {
+        $orders = $this->repo->findAll();
+
+        $orders = array_map(function (Order $order) {
+            return $order->toArray();
+        }, $orders);
+
+        return $this->successResponse($orders);
+    }
+
+    /**
      * @param int $orderId
      * @return JsonResponse
      * @throws \Doctrine\ORM\NonUniqueResultException
