@@ -41,8 +41,11 @@ class TransactionsController extends ControllerAbstract
         $this->userRepo = $this->em->getRepository('\Lunches\Model\User');
     }
 
-    public function get($transactionId)
+    public function get($transactionId, Request $request)
     {
+        if (!$this->isAccessTokenValid($request)) {
+            return $this->authResponse();
+        }
         $transaction = $this->repo->find($transactionId);
 
         if (!$transaction instanceof Transaction) {
@@ -51,8 +54,11 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse($transaction->toArray());
     }
-    public function delete($transactionId)
+    public function delete($transactionId, Request $request)
     {
+        if (!$this->isAccessTokenValid($request)) {
+            return $this->authResponse();
+        }
         $transaction = $this->repo->find($transactionId);
 
         if (!$transaction instanceof Transaction) {
@@ -63,8 +69,11 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse(null, 204);
     }
-    public function getByUser($user)
+    public function getByUser($user, Request $request)
     {
+        if (!$this->isAccessTokenValid($request)) {
+            return $this->authResponse();
+        }
         $user = $this->userRepo->findByUsername($user);
         $transactions = $this->repo->findByUser($user);
 
@@ -74,6 +83,9 @@ class TransactionsController extends ControllerAbstract
     }
     public function create(Request $request)
     {
+        if (!$this->isAccessTokenValid($request)) {
+            return $this->authResponse();
+        }
         $username = $request->get('username');
         $type     = $request->get('type');
         $amount   = $request->get('amount');
@@ -92,5 +104,18 @@ class TransactionsController extends ControllerAbstract
         $this->em->flush();
 
         return new JsonResponse($transaction->toArray(), 201);
+    }
+
+    private function authResponse()
+    {
+        return $this->failResponse('Access token is not valid', 401);
+    }
+
+    private function isAccessTokenValid(Request $request)
+    {
+        $accessToken = $request->get('accessToken');
+        $validToken = 'f14d16e1e90dd412d8b29ddb64168f112f753';
+
+        return $accessToken === $validToken;
     }
 }
