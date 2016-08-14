@@ -41,4 +41,9 @@ class ValidationException extends \Exception
     {
         return new static('Invalid User. '.$msg);
     }
+
+    public static function invalidTransaction($msg)
+    {
+        return new static('Invalid Transaction. '.$msg);
+    }
 }

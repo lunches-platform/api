@@ -90,6 +90,11 @@ $app['lunches.controller.users'] = function () use ($app) {
         $app['doctrine.em']
     );
 };
+$app['lunches.controller.transactions'] = function () use ($app) {
+    return new \Lunches\Controller\TransactionsController(
+        $app['doctrine.em']
+    );
+};
 $app['lunches.validator.order'] = function () use ($app) {
     return new \Lunches\Validator\OrderValidator();
 };
