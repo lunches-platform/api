@@ -30,28 +30,7 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Order is considered active when it had shipment date greater than current
-     *
-     * @param User $user
-     * @param DateRange $dateRange
-     * @return array
-     */
-    public function findByUser(User $user, DateRange $dateRange = null)
-    {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select(['o'])
-            ->from('Lunches\Model\Order', 'o')
-            ->where('o.user = :user')
-        ;
-        $qb->setParameter('user', $user);
-
-        $this->filterByDateRange($qb, $dateRange);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    public function findByUsername($username, DateRange $dateRange = null)
+    public function findByUsername($username, $paid = null, DateRange $dateRange = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['o'])
@@ -60,6 +39,11 @@ class OrderRepository extends EntityRepository
             ->where('u.fullname = :username')
         ;
         $qb->setParameter('username', $username);
+
+        if ($paid !== null) {
+            $qb->andWhere('o.paid = :paid');
+            $qb->setParameter('paid', (int) $paid);
+        }
 
         $this->filterByDateRange($qb, $dateRange);
 
