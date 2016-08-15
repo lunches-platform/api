@@ -8,6 +8,7 @@ use Lunches\Model\DateRange;
 use Lunches\Model\Order;
 use Lunches\Model\OrderFactory;
 use Lunches\Model\OrderRepository;
+use Lunches\Model\Transaction;
 use Lunches\Validator\OrderValidator;
 use Doctrine\ORM\EntityManager;
 use Lunches\Silex\Application;
@@ -130,7 +131,12 @@ class OrdersController extends ControllerAbstract
             $order = $this->orderFactory->createNewFromArray($data);
 
             if ($this->validator->isValid($order)) {
+                $transaction = $order->pay();
+                if ($transaction instanceof Transaction) {
+                    $this->em->persist($transaction);
+                }
                 $this->em->persist($order);
+
                 $this->em->flush();
 
                 return $this->successResponse($order->toArray(), 201, [
