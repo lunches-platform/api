@@ -138,7 +138,7 @@ class Order
 
     public function pay()
     {
-        if ($this->paid === true) {
+        if ($this->paid) {
             return true;
         }
 
