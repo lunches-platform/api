@@ -73,6 +73,16 @@ class OrderRepository extends EntityRepository
         return $this->_em->createQuery($dql)->iterate();
     }
 
+    /**
+     * @return Order[]
+     */
+    public function findNonPaidOrders()
+    {
+        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.paid = 0";
+
+        return $this->_em->createQuery($dql)->getResult();
+    }
+
     private function filterByDateRange(QueryBuilder $qb, $dateRange)
     {
         if ($dateRange instanceof DateRange) {
