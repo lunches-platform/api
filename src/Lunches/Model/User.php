@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Lunches\Exception\UserException;
 use Lunches\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
 
@@ -82,9 +83,13 @@ class User
         $this->balance += (float) $amount;
     }
 
-    public function chargeBalance($amount)
+    public function chargeBalance($amount, $credit = false)
     {
-        $this->balance -= (float) $amount;
+        if ($this->balance > $amount || $credit === true) {
+            $this->balance -= (float) $amount;
+        } else {
+            throw UserException::insufficientFunds();
+        }
     }
 
     /**

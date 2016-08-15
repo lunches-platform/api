@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Lunches\Exception\OrderException;
+use Lunches\Exception\UserException;
 use Lunches\Exception\ValidationException;
 
 /**
@@ -72,6 +73,11 @@ class Order
      */
     protected $status;
     /**
+     * @var bool
+     * @Column(type="boolean")
+     */
+    protected $paid = false;
+    /**
      * @var \DateTime
      * @Column(type="date", name="shipment_date")
      */
@@ -123,10 +129,33 @@ class Order
             'address' => $this->address,
             'items' => $lineItems,
             'status' => $this->status,
+            'paid' => $this->paid,
             'created' => $this->createdOrder instanceof CreatedOrder ? $this->createdOrder->toArray() : null,
             'canceled' => $this->canceledOrder instanceof CanceledOrder ? $this->canceledOrder->toArray() : null,
             'delivered' => $this->deliveredOrder instanceof DeliveredOrder ? $this->deliveredOrder->toArray() : null,
         ];
+    }
+
+    public function pay()
+    {
+        if ($this->paid === true) {
+            return true;
+        }
+
+        if (!$this->price) {
+            return false;
+        }
+
+        try {
+            $transaction = new Transaction(Transaction::TYPE_OUTCOME, $this->price, $this->user);
+            $this->paid = true;
+
+            return $transaction;
+        } catch (UserException $e) {
+            $this->paid = false;
+        }
+        
+        return false;
     }
 
     public function addLineItem(LineItem $lineItem)
