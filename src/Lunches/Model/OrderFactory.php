@@ -172,6 +172,9 @@ class OrderFactory
         $product = null;
         foreach ($menus as $menu) {
             $product = $menu->getProductById((int)$line['productId']);
+            if ($product instanceof Product) {
+                break;
+            }
         }
         if (!$product instanceof Product) {
             throw ValidationException::invalidLineItem('Any of Menus for specified date doest have such product');
