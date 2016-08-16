@@ -198,8 +198,12 @@ class Order
 
         $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
         $this->status = self::STATUS_CANCELED;
+        
+        if ($this->paid) {
+            return new Transaction(Transaction::TYPE_INCOME, $this->price, $this->user);
+        }
 
-        return new Transaction(Transaction::TYPE_INCOME, $this->price, $this->user);
+        return true;
     }
 
     /**
