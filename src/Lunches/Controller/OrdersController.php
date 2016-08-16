@@ -104,7 +104,7 @@ class OrdersController extends ControllerAbstract
                 return $this->failResponse($e->getMessage(), 400);
             }
         }
-        $orders = $this->repo->findByUsername($user, $request->get('paid', null), $range);
+        $orders = $this->repo->findByUsername($user, $request->get('paid', null), $request->get('withCanceled', 0), $range);
         if (!count($orders)) {
             return $this->failResponse('Orders not found', 404);
         }

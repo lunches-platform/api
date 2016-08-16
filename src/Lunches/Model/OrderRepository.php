@@ -30,7 +30,7 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByUsername($username, $paid = null, DateRange $dateRange = null)
+    public function findByUsername($username, $paid = null, $withCanceled = 0, DateRange $dateRange = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['o'])
@@ -38,6 +38,9 @@ class OrderRepository extends EntityRepository
             ->join('o.user', 'u')
             ->where('u.fullname = :username')
         ;
+        if ((int) $withCanceled === 0) {
+            $qb->andWhere("o.status != 'canceled'");
+        }
         $qb->setParameter('username', $username);
 
         if ($paid !== null) {
