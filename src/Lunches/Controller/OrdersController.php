@@ -162,7 +162,10 @@ class OrdersController extends ControllerAbstract
             return $this->failResponse('Order not found', 404);
         }
         try {
-            $order->cancel($request->get('reason'));
+            $transaction = $order->cancel($request->get('reason'));
+            if ($transaction instanceof Transaction) {
+                $this->em->persist($transaction);
+            }
             $this->em->flush();
         } catch (\Exception $e) {
             return $this->failResponse($e->getMessage(), 400);
