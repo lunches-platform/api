@@ -186,15 +186,20 @@ class Order
 
     /**
      * @param string $reason
+     * @return Transaction
      * @throws OrderException
+     * @throws \Lunches\Exception\ValidationException
      */
     public function cancel($reason = '')
     {
         if ($this->status !== self::STATUS_CREATED) {
             throw OrderException::failedToChangeStatus('Just "created" orders can be canceled');
         }
+
         $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
         $this->status = self::STATUS_CANCELED;
+
+        return new Transaction(Transaction::TYPE_INCOME, $this->price, $this->user);
     }
 
     /**
