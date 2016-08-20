@@ -13,6 +13,7 @@ $app->get('/menus/week/current', 'lunches.controller.menus:getOnCurrentWeek');
 $app->get('/menus/week/next', 'lunches.controller.menus:getOnNextWeek');
 $app->get('/menus/today', 'lunches.controller.menus:getToday');
 $app->get('/menus/tomorrow', 'lunches.controller.menus:getTomorrow');
+$app->get('/menus/{date}', 'lunches.controller.menus:getConcrete');
 
 /**
  * Products

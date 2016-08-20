@@ -2,6 +2,7 @@
 
 namespace Lunches\Controller;
 
+use Lunches\Exception\LineItemException;
 use Lunches\Exception\RuntimeException;
 use Lunches\Exception\ValidationException;
 use Lunches\Model\DateRange;
@@ -9,7 +10,6 @@ use Lunches\Model\Order;
 use Lunches\Model\OrderFactory;
 use Lunches\Model\OrderRepository;
 use Lunches\Model\Transaction;
-use Lunches\Validator\OrderValidator;
 use Doctrine\ORM\EntityManager;
 use Lunches\Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +27,6 @@ class OrdersController extends ControllerAbstract
     /** @var OrderRepository */
     protected $repo;
 
-    /** @var OrderValidator */
-    protected $validator;
-    
     /** @var OrderFactory  */
     protected $orderFactory;
 
@@ -41,12 +38,10 @@ class OrdersController extends ControllerAbstract
      *
      * @param EntityManager $em
      * @param OrderFactory $orderFactory
-     * @param OrderValidator $validator
      */
-    public function __construct(EntityManager $em, OrderFactory $orderFactory, OrderValidator $validator)
+    public function __construct(EntityManager $em, OrderFactory $orderFactory)
     {
         $this->orderClass = '\Lunches\Model\Order';
-        $this->validator = $validator;
         $this->orderFactory = $orderFactory;
         $this->em = $em;
         $this->repo = $em->getRepository($this->orderClass);
@@ -129,25 +124,22 @@ class OrdersController extends ControllerAbstract
 
         try {
             $order = $this->orderFactory->createNewFromArray($data);
-
-            if ($this->validator->isValid($order)) {
-                $transaction = $order->pay();
-                if ($transaction instanceof Transaction) {
-                    $this->em->persist($transaction);
-                }
-                $this->em->persist($order);
-
-                $this->em->flush();
-
-                return $this->successResponse($order->toArray(), 201, [
-                    'Location' => $app->url('order', ['orderId' => $order->getId()])
-                ]);
-            } else {
-                $errors = $this->validator->getErrors();
+            $transaction = $order->pay();
+            if ($transaction instanceof Transaction) {
+                $this->em->persist($transaction);
             }
+            $this->em->persist($order);
+            $this->em->flush();
+
+            return $this->successResponse($order->toArray(), 201, [
+                'Location' => $app->url('order', ['orderId' => $order->getId()])
+            ]);
+
         } catch (ValidationException $e) {
             $errors['order'] = $e->getMessage();
         } catch (RuntimeException $e) {
+            $errors['order'] = $e->getMessage();
+        } catch (LineItemException $e) {
             $errors['order'] = $e->getMessage();
         }
 

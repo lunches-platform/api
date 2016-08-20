@@ -3,6 +3,7 @@
 namespace Lunches\Model;
 
 use Doctrine\ORM\EntityRepository;
+use Lunches\Exception\RuntimeException;
 
 /**
  * Class ProductRepository.
@@ -23,5 +24,14 @@ class ProductRepository extends EntityRepository
             ->setMaxResults(100);
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function get($productId)
+    {
+        $product = $this->find((int) $productId);
+        if (!$product instanceof Product) {
+            throw RuntimeException::notFound('Product');
+        }
+        return $product;
     }
 }

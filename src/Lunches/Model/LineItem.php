@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Lunches\Exception\ValidationException;
 
 /**
  * @Entity(repositoryClass="Lunches\Model\LineItemRepository")
@@ -65,8 +66,6 @@ class LineItem
 
     /**
      * @param Product $product
-     * @throws \Lunches\Exception\ValidationException
-     * @throws \Lunches\Exception\RuntimeException
      */
     public function setProduct(Product $product)
     {
@@ -91,11 +90,13 @@ class LineItem
 
     /**
      * @param string $size
-     * @throws \Lunches\Exception\ValidationException
-     * @throws \Lunches\Exception\RuntimeException
+     * @throws ValidationException
      */
     public function setSize($size)
     {
+        if (!in_array($size, SizeWeight::$availableSizes, true)) {
+            throw ValidationException::invalidSize();
+        }
         $this->size = $size;
     }
 

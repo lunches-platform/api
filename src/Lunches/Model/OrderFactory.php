@@ -2,6 +2,7 @@
 
 namespace Lunches\Model;
 
+use Lunches\Exception\LineItemException;
 use Lunches\Exception\RuntimeException;
 use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
@@ -10,7 +11,7 @@ class OrderFactory
 {
     /** @var ProductRepository  */
     protected $productRepo;
-    
+
     /** @var OrderRepository  */
     protected $orderRepo;
 
@@ -38,7 +39,10 @@ class OrderFactory
 
     /**
      * @param array $data
+     *
      * @return Order
+     * @throws \Lunches\Exception\LineItemException
+     *
      * @throws \Lunches\Exception\ValidationException
      * @throws \Lunches\Exception\RuntimeException
      */
@@ -70,7 +74,9 @@ class OrderFactory
 
     /**
      * @param array $data
+     *
      * @return User
+     *
      * @throws RuntimeException
      * @throws ValidationException
      */
@@ -92,8 +98,9 @@ class OrderFactory
     {
         $menus = $this->menuRepo->findByDate($shipmentDate);
         if (!$menus) {
-            throw RuntimeException::notFound('Menu', 'There is no menu for specified date' );
+            throw RuntimeException::notFound('Menu', 'There is no menu for specified date');
         }
+
         return $menus;
     }
 
@@ -113,29 +120,21 @@ class OrderFactory
      * @param \DateTime $shipmentDate
      *
      * @return LineItem[]
-     *
+     * @throws \Lunches\Exception\LineItemException
      * @throws ValidationException
      */
     private function createLineItems($data, $shipmentDate)
     {
         if (!array_key_exists('items', $data) || !is_array($data['items'])) {
-            return [];
+            throw ValidationException::invalidOrder('There are no valid LineItems provided');
         }
-        $menus = $this->getMenus($shipmentDate);
 
         $lineItems = $orderedProductIds = [];
         foreach ($data['items'] as $line) {
+            $lineItems[] = $lineItem = $this->createLineItem($line, $shipmentDate);
 
-            try {
-                $lineItems[] = $lineItem = $this->createLineItem($line, $menus);
-
-                // order only unique products
-                if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
-                    continue;
-                }
-            } catch (ValidationException $e) {
-                continue;
-            } catch (RuntimeException $e) {
+            // order only unique products
+            if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
                 continue;
             }
             $orderedProductIds[] = $productId;
@@ -151,38 +150,53 @@ class OrderFactory
 
     /**
      * @param array $line
-     * @param Menu[] $menus
-     * @return LineItem|bool
+     * @param \DateTime $shipmentDate
+     *
+     * @return bool|LineItem
      * @throws \Lunches\Exception\ValidationException
-     * @throws \Lunches\Exception\RuntimeException
+     *
+     * @throws LineItemException
      */
-    private function createLineItem(array $line, $menus)
+    private function createLineItem(array $line, \DateTime $shipmentDate)
     {
-        $lineItem = new LineItem();
+        $this->assertRequiredExists($line);
 
+        $lineItem = new LineItem();
+        $lineItem->setSize($line['size']);
+        $lineItem->setProduct($this->getProduct($line['productId'], $shipmentDate));
+
+        return $lineItem;
+    }
+
+    /**
+     * @param int       $productId
+     * @param \DateTime $shipmentDate
+     *
+     * @return Product|null
+     *
+     * @throws LineItemException
+     */
+    private function getProduct($productId, \DateTime $shipmentDate)
+    {
+        $product = $this->productRepo->get($productId);
+
+        $menus = $this->getMenus($shipmentDate);
+        foreach ($menus as $menu) {
+            if ($menu->hasProduct($product)) {
+                return $product;
+            }
+        }
+        throw LineItemException::notCookingToday($product, $shipmentDate);
+    }
+
+    private function assertRequiredExists($line)
+    {
         $required = ['productId', 'size'];
 
         $emptyRequired = array_diff($required, array_keys($line));
-        if (count($emptyRequired) !== 0)  {
+        if (count($emptyRequired) !== 0) {
             throw ValidationException::requiredEmpty('Invalid LineItem', $required);
         }
-
-        $lineItem->setSize($line['size']);
-
-        $product = null;
-        foreach ($menus as $menu) {
-            $product = $menu->getProductById((int)$line['productId']);
-            if ($product instanceof Product) {
-                break;
-            }
-        }
-        if (!$product instanceof Product) {
-            throw ValidationException::invalidLineItem('Any of Menus for specified date doest have such product');
-        }
-
-        $lineItem->setProduct($product);
-
-        return $lineItem;
     }
 
     private function createDate($data)
