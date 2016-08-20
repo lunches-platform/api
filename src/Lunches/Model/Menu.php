@@ -61,9 +61,8 @@ class Menu
      */
     public function toArray()
     {
-        $menuProducts = new MenuProducts($this->getMenuProducts()->toArray());
         $products = [];
-        foreach ($menuProducts->sort() as $menuProduct) {
+        foreach ($this->getMenuProducts()->sort() as $menuProduct) {
             $products[] = $menuProduct->getProduct()->toArray();
         }
 
@@ -90,7 +89,7 @@ class Menu
      */
     public function getMenuProducts()
     {
-        return $this->menuProducts;
+        return $this->menuProducts instanceof MenuProducts ? $this->menuProducts : new MenuProducts($this->menuProducts->getValues());
     }
 
     /**
@@ -131,5 +130,10 @@ class Menu
         }
 
         return null;
+    }
+
+    public function hasProduct(Product $product)
+    {
+        return $this->getMenuProducts()->hasProduct($product);
     }
 }

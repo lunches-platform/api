@@ -43,6 +43,11 @@ class MenuProduct
      */
     protected $position;
 
+    public function sameProduct(Product $product)
+    {
+        return $this->product->getId() === $product->getId();
+    }
+
     /**
      * @return int
      */
