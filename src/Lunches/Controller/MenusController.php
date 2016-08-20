@@ -70,6 +70,16 @@ class MenusController extends ControllerAbstract
         return $this->successResponse($menus);
     }
 
+    public function getConcrete($date)
+    {
+        try {
+            $concrete = new \DateTime($date);
+        } catch (\Exception $e) {
+            return $this->failResponse('Invalid date provided', 400);
+        }
+        return $this->getByDateRange($concrete);
+    }
+
     public function getToday()
     {
         return $this->getByDateRange($today = new \DateTime());
