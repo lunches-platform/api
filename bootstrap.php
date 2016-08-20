@@ -78,8 +78,7 @@ $app['lunches.controller.menus'] = function () use ($app) {
 $app['lunches.controller.orders'] = function () use ($app) {
     return new \Lunches\Controller\OrdersController(
         $app['doctrine.em'],
-        $app['lunches.factory.order'],
-        $app['lunches.validator.order']
+        $app['lunches.factory.order']
     );
 };
 $app['lunches.controller.prices'] = function () use ($app) {
@@ -97,9 +96,6 @@ $app['lunches.controller.transactions'] = function () use ($app) {
     return new \Lunches\Controller\TransactionsController(
         $app['doctrine.em']
     );
-};
-$app['lunches.validator.order'] = function () use ($app) {
-    return new \Lunches\Validator\OrderValidator();
 };
 
 $app['lunches.factory.order'] = function () use ($app) {
