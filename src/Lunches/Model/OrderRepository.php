@@ -61,13 +61,14 @@ class OrderRepository extends EntityRepository
     }
 
     /**
+     * @param User $user
      * @return Order[]
      */
-    public function findNonPaidOrders()
+    public function findNonPaidOrders(User $user)
     {
-        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.paid = 0";
+        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.paid = 0 AND o.user = :user ORDER BY o.createdOrder.at ASC";
 
-        return $this->_em->createQuery($dql)->getResult();
+        return $this->_em->createQuery($dql)->setParameter('user', $user)->getResult();
     }
 
     private function filterByDateRange(QueryBuilder $qb, $dateRange)

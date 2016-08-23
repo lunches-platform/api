@@ -16,5 +16,4 @@ mb_internal_encoding('UTF-8');
 /** @var Application $console */
 $console = $app['console'];
 $console->add(new \Lunches\Command\StartOrderProgressCommand());
-$console->add(new \Lunches\Command\ProcessPaymentCommand());
 $console->run();

@@ -4,6 +4,7 @@ namespace Lunches\Controller;
 
 use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
+use Lunches\Model\OrderRepository;
 use Lunches\Model\Transaction;
 use Lunches\Model\TransactionRepository;
 use Lunches\Model\User;
@@ -25,6 +26,9 @@ class TransactionsController extends ControllerAbstract
     /** @var UserRepository */
     protected $userRepo;
 
+    /** @var OrderRepository */
+    protected $orderRepo;
+
     /** @var string  */
     protected $transactionClass;
 
@@ -39,6 +43,7 @@ class TransactionsController extends ControllerAbstract
         $this->em = $em;
         $this->repo = $em->getRepository($this->transactionClass);
         $this->userRepo = $this->em->getRepository('\Lunches\Model\User');
+        $this->orderRepo = $this->em->getRepository('\Lunches\Model\Order');
     }
 
     public function get($transactionId, Request $request)
@@ -97,6 +102,7 @@ class TransactionsController extends ControllerAbstract
 
         try {
             $transaction = new Transaction($type, $amount, $user);
+            $this->payOrders($transaction);
         } catch (ValidationException $e) {
             return $this->failResponse('Transaction creation failed: '.$e->getMessage(), 400);
         }
@@ -117,5 +123,18 @@ class TransactionsController extends ControllerAbstract
         $validToken = 'f14d16e1e90dd412d8b29ddb64168f112f753';
 
         return $accessToken === $validToken;
+    }
+
+    private function payOrders(Transaction $transaction)
+    {
+        $elapsedAmount = $transaction->getAmount();
+        foreach($this->orderRepo->findNonPaidOrders($transaction->getUser()) as $order) {
+            if ($elapsedAmount >= $order->getPrice()) {
+                $order->pay();
+                $elapsedAmount -= $order->getPrice();
+            } else {
+                break;
+            }
+        }
     }
 }
