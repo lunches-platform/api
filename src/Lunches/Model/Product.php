@@ -60,13 +60,6 @@ class Product
     private $updated;
 
     /**
-     * @var float $pricePer100
-     *
-     * @Column(type="float")
-     */
-    private $pricePer100;
-
-    /**
      * @var ProductImage[]
      * @OneToMany(targetEntity="ProductImage", mappedBy="product", cascade={"persist"})
      */
@@ -192,22 +185,6 @@ class Product
     public function setIngredients($ingredients)
     {
         $this->ingredients = $ingredients;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPricePer100()
-    {
-        return $this->pricePer100;
-    }
-
-    /**
-     * @param float $pricePer100
-     */
-    public function setPricePer100($pricePer100)
-    {
-        $this->pricePer100 = $pricePer100;
     }
 
     public function addImage(ProductImage $image)
