@@ -14,7 +14,6 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Lunches\Exception\OrderException;
-use Lunches\Exception\UserException;
 use Lunches\Exception\ValidationException;
 
 /**
@@ -145,17 +144,13 @@ class Order
         if (!$this->price) {
             return false;
         }
-
-        try {
-            $transaction = new Transaction(Transaction::TYPE_OUTCOME, $this->price, $this->user);
-            $this->paid = true;
-
-            return $transaction;
-        } catch (UserException $e) {
-            $this->paid = false;
-        }
         
-        return false;
+        $this->paid = true;
+    }
+
+    public function bill()
+    {
+        return Transaction::orderBill($this);
     }
 
     public function addLineItem(LineItem $lineItem)
