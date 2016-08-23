@@ -94,7 +94,7 @@ class LineItem
      */
     public function setSize($size)
     {
-        if (!in_array($size, SizeWeight::$availableSizes, true)) {
+        if (!in_array($size, Product::$availableSizes, true)) {
             throw ValidationException::invalidSize();
         }
         $this->size = $size;

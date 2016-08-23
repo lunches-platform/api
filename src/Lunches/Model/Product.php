@@ -60,23 +60,10 @@ class Product
     private $updated;
 
     /**
-     * @var float $pricePer100
-     *
-     * @Column(type="float")
-     */
-    private $pricePer100;
-
-    /**
      * @var ProductImage[]
      * @OneToMany(targetEntity="ProductImage", mappedBy="product", cascade={"persist"})
      */
     protected $images;
-
-    /**
-     * @var SizeWeight[]
-     * @OneToMany(targetEntity="SizeWeight", mappedBy="product", cascade={"persist"})
-     */
-    protected $sizeWeights;
 
     /**
      * @var Ingredient[]
@@ -84,13 +71,22 @@ class Product
      */
     protected $ingredients;
 
+    const SIZE_SMALL = 'small';
+    const SIZE_MEDIUM = 'medium';
+    const SIZE_BIG = 'big';
+
+    public static $availableSizes = [
+        self::SIZE_SMALL,
+        self::SIZE_MEDIUM,
+        self::SIZE_BIG,
+    ];
+
     /**
      * Product constructor.
      */
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
-        $this->sizeWeights = new SizeWeights();
         $this->images = new ArrayCollection();
     }
 
@@ -115,7 +111,6 @@ class Product
             'name' => $this->name,
             'type' => $this->type,
             'ingredients' => $ingredients,
-            'sizeToWeight' => $this->getSizeWeightsCollection()->toArray(),
             'images' => $images,
         ];
     }
@@ -192,45 +187,10 @@ class Product
         $this->ingredients = $ingredients;
     }
 
-    /**
-     * @return float
-     */
-    public function getPricePer100()
-    {
-        return $this->pricePer100;
-    }
-
-    /**
-     * @param float $pricePer100
-     */
-    public function setPricePer100($pricePer100)
-    {
-        $this->pricePer100 = $pricePer100;
-    }
-
     public function addImage(ProductImage $image)
     {
         $this->images[] = $image;
         $image->setProduct($this);
-    }
-    /**
-     * @return SizeWeight[]
-     */
-    public function getSizeWeights()
-    {
-        return $this->sizeWeights;
-    }
-    public function getSizeWeightsCollection()
-    {
-        return new SizeWeights($this->sizeWeights->getValues());
-    }
-
-    /**
-     * @param SizeWeight[] $sizeWeights
-     */
-    public function setSizeWeights($sizeWeights)
-    {
-        $this->sizeWeights = $sizeWeights;
     }
 
     public function hasImage(ProductImage $productImage)
