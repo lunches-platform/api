@@ -124,7 +124,7 @@ class OrdersController extends ControllerAbstract
 
         try {
             $order = $this->orderFactory->createNewFromArray($data);
-            $transaction = $order->pay();
+            $transaction = $order->bill();
             if ($transaction instanceof Transaction) {
                 $this->em->persist($transaction);
             }
