@@ -40,6 +40,11 @@ class Transaction
      */
     protected $user;
     /**
+     * @var Order
+     * @ManyToOne(targetEntity="Order")
+     */
+    protected $order;
+    /**
      * One of income or outcome
      *
      * @var string
@@ -72,6 +77,14 @@ class Transaction
         $this->updateUserBalance();
     }
 
+    public static function orderBill(Order $order)
+    {
+        $transaction = new self(self::TYPE_OUTCOME, $order->getPrice(), $order->getUser());
+        $transaction->order = $order;
+
+        return $transaction;
+    }
+
     /**
      * @return array
      */
@@ -84,6 +97,16 @@ class Transaction
 //            'user' => $this->user->toArray(),
             'created' => $this->created->format('Y-m-d H:i:s'),
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function getAmount()
+    {
+        return $this->amount;
     }
     private function updateUserBalance()
     {
