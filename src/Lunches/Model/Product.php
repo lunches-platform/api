@@ -73,16 +73,20 @@ class Product
     protected $images;
 
     /**
-     * @var SizeWeight[]
-     * @OneToMany(targetEntity="SizeWeight", mappedBy="product", cascade={"persist"})
-     */
-    protected $sizeWeights;
-
-    /**
      * @var Ingredient[]
      * @OneToMany(targetEntity="Ingredient", mappedBy="product", cascade={"persist"})
      */
     protected $ingredients;
+
+    const SIZE_SMALL = 'small';
+    const SIZE_MEDIUM = 'medium';
+    const SIZE_BIG = 'big';
+
+    public static $availableSizes = [
+        self::SIZE_SMALL,
+        self::SIZE_MEDIUM,
+        self::SIZE_BIG,
+    ];
 
     /**
      * Product constructor.
@@ -90,7 +94,6 @@ class Product
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
-        $this->sizeWeights = new SizeWeights();
         $this->images = new ArrayCollection();
     }
 
@@ -115,7 +118,6 @@ class Product
             'name' => $this->name,
             'type' => $this->type,
             'ingredients' => $ingredients,
-            'sizeToWeight' => $this->getSizeWeightsCollection()->toArray(),
             'images' => $images,
         ];
     }
@@ -212,25 +214,6 @@ class Product
     {
         $this->images[] = $image;
         $image->setProduct($this);
-    }
-    /**
-     * @return SizeWeight[]
-     */
-    public function getSizeWeights()
-    {
-        return $this->sizeWeights;
-    }
-    public function getSizeWeightsCollection()
-    {
-        return new SizeWeights($this->sizeWeights->getValues());
-    }
-
-    /**
-     * @param SizeWeight[] $sizeWeights
-     */
-    public function setSizeWeights($sizeWeights)
-    {
-        $this->sizeWeights = $sizeWeights;
     }
 
     public function hasImage(ProductImage $productImage)
