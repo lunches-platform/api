@@ -18,6 +18,33 @@ class OrderRepository extends EntityRepository
         return !$number ? 1000 : ++$number;
     }
 
+    public function getList(array $filters)
+    {
+        if (count($filters) === 0) {
+            return [];
+        }
+        $qb = $this->_em->createQueryBuilder();
+
+        $qb->select(['o'])
+            ->from('Lunches\Model\Order', 'o');
+
+        if (array_key_exists('username', $filters)) {
+            $qb->join('o.user', 'u')->andWhere('u.fullname = :username')->setParameter('username', $filters['username']);
+        }
+        if (array_key_exists('dateRange', $filters)) {
+            $this->filterByDateRange($qb, $filters['dateRange']);
+        }
+        if (array_key_exists('shipmentDate', $filters)) {
+            $qb->andWhere('o.shipmentDate = :date')->setParameter('date', $filters['shipmentDate']);
+        }
+        if (array_key_exists('paid', $filters)) {
+            $qb->andWhere('o.paid = :paid');
+            $qb->setParameter('paid', (int) $filters['paid']);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function findByShipmentDate(\DateTime $shipmentDate)
     {
         $qb = $this->_em->createQueryBuilder();
