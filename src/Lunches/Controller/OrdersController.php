@@ -54,15 +54,21 @@ class OrdersController extends ControllerAbstract
     public function getList(Request $request)
     {
         try {
-            if ($shipmentDate = $request->get('shipmentDate')) {
-                $shipmentDate = new \DateTime($shipmentDate);
-                $orders = $this->repo->findByShipmentDate($shipmentDate);
-            } else {
-                $orders = $this->repo->findAll();
-            }
-        } catch (ValidationException $e) {
-            return $this->failResponse('Invalid shipmentDate', 400);
+            $shipmentDate = $request->get('shipmentDate') ? new \DateTime($request->get('shipmentDate')) : null;
+            $dateRange = $this->createDateRange($request, false, false);
+            $filters = array_filter([
+                'shipmentDate' => $shipmentDate,
+                'dateRange' => $dateRange,
+            ]);
+        } catch (\Exception $e) {
+            return $this->failResponse('Invalid filters: ' . $e->getMessage(), 400);
         }
+
+        if (count($filters) === 0) {
+            return $this->failResponse('Provide one or more filters to obtain orders');
+        }
+
+        $orders = $this->repo->getList($filters);
 
         $orders = array_map(function (Order $order) {
             return $order->toArray();
@@ -88,17 +94,7 @@ class OrdersController extends ControllerAbstract
 
     public function getByUser($user, Request $request)
     {
-        $range = null;
-        $start = $request->get('startDate') ?: new \DateTime('monday last week');
-        $end = $request->get('endDate') ?: new \DateTime('friday next week');
-
-        if ($start && $end) {
-            try {
-                $range = new DateRange($start, $end);
-            } catch (ValidationException $e) {
-                return $this->failResponse($e->getMessage(), 400);
-            }
-        }
+        $range = $this->createDateRange($request);
         $orders = $this->repo->findByUsername($user, $request->get('paid', null), $request->get('withCanceled', 0), $range);
         if (!count($orders)) {
             return $this->failResponse('Orders not found', 404);
@@ -182,5 +178,22 @@ class OrdersController extends ControllerAbstract
         }
 
         return new JsonResponse($order->toArray());
+    }
+
+    private function createDateRange(Request $request, $required = false, $default = true)
+    {
+        $start = $request->get('startDate');
+        if (!$start && $default === true) {
+            $start = new \DateTime('monday last week');
+        }
+        $end = $request->get('endDate');
+        if (!$end && $default === true) {
+            $end = new \DateTime('friday next week');
+        }
+        if (!$required && !($start || $end)) {
+            return null;
+        }
+
+        return new DateRange($start, $end);
     }
 }
