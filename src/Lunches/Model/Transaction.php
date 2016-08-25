@@ -40,11 +40,6 @@ class Transaction
      */
     protected $user;
     /**
-     * @var Order
-     * @ManyToOne(targetEntity="Order")
-     */
-    protected $order;
-    /**
      * One of income or outcome
      *
      * @var string
@@ -75,14 +70,6 @@ class Transaction
         $this->user = $user;
         $this->created = new \DateTime();
         $this->updateUserBalance();
-    }
-
-    public static function orderBill(Order $order)
-    {
-        $transaction = new self(self::TYPE_OUTCOME, $order->getPrice(), $order->getUser());
-        $transaction->order = $order;
-
-        return $transaction;
     }
 
     /**
