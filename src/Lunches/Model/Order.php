@@ -72,11 +72,6 @@ class Order
      */
     protected $status;
     /**
-     * @var bool
-     * @Column(type="boolean")
-     */
-    protected $paid = false;
-    /**
      * @var \DateTime
      * @Column(type="date", name="shipment_date")
      */
@@ -87,6 +82,11 @@ class Order
      * @Column(type="float")
      */
     private $price = 0;
+    /**
+     * @var OrderPayment
+     * @Embedded(class="OrderPayment", columnPrefix="payment_")
+     */
+    private $payment;
     /**
      * @var LineItem[]
      * @OneToMany(targetEntity="LineItem", mappedBy="order", cascade={"persist"})
@@ -100,6 +100,7 @@ class Order
     {
         $this->lineItems = new ArrayCollection();
         $this->orderCreated();
+        $this->payment = new OrderPayment($this);
     }
     public function changeAddress($address)
     {
@@ -128,7 +129,7 @@ class Order
             'address' => $this->address,
             'items' => $lineItems,
             'status' => $this->status,
-            'paid' => $this->paid,
+            'paid' => $this->payment->isPaid(),
             'created' => $this->createdOrder instanceof CreatedOrder ? $this->createdOrder->toArray() : null,
             'canceled' => $this->canceledOrder instanceof CanceledOrder ? $this->canceledOrder->toArray() : null,
             'delivered' => $this->deliveredOrder instanceof DeliveredOrder ? $this->deliveredOrder->toArray() : null,
@@ -137,20 +138,8 @@ class Order
 
     public function pay()
     {
-        if ($this->paid) {
-            return true;
-        }
-
-        if (!$this->price) {
-            return false;
-        }
-        
-        $this->paid = true;
-    }
-
-    public function bill()
-    {
-        return Transaction::orderBill($this);
+        $this->payment->setOrder($this);
+        return $this->payment->pay();
     }
 
     public function addLineItem(LineItem $lineItem)
@@ -193,8 +182,8 @@ class Order
 
         $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
         $this->status = self::STATUS_CANCELED;
-        
-        if ($this->paid) {
+
+        if ($this->payment->isPaid()) {
             return new Transaction(Transaction::TYPE_INCOME, $this->price, $this->user);
         }
 
@@ -309,5 +298,4 @@ class Order
         }
         $this->address = $address;
     }
-
 }
