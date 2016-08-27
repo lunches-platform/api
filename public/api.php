@@ -44,14 +44,11 @@ $app->post('/users', 'lunches.controller.users:create');
  */
 $app->get('/users/{user}/orders', 'lunches.controller.orders:getByUser');
 
-/**
- * User transactions
- */
-$app->get('/users/{clientId}/transactions', 'lunches.controller.transactions:getByClientId');
 
 /**
  * Transactions
  */
+$app->get('/transactions', 'lunches.controller.transactions:getByClientId');
 $app->post('/transactions', 'lunches.controller.transactions:create');
 $app->get('/transactions/{transactionId}', 'lunches.controller.transactions:get');
 $app->delete('/transactions/{transactionId}', 'lunches.controller.transactions:delete');

@@ -74,12 +74,19 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse(null, 204);
     }
-    public function getByClientId($clientId, Request $request)
+    public function getByClientId(Request $request)
     {
         if (!$this->isAccessTokenValid($request)) {
             return $this->authResponse();
         }
+        $clientId = $request->get('clientId');
+        if (!$clientId) {
+            return $this->failResponse('Provide user clientId');
+        }
         $user = $this->userRepo->findByClientId($clientId);
+        if (!$user instanceof User) {
+            return $this->failResponse('There is no user with specified clientId', 404);
+        }
         $transactions = $this->repo->findByUser($user);
 
         return $this->successResponse(array_map(function(Transaction $transaction) {
