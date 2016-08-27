@@ -102,6 +102,9 @@ class TransactionsController extends ControllerAbstract
 
         try {
             $transaction = new Transaction($type, $amount, $user);
+            if ($paymentDate = $request->get('paymentDate')) {
+                $transaction->paidAt($paymentDate);
+            }
             $this->payOrders($user);
         } catch (ValidationException $e) {
             return $this->failResponse('Transaction creation failed: '.$e->getMessage(), 400);

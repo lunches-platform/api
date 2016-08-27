@@ -56,6 +56,12 @@ class Transaction
     protected $created;
 
     /**
+     * @var \DateTime
+     * @Column(type="datetime", name="payment_date")
+     */
+    protected $paymentDate;
+
+    /**
      * Transaction constructor.
      * @param string $type
      * @param float $amount
@@ -69,7 +75,20 @@ class Transaction
         $this->setAmount($amount);
         $this->user = $user;
         $this->created = new \DateTime();
+        $this->paymentDate = new \DateTime();
         $this->updateUserBalance();
+    }
+
+    public function paidAt($paymentDate)
+    {
+        if (!$paymentDate instanceof \DateTime) {
+            try {
+                $paymentDate = new \DateTime($paymentDate);
+            } catch (\Exception $e) {
+                throw ValidationException::invalidTransaction('Payment date has invalid format');
+            }
+        }
+        $this->paymentDate = $paymentDate;
     }
 
     /**
