@@ -4,6 +4,7 @@ namespace Lunches\Controller;
 
 use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
+use Lunches\Model\DateRange;
 use Lunches\Model\OrderRepository;
 use Lunches\Model\Transaction;
 use Lunches\Model\TransactionRepository;
@@ -74,11 +75,8 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse(null, 204);
     }
-    public function getByClientId(Request $request)
+    public function getList(Request $request)
     {
-        if (!$this->isAccessTokenValid($request)) {
-            return $this->authResponse();
-        }
         $clientId = $request->get('clientId');
         if (!$clientId) {
             return $this->failResponse('Provide user clientId');
@@ -87,7 +85,18 @@ class TransactionsController extends ControllerAbstract
         if (!$user instanceof User) {
             return $this->failResponse('There is no user with specified clientId', 404);
         }
-        $transactions = $this->repo->findByUser($user);
+
+        $start = $request->get('startDate');
+        $end = $request->get('endDate');
+        $dateRange = null;
+        if ($start && $end) {
+            try {
+                $dateRange = new DateRange($start, $end);
+            } catch (ValidationException $e) {
+                return $this->failResponse($e->getMessage());
+            }
+        }
+        $transactions = $this->repo->findByUser($user, $dateRange, $request->get('type'));
 
         return $this->successResponse(array_map(function(Transaction $transaction) {
             return $transaction->toArray();
