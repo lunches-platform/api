@@ -10,18 +10,13 @@ use Doctrine\ORM\EntityRepository;
 class TransactionRepository extends EntityRepository
 {
     /**
-     * @param string $user
+     * @param User $user
      * @return array
      */
-    public function findByUser($user)
+    public function findByUser(User $user)
     {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select(['t'])
-            ->from('Lunches\Model\Transaction', 't')
-            ->where('t.user = :user')
-        ;
-        $qb->setParameter('user', $user);
+        $dql = 'SELECT t FROM Lunches\Model\Transaction t WHERE t.user = :user';
 
-        return $qb->getQuery()->getResult();
+        return $this->_em->createQuery($dql)->setParameter('user', $user)->getResult();
     }
 }

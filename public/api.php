@@ -47,7 +47,7 @@ $app->get('/users/{user}/orders', 'lunches.controller.orders:getByUser');
 /**
  * User transactions
  */
-$app->get('/users/{user}/transactions', 'lunches.controller.transactions:getByUser');
+$app->get('/users/{clientId}/transactions', 'lunches.controller.transactions:getByClientId');
 
 /**
  * Transactions

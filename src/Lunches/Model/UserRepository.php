@@ -22,6 +22,13 @@ class UserRepository extends EntityRepository
         ]);
     }
 
+    public function findByClientId($clientId)
+    {
+        return $this->findOneBy([
+            'clientId' => $clientId,
+        ]);
+    }
+
     public function findByLikePattern($like)
     {
         $dql = 'SELECT u FROM Lunches\Model\User u WHERE u.fullname LIKE :like';

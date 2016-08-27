@@ -74,12 +74,12 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse(null, 204);
     }
-    public function getByUser($user, Request $request)
+    public function getByClientId($clientId, Request $request)
     {
         if (!$this->isAccessTokenValid($request)) {
             return $this->authResponse();
         }
-        $user = $this->userRepo->findByUsername($user);
+        $user = $this->userRepo->findByClientId($clientId);
         $transactions = $this->repo->findByUser($user);
 
         return $this->successResponse(array_map(function(Transaction $transaction) {
