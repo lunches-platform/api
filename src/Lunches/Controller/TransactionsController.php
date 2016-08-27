@@ -4,6 +4,7 @@ namespace Lunches\Controller;
 
 use Lunches\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
+use Lunches\Model\DateRange;
 use Lunches\Model\OrderRepository;
 use Lunches\Model\Transaction;
 use Lunches\Model\TransactionRepository;
@@ -74,13 +75,28 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse(null, 204);
     }
-    public function getByUser($user, Request $request)
+    public function getList(Request $request)
     {
-        if (!$this->isAccessTokenValid($request)) {
-            return $this->authResponse();
+        $clientId = $request->get('clientId');
+        if (!$clientId) {
+            return $this->failResponse('Provide user clientId');
         }
-        $user = $this->userRepo->findByUsername($user);
-        $transactions = $this->repo->findByUser($user);
+        $user = $this->userRepo->findByClientId($clientId);
+        if (!$user instanceof User) {
+            return $this->failResponse('There is no user with specified clientId', 404);
+        }
+
+        $start = $request->get('startDate');
+        $end = $request->get('endDate');
+        $dateRange = null;
+        if ($start && $end) {
+            try {
+                $dateRange = new DateRange($start, $end);
+            } catch (ValidationException $e) {
+                return $this->failResponse($e->getMessage());
+            }
+        }
+        $transactions = $this->repo->findByUser($user, $dateRange, $request->get('type'));
 
         return $this->successResponse(array_map(function(Transaction $transaction) {
             return $transaction->toArray();
@@ -102,6 +118,9 @@ class TransactionsController extends ControllerAbstract
 
         try {
             $transaction = new Transaction($type, $amount, $user);
+            if ($paymentDate = $request->get('paymentDate')) {
+                $transaction->paidAt($paymentDate);
+            }
             $this->payOrders($user);
         } catch (ValidationException $e) {
             return $this->failResponse('Transaction creation failed: '.$e->getMessage(), 400);
