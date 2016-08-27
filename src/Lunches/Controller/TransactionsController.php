@@ -102,7 +102,7 @@ class TransactionsController extends ControllerAbstract
 
         try {
             $transaction = new Transaction($type, $amount, $user);
-            $this->payOrders($transaction);
+            $this->payOrders($user);
         } catch (ValidationException $e) {
             return $this->failResponse('Transaction creation failed: '.$e->getMessage(), 400);
         }
@@ -125,15 +125,12 @@ class TransactionsController extends ControllerAbstract
         return $accessToken === $validToken;
     }
 
-    private function payOrders(Transaction $transaction)
+    private function payOrders(User $user)
     {
-        $elapsedAmount = $transaction->getAmount();
-        foreach($this->orderRepo->findNonPaidOrders($transaction->getUser()) as $order) {
-            if ($elapsedAmount >= $order->getPrice()) {
-                $order->pay();
-                $elapsedAmount -= $order->getPrice();
-            } else {
-                break;
+        foreach($this->orderRepo->findNonPaidOrders($user) as $order) {
+            $transaction = $order->pay();
+            if ($transaction instanceof  Transaction) {
+                $this->em->persist($transaction);
             }
         }
     }
