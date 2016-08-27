@@ -64,6 +64,7 @@ class OrderRepository extends EntityRepository
             ->from('Lunches\Model\Order', 'o')
             ->join('o.user', 'u')
             ->where('u.fullname = :username')
+            ->orderBy('o.shipmentDate', 'DESC')
         ;
         if ((int) $withCanceled === 0) {
             $qb->andWhere("o.status != 'canceled'");
