@@ -30,6 +30,12 @@ class OrderPayment
      */
     protected $status = false;
 
+    /**
+     * @var bool
+     * @Column(type="boolean", nullable=true)
+     */
+    protected $credited = false;
+
     /** @var string */
     protected $error;
 
@@ -49,13 +55,17 @@ class OrderPayment
             $this->addError('Order price is not valid to pay');
             return false;
         }
+        $price = $this->order->getPrice();
+        $user = $this->order->getUser();
 
         try {
-            $transaction = new Transaction(Transaction::TYPE_OUTCOME, $this->order->getPrice(), $this->order->getUser());
+            $transaction = new Transaction(Transaction::TYPE_OUTCOME, $price, $user);
             $this->status = true;
             $this->paidAt = new \DateTime();
+            $user->payCredit($price);
         } catch (UserException $e) {
             $this->addError($e->getMessage());
+            $this->takeCredit($user, $price);
             return false;
         }
 
@@ -75,11 +85,6 @@ class OrderPayment
         return null;
     }
 
-    private function addError($error)
-    {
-        $this->error = $error;
-    }
-
     /**
      * Doctrine will not run original constructor for embeddables, so use this temporary hack
      * @param Order $order
@@ -87,5 +92,18 @@ class OrderPayment
     public function setOrder(Order $order)
     {
         $this->order = $order;
+    }
+
+    private function addError($error)
+    {
+        $this->error = $error;
+    }
+
+    private function takeCredit(User $user, $price)
+    {
+        if ($this->credited === false) {
+            $user->takeCredit($price);
+            $this->credited = true;
+        }
     }
 }

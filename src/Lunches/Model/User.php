@@ -39,6 +39,11 @@ class User
      */
     protected $balance;
     /**
+     * @var float
+     * @Column(type="float", nullable=true)
+     */
+    protected $credit = 0;
+    /**
      * @var int
      * @Column(type="integer", nullable=false)
      */
@@ -72,6 +77,7 @@ class User
         $this->setAddress($address);
         $this->created = new \DateTime();
         $this->balance = 0;
+        $this->credit = 0;
     }
     public function changeAddress($address)
     {
@@ -91,6 +97,17 @@ class User
             throw UserException::insufficientFunds();
         }
     }
+    public function payCredit($price)
+    {
+        $this->credit -= $price;
+        if ($this->credit < 0) {
+            $this->credit = 0;
+        }
+    }
+    public function takeCredit($price)
+    {
+        $this->credit += $price;
+    }
 
     public function getBalance()
     {
@@ -108,6 +125,7 @@ class User
             'fullname' => $this->fullname,
             'address' => $this->address,
             'balance' => $this->balance,
+            'credit' => $this->credit,
         ];
     }
 
