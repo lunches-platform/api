@@ -131,19 +131,6 @@ class TransactionsController extends ControllerAbstract
         return new JsonResponse($transaction->toArray(), 201);
     }
 
-    private function authResponse()
-    {
-        return $this->failResponse('Access token is not valid', 401);
-    }
-
-    private function isAccessTokenValid(Request $request)
-    {
-        $accessToken = $request->get('accessToken');
-        $validToken = 'f14d16e1e90dd412d8b29ddb64168f112f753';
-
-        return $accessToken === $validToken;
-    }
-
     private function payOrders(User $user)
     {
         foreach($this->orderRepo->findNonPaidOrders($user) as $order) {
