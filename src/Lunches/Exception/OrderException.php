@@ -22,4 +22,12 @@ class OrderException extends \Exception
     {
         return new static('Order update failed: '.$msg);
     }
+    /**
+     * @param string $msg
+     * @return static
+     */
+    public static function canNotPay($msg)
+    {
+        return new static('Can not pay for an Order: '.$msg);
+    }
 }

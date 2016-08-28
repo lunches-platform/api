@@ -160,6 +160,27 @@ class OrdersController extends ControllerAbstract
         }
         return $this->successResponse($order->toArray());
     }
+    public function reject($orderId, Request $request)
+    {
+        if (!$this->isAccessTokenValid($request)) {
+            return $this->authResponse();
+        }
+        /** @var Order $order */
+        $order = $this->repo->find($orderId);
+        if (!$order) {
+            return $this->failResponse('Order not found', 404);
+        }
+        try {
+            $transaction = $order->reject($request->get('reason'));
+            if ($transaction instanceof Transaction) {
+                $this->em->persist($transaction);
+            }
+            $this->em->flush();
+        } catch (\Exception $e) {
+            return $this->failResponse($e->getMessage(), 400);
+        }
+        return $this->successResponse($order->toArray());
+    }
     public function update($orderId, Request $request)
     {
         /** @var Order $order */
