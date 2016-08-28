@@ -94,7 +94,7 @@ class OrderRepository extends EntityRepository
      */
     public function findNonPaidOrders(User $user)
     {
-        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 0 AND o.user = :user ORDER BY o.createdOrder.at ASC";
+        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 0 AND status NOT IN('canceled', 'rejected') AND o.user = :user ORDER BY o.createdOrder.at ASC";
 
         return $this->_em->createQuery($dql)->setParameter('user', $user)->getResult();
     }

@@ -60,6 +60,7 @@ $app->get('/orders', 'lunches.controller.orders:getList');
 $app->get('/orders/{orderId}', 'lunches.controller.orders:get')->bind('order');
 $app->post('/orders', 'lunches.controller.orders:create');
 $app->post('/orders/{orderId}/cancel', 'lunches.controller.orders:cancel');
+$app->post('/orders/{orderId}/reject', 'lunches.controller.orders:reject');
 $app->put('/orders/{orderId}', 'lunches.controller.orders:update');
 
 $app->get('/ingredients', 'lunches.controller.ingredients:getList');

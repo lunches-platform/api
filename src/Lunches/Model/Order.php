@@ -25,6 +25,7 @@ class Order
     const STATUS_CREATED = 'created';
     const STATUS_IN_PROGRESS = 'inProgress';
     const STATUS_CANCELED = 'canceled';
+    const STATUS_REJECTED = 'rejected';
     const STATUS_DELIVERED = 'delivered';
 
     /**
@@ -61,6 +62,11 @@ class Order
      * @Embedded(class="CanceledOrder", columnPrefix="canceled_")
      */
     protected $canceledOrder;
+    /**
+     * @var RejectedOrder
+     * @Embedded(class="RejectedOrder", columnPrefix="rejected_")
+     */
+    protected $rejectedOrder;
     /**
      * @var DeliveredOrder
      * @Embedded(class="DeliveredOrder", columnPrefix="delivered_")
@@ -132,12 +138,17 @@ class Order
             'paid' => $this->payment->isPaid(),
             'created' => $this->createdOrder instanceof CreatedOrder ? $this->createdOrder->toArray() : null,
             'canceled' => $this->canceledOrder instanceof CanceledOrder ? $this->canceledOrder->toArray() : null,
+            'rejected' => $this->rejectedOrder instanceof RejectedOrder ? $this->rejectedOrder->toArray() : null,
             'delivered' => $this->deliveredOrder instanceof DeliveredOrder ? $this->deliveredOrder->toArray() : null,
         ];
     }
 
     public function pay()
     {
+        if ($this->status === self::STATUS_CANCELED || $this->status === self::STATUS_REJECTED) {
+            throw OrderException::canNotPay('Canceled or Rejected orders can not be paid');
+        }
+
         $this->payment->setOrder($this);
         return $this->payment->pay();
     }
@@ -184,7 +195,22 @@ class Order
         $this->status = self::STATUS_CANCELED;
 
         if ($this->payment->isPaid()) {
-            return new Transaction(Transaction::TYPE_INCOME, $this->price, $this->user);
+            return new Transaction(Transaction::TYPE_REFUND, $this->price, $this->user);
+        }
+
+        return true;
+    }
+
+    public function reject($reason)
+    {
+        if ($this->status === self::STATUS_REJECTED) {
+            throw OrderException::failedToChangeStatus('Such order has been already rejected');
+        }
+        $this->rejectedOrder = new RejectedOrder($this, new \DateTime(), $reason);
+        $this->status = self::STATUS_REJECTED;
+
+        if ($this->payment->isPaid()) {
+            return new Transaction(Transaction::TYPE_REFUND, $this->price, $this->user);
         }
 
         return true;
