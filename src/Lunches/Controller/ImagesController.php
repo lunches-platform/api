@@ -6,6 +6,7 @@ use Lunches\Model\Image;
 use Lunches\Model\ImageRepository;
 use Doctrine\ORM\EntityManager;
 use Lunches\Silex\Application;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -52,6 +53,9 @@ class ImagesController extends ControllerAbstract
     public function create(Request $request, Application $app)
     {
         $file = $request->files->get('file');
+        if (!$file instanceof UploadedFile) {
+            return $this->failResponse('File with "file" query param name is not found');
+        }
         $result = $app['cloudinary.upload']($file);
 
         if (!array_key_exists('public_id', $result)) {
