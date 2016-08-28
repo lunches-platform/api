@@ -23,6 +23,7 @@ class Transaction
 {
     const TYPE_INCOME = 'income';
     const TYPE_OUTCOME = 'outcome';
+    const TYPE_REFUND = 'refund';
     /**
      * @var string
      * @Id
@@ -116,7 +117,7 @@ class Transaction
     }
     private function updateUserBalance()
     {
-        if ($this->type === self::TYPE_INCOME) {
+        if ($this->type === self::TYPE_INCOME || $this->type === self::TYPE_REFUND) {
             $this->user->rechargeBalance($this->amount);
         }
         if ($this->type === self::TYPE_OUTCOME) {
@@ -142,8 +143,8 @@ class Transaction
             throw ValidationException::invalidTransaction('Type of transaction is required. "income" or "outcome" is allowed');
         }
 
-        if (!in_array($type, [self::TYPE_INCOME, self::TYPE_OUTCOME], true)) {
-            throw ValidationException::invalidTransaction('Only "income" or "outcome" transaction type is allowed');
+        if (!in_array($type, [self::TYPE_INCOME, self::TYPE_OUTCOME, self::TYPE_REFUND], true)) {
+            throw ValidationException::invalidTransaction('Only "income", "outcome" or "refund" transaction type is allowed');
         }
         $this->type = $type;
     }
