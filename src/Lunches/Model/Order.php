@@ -27,6 +27,7 @@ class Order
     const STATUS_CANCELED = 'canceled';
     const STATUS_REJECTED = 'rejected';
     const STATUS_DELIVERED = 'delivered';
+    const STATUS_CLOSED = 'closed';
 
     /**
      * @var int
@@ -135,7 +136,7 @@ class Order
             'address' => $this->address,
             'items' => $lineItems,
             'status' => $this->status,
-            'paid' => $this->payment->isPaid(),
+            'paid' => $this->getPayment()->isPaid(),
             'created' => $this->createdOrder instanceof CreatedOrder ? $this->createdOrder->toArray() : null,
             'canceled' => $this->canceledOrder instanceof CanceledOrder ? $this->canceledOrder->toArray() : null,
             'rejected' => $this->rejectedOrder instanceof RejectedOrder ? $this->rejectedOrder->toArray() : null,
@@ -148,9 +149,10 @@ class Order
         if ($this->status === self::STATUS_CANCELED || $this->status === self::STATUS_REJECTED) {
             throw OrderException::canNotPay('Canceled or Rejected orders can not be paid');
         }
-
-        $this->payment->setOrder($this);
-        return $this->payment->pay();
+        if ($this->status === self::STATUS_CLOSED) {
+            return true;
+        }
+        return $this->getPayment()->pay();
     }
 
     public function addLineItem(LineItem $lineItem)
@@ -175,8 +177,19 @@ class Order
 
     public function delivered($carrier)
     {
+        if ($this->status !== self::STATUS_IN_PROGRESS) {
+            throw OrderException::failedToChangeStatus('Only "in progress" orders can become "delivered"');
+        }
         $this->deliveredOrder = new DeliveredOrder($this, new \DateTime(), $carrier);
         $this->status = self::STATUS_DELIVERED;
+    }
+
+    public function close()
+    {
+        if (!$this->getPayment()->isPaid() || $this->status !== self::STATUS_DELIVERED) {
+            throw OrderException::failedToChangeStatus('To close Order it should be paid and delivered');
+        }
+        $this->status = self::STATUS_CLOSED;
     }
 
     /**
@@ -194,7 +207,7 @@ class Order
         $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
         $this->status = self::STATUS_CANCELED;
 
-        if ($this->payment->isPaid()) {
+        if ($this->getPayment()->isPaid()) {
             return new Transaction(Transaction::TYPE_REFUND, $this->price, $this->user);
         }
 
@@ -203,17 +216,25 @@ class Order
 
     public function reject($reason)
     {
+        $this->disallowClosed();
         if ($this->status === self::STATUS_REJECTED) {
             throw OrderException::failedToChangeStatus('Such order has been already rejected');
         }
         $this->rejectedOrder = new RejectedOrder($this, new \DateTime(), $reason);
         $this->status = self::STATUS_REJECTED;
 
-        if ($this->payment->isPaid()) {
+        if ($this->getPayment()->isPaid()) {
             return new Transaction(Transaction::TYPE_REFUND, $this->price, $this->user);
         }
 
         return true;
+    }
+
+    private function disallowClosed()
+    {
+        if ($this->status === self::STATUS_CLOSED) {
+            throw OrderException::failedToChangeStatus('Order is closed, action can\'t be performed');
+        }
     }
 
     /**
@@ -323,5 +344,15 @@ class Order
             throw ValidationException::invalidOrder('address must be greater than zero and less than 150 characters');
         }
         $this->address = $address;
+    }
+
+    /**
+     * @return OrderPayment
+     */
+    private function getPayment()
+    {
+        $this->payment->setOrder($this);
+
+        return $this->payment;
     }
 }

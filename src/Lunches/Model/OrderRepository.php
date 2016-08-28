@@ -81,22 +81,25 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findCreatedOrders()
-    {
-        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.status = 'created'";
-
-        return $this->_em->createQuery($dql)->iterate();
-    }
-
     /**
      * @param User $user
      * @return Order[]
      */
     public function findNonPaidOrders(User $user)
     {
-        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 0 AND status NOT IN('canceled', 'rejected') AND o.user = :user ORDER BY o.createdOrder.at ASC";
+        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 0 AND o.status NOT IN('canceled', 'rejected') AND o.user = :user ORDER BY o.createdOrder.at ASC";
 
         return $this->_em->createQuery($dql)->setParameter('user', $user)->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function findPaidAndDelivered()
+    {
+        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 1 AND o.status = 'delivered'";
+
+        return $this->_em->createQuery($dql)->getResult();
     }
 
     private function filterByDateRange(QueryBuilder $qb, $dateRange)
