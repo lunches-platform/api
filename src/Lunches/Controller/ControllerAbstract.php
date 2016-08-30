@@ -3,6 +3,7 @@
 namespace Lunches\Controller;
 
 
+use Lunches\Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -36,12 +37,11 @@ class ControllerAbstract
     {
         return new JsonResponse($data, $code, $headers);
     }
-    protected function isAccessTokenValid(Request $request)
+    protected function isAccessTokenValid(Request $request, Application $app)
     {
         $accessToken = $request->get('accessToken');
-        $validToken = 'f14d16e1e90dd412d8b29ddb64168f112f753';
 
-        return $accessToken === $validToken;
+        return $accessToken === $app['accessToken'];
     }
 
     protected function authResponse()

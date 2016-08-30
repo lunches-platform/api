@@ -160,9 +160,9 @@ class OrdersController extends ControllerAbstract
         }
         return $this->successResponse($order->toArray());
     }
-    public function reject($orderId, Request $request)
+    public function reject($orderId, Request $request, Application $app)
     {
-        if (!$this->isAccessTokenValid($request)) {
+        if (!$this->isAccessTokenValid($request, $app)) {
             return $this->authResponse();
         }
         /** @var Order $order */
