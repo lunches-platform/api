@@ -3,3 +3,5 @@
 api.paw
 composer.phar
 shared
+public/.htaccess
+config/local.php

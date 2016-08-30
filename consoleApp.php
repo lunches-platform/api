@@ -6,7 +6,11 @@ use Symfony\Component\Console\Application;
 
 $app = new Silex\Application();
 
-require_once __DIR__.'/bootstrap.php';
+$env = getenv('APP_ENV');
+if (empty($env)) {
+    die('APP_ENV is empty');
+}
+require_once __DIR__ . '/config/bootstrap.php';
 
 ini_set('memory_limit', '2G');
 ini_set('max_execution_time', '7200');

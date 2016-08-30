@@ -1,20 +1,25 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+$env = getenv('APP_ENV') ?: 'prod';
+$configFile = __DIR__."/$env.php";
+if (!file_exists($configFile)) {
+    die('Application is not fully configured: can\'t find config file');
+}
+$envConfig = require_once $configFile;
+if (!is_array($envConfig)) {
+    die('Application is not fully configured: config file is not valid');
+}
 
 $app = new \Lunches\Silex\Application();
 
+foreach ($envConfig as $name => $value) {
+    /** @noinspection OffsetOperationsInspection */
+    $app[$name] = $value;
+}
 $app['debug'] = true;
-$app['root_dir'] = __DIR__ . '/';
+$app['root_dir'] = __DIR__ . 'bootstrap.php/';
 $app['shared_dir'] = $app['root_dir'] . 'shared';
-$app['db.options'] = [
-    'host' => '127.0.0.1',
-    'driver'   => 'pdo_mysql',
-    'user'   => 'root',
-    'password' => 'root',
-    'dbname'   => 'lunches',
-    'driverOptions' => [ 1002=>'SET NAMES utf8' ]
-];
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
     'cors.allowOrigin' => '*',
@@ -22,7 +27,11 @@ $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
 $app->register(new Silex\Provider\DoctrineServiceProvider(), [
     'db.options' => $app['db.options'],
 ]);
-$app->register(new \Lunches\Silex\CloudinaryServiceProvider('df0ff62zx', '182632897348152', 'oNJJFfwvphafDODbTYyMbVQZXPc'));
+$app->register(new \Lunches\Silex\CloudinaryServiceProvider(
+    $app['cloudinary.cloudName'],
+    $app['cloudinary.apiKey'],
+    $app['cloudinary.apiSecret']
+));
 
 $app['doctrine.em'] = function () use ($app) {
     return \Doctrine\ORM\EntityManager::create(
@@ -32,7 +41,7 @@ $app['doctrine.em'] = function () use ($app) {
     );
 };
 $app['doctrine.config'] = function () use ($app) {
-    return Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__.'/src'], true, $app['shared_dir']);
+    return Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__ . '/src'], true, $app['shared_dir']);
 };
 
 $app['doctrine.event_manager'] = function () use ($app) {
@@ -107,7 +116,7 @@ $app['lunches.factory.price'] = function () use ($app) {
 $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
     'console.name'              => 'MyApplication',
     'console.version'           => '1.0.0',
-    'console.project_directory' => __DIR__.'/..'
+    'console.project_directory' => __DIR__ . '/public_html'
 ));
 
 return $app;

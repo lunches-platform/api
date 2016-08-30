@@ -10,6 +10,7 @@ use Lunches\Model\Transaction;
 use Lunches\Model\TransactionRepository;
 use Lunches\Model\User;
 use Lunches\Model\UserRepository;
+use Lunches\Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -47,9 +48,9 @@ class TransactionsController extends ControllerAbstract
         $this->orderRepo = $this->em->getRepository('\Lunches\Model\Order');
     }
 
-    public function get($transactionId, Request $request)
+    public function get($transactionId, Request $request, Application $app)
     {
-        if (!$this->isAccessTokenValid($request)) {
+        if (!$this->isAccessTokenValid($request, $app)) {
             return $this->authResponse();
         }
         $transaction = $this->repo->find($transactionId);
@@ -60,9 +61,9 @@ class TransactionsController extends ControllerAbstract
 
         return $this->successResponse($transaction->toArray());
     }
-    public function delete($transactionId, Request $request)
+    public function delete($transactionId, Request $request, Application $app)
     {
-        if (!$this->isAccessTokenValid($request)) {
+        if (!$this->isAccessTokenValid($request, $app)) {
             return $this->authResponse();
         }
         $transaction = $this->repo->find($transactionId);
@@ -102,9 +103,9 @@ class TransactionsController extends ControllerAbstract
             return $transaction->toArray();
         }, $transactions));
     }
-    public function create(Request $request)
+    public function create(Request $request, Application $app)
     {
-        if (!$this->isAccessTokenValid($request)) {
+        if (!$this->isAccessTokenValid($request, $app)) {
             return $this->authResponse();
         }
         $username = $request->get('username');
