@@ -5,3 +5,5 @@ composer.phar
 shared
 public/.htaccess
 config/local.php
+config/qa.php
+config/prod.php
