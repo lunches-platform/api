@@ -1,7 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-$env = getenv('APP_ENV') ?: 'prod';
+/** @noinspection UnSafeIsSetOverArrayInspection */
+if (!isset($env)) {
+    $env = getenv('APP_ENV') ?: 'dev';
+}
 $configFile = __DIR__."/$env.php";
 if (!file_exists($configFile)) {
     die('Application is not fully configured: can\'t find config file');
@@ -18,7 +20,7 @@ foreach ($envConfig as $name => $value) {
     $app[$name] = $value;
 }
 $app['debug'] = true;
-$app['root_dir'] = __DIR__ . 'bootstrap.php/';
+$app['root_dir'] = __DIR__ . '/../';
 $app['shared_dir'] = $app['root_dir'] . 'shared';
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
@@ -113,7 +115,7 @@ $app['lunches.factory.order'] = function () use ($app) {
 $app['lunches.factory.price'] = function () use ($app) {
     return new \Lunches\Model\PriceFactory($app['doctrine.em']);
 };
-$app->register(new Knp\Provider\ConsoleServiceProvider(), array(
+$app->register(new Lunches\Silex\ConsoleServiceProvider(), array(
     'console.name'              => 'MyApplication',
     'console.version'           => '1.0.0',
     'console.project_directory' => __DIR__ . '/public_html'

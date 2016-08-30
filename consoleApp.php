@@ -3,13 +3,13 @@
 require __DIR__.'/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], getenv('APP_ENV') ?: 'dev');
 
 $app = new Silex\Application();
 
-$env = getenv('APP_ENV');
-if (empty($env)) {
-    die('APP_ENV is empty');
-}
 require_once __DIR__ . '/config/bootstrap.php';
 
 ini_set('memory_limit', '2G');
