@@ -2,7 +2,7 @@
 
 use Lunches\Silex\Application;
 
-$app = require_once __DIR__ . '/../bootstrap.php';
+$app = require_once __DIR__ . '/bootstrap.php';
 $app['debug'] = isset($_GET['debug_s']);
 
 /**
