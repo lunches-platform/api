@@ -20,9 +20,6 @@ $app->get('/menus/{date}', 'lunches.controller.menus:getConcrete');
  */
 $app->get('/products', 'lunches.controller.products:getList');
 $app->get('/products/{productId}/ingredients', 'lunches.controller.ingredients:getList');
-$app->get('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:get')->bind('product-image');
-$app->put('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:create');
-$app->get('/products/{productId}/images', 'lunches.controller.product-images:getList');
 
 /**
  * Prices
@@ -71,8 +68,10 @@ $app->get('/ingredients', 'lunches.controller.ingredients:getList');
 $app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
 $app->post('/images', 'lunches.controller.images:create');
 
-$app->get('/images/{imageId}', 'lunches.controller.images:get')->bind('image');
-$app->post('/images', 'lunches.controller.images:create');
+$app->get('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:get')->bind('product-image');
+$app->put('/products/{productId}/images/{imageId}', 'lunches.controller.product-images:create');
+$app->get('/products/{productId}/images', 'lunches.controller.product-images:getList');
+$app->put('/products/{productId}/images/{imageId}/cover', 'lunches.controller.product-images:markCover');
 
 $app->get('/paymentCard', function(Application $app) {
     $card = $app['db']->fetchAssoc('SELECT number, holder FROM payment_card');

@@ -67,7 +67,7 @@ class ProductImage
     {
         if ($short === true) {
             return [
-                'url' => $this->getImage()->getUrl(),
+                'url' => cloudinary_url($this->getImage()->getId(), array('quality' => 'auto:eco')),
                 'isCover' => $this->isCover(),
             ];
         }
@@ -154,11 +154,22 @@ class ProductImage
         return $this->isCover;
     }
 
+    public function resetCover()
+    {
+        $this->isCover = false;
+    }
+
     /**
      * @param boolean $isCover
      */
     public function setIsCover($isCover)
     {
+        foreach($this->product->getImages() as $productImage) {
+            if ($productImage === $this) {
+                continue;
+            }
+            $productImage->resetCover();
+        }
         $this->isCover = $isCover;
     }
 

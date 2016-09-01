@@ -56,7 +56,7 @@ class ProductImagesController extends ControllerAbstract
     public function get($imageId, $productId)
     {
         /** @var ProductImage $image */
-        $image = $this->repo->findBy([
+        $image = $this->repo->findOneBy([
             'image' => $imageId,
             'product' => $productId,
         ]);
@@ -117,5 +117,21 @@ class ProductImagesController extends ControllerAbstract
                 'productId' => $productId
             ])
         ]);
+    }
+
+    public function markCover($productId, $imageId)
+    {
+        /** @var ProductImage $image */
+        $image = $this->repo->findOneBy([
+            'image' => $imageId,
+            'product' => $productId,
+        ]);
+        if (!$image) {
+            return $this->failResponse('Such image is not assigned to this product', 404);
+        }
+        $image->setIsCover(true);
+        $this->em->flush();
+        
+        return $this->successResponse(null, 204);
     }
 }
