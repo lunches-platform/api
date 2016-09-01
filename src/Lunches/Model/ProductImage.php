@@ -67,7 +67,7 @@ class ProductImage
     {
         if ($short === true) {
             return [
-                'url' => $this->getImage()->getUrl(),
+                'url' => cloudinary_url($this->getImage()->getId(), array('quality' => 'auto:eco')),
                 'isCover' => $this->isCover(),
             ];
         }
