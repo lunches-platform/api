@@ -11,7 +11,8 @@
         "webmozart/assert": "1.1.*"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "2.*"
+        "squizlabs/php_codesniffer": "2.*",
+        "phpunit/phpunit": "^4.8"
     },
     "autoload": {
         "psr-4": { "Lunches\\": "src/Lunches" }
