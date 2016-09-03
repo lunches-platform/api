@@ -1,9 +1,4 @@
 <?php
-/**
- * @author Sergey Buchchenko <sergey.buchchenko@gmail.com>
- * Date: 05.08.16
- * Time: 23:18
- */
 
 namespace Lunches\Model;
 
