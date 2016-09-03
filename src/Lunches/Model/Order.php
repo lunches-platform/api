@@ -144,6 +144,10 @@ class Order
         ];
     }
 
+    /**
+     * @return bool|Transaction
+     * @throws OrderException
+     */
     public function pay()
     {
         if ($this->status === self::STATUS_CANCELED || $this->status === self::STATUS_REJECTED) {
@@ -161,6 +165,10 @@ class Order
         $lineItem->setOrder($this);
     }
 
+    /**
+     * TODO refactoring idea:
+     * TODO create OrderStatus interface and $this->status will hold all status info instead of two properties
+     */
     private function orderCreated()
     {
         $this->createdOrder = new CreatedOrder($this, new \DateTime());
@@ -228,6 +236,11 @@ class Order
         }
 
         return true;
+    }
+
+    public function currentStatus()
+    {
+        return $this->status;
     }
 
     private function disallowClosed()
@@ -319,6 +332,7 @@ class Order
 
     /**
      * @param \DateTime $shipmentDate
+     * TODO remove all methods-accessors
      */
     public function setShipmentDate($shipmentDate)
     {
@@ -336,11 +350,13 @@ class Order
     /**
      * @param string $address
      * @throws ValidationException
+     * TODO make it private
      */
     public function setAddress($address)
     {
         $len = mb_strlen($address);
         if ($len < 1 || $len > 150) {
+            // TODO use OrderException
             throw ValidationException::invalidOrder('address must be greater than zero and less than 150 characters');
         }
         $this->address = $address;
