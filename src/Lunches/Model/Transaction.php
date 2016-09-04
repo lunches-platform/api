@@ -92,6 +92,11 @@ class Transaction
         $this->paymentDate = $paymentDate;
     }
 
+    public function type()
+    {
+        return $this->type;
+    }
+
     /**
      * @return array
      */

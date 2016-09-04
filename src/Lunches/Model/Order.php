@@ -131,8 +131,8 @@ class Order
             'id' => $this->id,
             'price' => $this->price,
             'orderNumber' => $this->orderNumber,
-            'user' => $this->user->toArray(),
-            'shipmentDate' => $this->shipmentDate->format('Y-m-d'),
+            'user' => $this->user instanceof User ? $this->user->toArray() : null,
+            'shipmentDate' => $this->shipmentDate instanceof \DateTime ? $this->shipmentDate->format('Y-m-d') : null,
             'address' => $this->address,
             'items' => $lineItems,
             'status' => $this->status,
@@ -202,7 +202,7 @@ class Order
 
     /**
      * @param string $reason
-     * @return Transaction
+     * @return Transaction|bool
      * @throws OrderException
      * @throws \Lunches\Exception\ValidationException
      */
