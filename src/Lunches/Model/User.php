@@ -109,6 +109,11 @@ class User
         $this->credit += $price;
     }
 
+    public function currentCredit()
+    {
+        return $this->credit;
+    }
+
     public function getBalance()
     {
         return $this->balance;

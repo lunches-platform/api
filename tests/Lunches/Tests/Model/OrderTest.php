@@ -7,6 +7,7 @@ use Lunches\Exception\ValidationException;
 use Lunches\Model\LineItem;
 use Lunches\Model\Order;
 use Lunches\Model\Transaction;
+use Lunches\Model\User;
 
 class OrderTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +19,6 @@ class OrderTest extends \PHPUnit_Framework_TestCase
     }
     public function testOrderToArray()
     {
-        self::markTestSkipped('Failed due to Fatal error');
         $order = new Order();
 
         self::assertTrue(is_array($order->toArray()));
@@ -55,6 +55,8 @@ class OrderTest extends \PHPUnit_Framework_TestCase
     public function testPay()
     {
         $order = new Order();
+        $order->setPrice(100);
+        $order->setUser($this->userWithPositiveBalance());
         $transaction = $order->pay();
 
         self::assertInstanceOf(Transaction::class, $transaction);
@@ -62,6 +64,7 @@ class OrderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group integration
+     * @throws \Lunches\Exception\OrderException
      */
     public function testPayWithoutPrice()
     {
@@ -70,14 +73,85 @@ class OrderTest extends \PHPUnit_Framework_TestCase
 
         self::assertFalse($result);
     }
+    public function testAlreadyPaidOrder()
+    {
+        $order = $this->getPaidOrder();
+        $result = $order->pay();
+
+        self::assertFalse($result);
+    }
+
+    public function testPayInCredit()
+    {
+        $order = new Order();
+        $order->setPrice($price = 45);
+        $order->setUser($user = new User('1', 'name', 'address'));
+
+        $result = $order->pay();
+        self::assertFalse($result);
+
+        self::assertEquals($price, $user->currentCredit());
+
+        return $order;
+    }
+
+    /**
+     * @depends testPayInCredit
+     * @param Order $order
+     * @throws OrderException
+     */
+    public function testPayCredit(Order $order)
+    {
+        $user = $order->getUser();
+        $user->rechargeBalance(100);
+
+        $transaction = $order->pay();
+
+        self::assertInstanceOf(Transaction::class, $transaction);
+        self::assertEquals(0, $user->currentCredit());
+    }
+
+    /**
+     * @throws OrderException
+     * @throws \Lunches\Exception\ValidationException
+     */
+    public function testTwoTimesFailedPay()
+    {
+        $order = new Order();
+        $order->setPrice($price = 45);
+        $order->setUser($user = new User('1', 'name', 'address'));
+
+        $result = $order->pay();
+        self::assertFalse($result);
+        self::assertEquals($price, $user->currentCredit());
+
+        $result = $order->pay();
+        self::assertFalse($result);
+        self::assertEquals($price, $user->currentCredit());
+    }
 
     public function testPayClosedOrder()
     {
-        $order = new Order();
+        $order = $this->getPaidAndDeliveredOrder();
         $order->close();
         $result = $order->pay();
 
         self::assertTrue($result);
+    }
+
+    public function testPayCanceled()
+    {
+        $this->setExpectedException(OrderException::class);
+        $order = new Order();
+        $order->cancel();
+        $order->pay();
+    }
+    public function testPayRejected()
+    {
+        $this->setExpectedException(OrderException::class);
+        $order = new Order();
+        $order->reject('Bad product');
+        $order->pay();
     }
 
     public function testChangeAddress()
@@ -112,5 +186,164 @@ class OrderTest extends \PHPUnit_Framework_TestCase
 
         $order = new Order();
         $order->setAddress(str_repeat('a', 151));
+    }
+
+    public function testStartProgress()
+    {
+        $order = new Order();
+        $order->startProgress();
+        
+        self::assertEquals(Order::STATUS_IN_PROGRESS, $order->currentStatus());
+    }
+
+    public function testStartProgressFulfilledOrder()
+    {
+        $this->setExpectedException(OrderException::class);
+
+        $order = $this->getPaidAndDeliveredOrder();
+        $order->startProgress();
+    }
+
+    public function testDeliverOrder()
+    {
+        $order = new Order();
+        $order->startProgress();
+        $order->delivered('Carrier');
+
+        self::assertEquals(Order::STATUS_DELIVERED, $order->currentStatus());
+    }
+
+    public function testDeliverJustCreatedOrder()
+    {
+        $this->setExpectedException(OrderException::class);
+
+        $order = new Order();
+        $order->delivered('Carrier');
+    }
+
+    public function testCloseOrder()
+    {
+        $order = $this->getPaidAndDeliveredOrder();
+        $order->close();
+
+        self::assertEquals(Order::STATUS_CLOSED, $order->currentStatus());
+    }
+
+    public function testCloseNonPaidAndNonDeliveredOrder()
+    {
+        $this->setExpectedException(OrderException::class);
+
+        $order = new Order();
+        $order->close();
+    }
+
+    public function testCancelOrder()
+    {
+        $order = new Order();
+        $result = $order->cancel();
+
+        self::assertEquals(Order::STATUS_CANCELED, $order->currentStatus());
+        self::assertTrue($result);
+    }
+
+    public function testCancelPaidOrder()
+    {
+        $order = $this->getPaidOrder();
+        $transaction = $order->cancel();
+
+        self::assertInstanceOf(Transaction::class, $transaction);
+        self::assertEquals(Transaction::TYPE_REFUND, $transaction->type());
+        self::assertEquals($order->getPrice(), $transaction->getAmount());
+        self::assertSame($order->getUser(), $transaction->getUser());
+    }
+
+    public function testCancelOrderWithReason()
+    {
+        self::markTestIncomplete('Can not access reason now');
+
+        $order = new Order();
+        $order->cancel($reason = 'Bad product');
+    }
+
+    public function testCancelStarted()
+    {
+        $this->setExpectedException(OrderException::class);
+
+        $order = new Order();
+        $order->startProgress();
+        $order->cancel();
+    }
+
+    public function testReject()
+    {
+        self::markTestIncomplete('Assert for rejection reason');
+        $order = $this->getDeliveredOrder();
+        $result = $order->reject('Bad product');
+
+        self::assertTrue($result);
+        self::assertEquals(Order::STATUS_REJECTED, $order->currentStatus());
+    }
+
+    public function testRejectClosedOrder()
+    {
+        $this->setExpectedException(OrderException::class);
+
+        $order = $this->getClosedOrder();
+        $order->reject('Bad product');
+    }
+
+    public function testRejectPaidOrder()
+    {
+        $order = $this->getPaidOrder();
+        $transaction = $order->reject('Bad product');
+
+        self::assertInstanceOf(Transaction::class, $transaction);
+        self::assertEquals(Transaction::TYPE_REFUND, $transaction->type());
+        self::assertEquals($order->getPrice(), $transaction->getAmount());
+        self::assertSame($order->getUser(), $transaction->getUser());
+    }
+
+    private function userWithPositiveBalance()
+    {
+        $user = new User($clintId = 1, $name = 'name', $address = 'address');
+        $user->rechargeBalance(1000);
+        
+        return $user;
+    }
+
+    private function getPaidOrder()
+    {
+        $order = new Order();
+        $order->setPrice(100);
+        $order->setUser($this->userWithPositiveBalance());
+        $order->pay();
+
+        return $order;
+    }
+
+    private function getPaidAndDeliveredOrder()
+    {
+        $order = $this->getPaidOrder();
+        $order->startProgress();
+        $order->delivered('Carrier');
+
+        return $order;
+    }
+
+    private function getDeliveredOrder()
+    {
+        $order = new Order();
+        $order->startProgress();
+        $order->delivered('Carrier');
+
+        return $order;
+    }
+
+    private function getClosedOrder()
+    {
+        $order = $this->getPaidAndDeliveredOrder();
+        $order->close();
+
+        return $order;
     }
 }
