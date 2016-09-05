@@ -28,7 +28,7 @@ class ProductRepository extends EntityRepository
 
     public function get($productId)
     {
-        $product = $this->find((int) $productId);
+        $product = $this->find($productId);
         if (!$product instanceof Product) {
             throw RuntimeException::notFound('Product');
         }

@@ -83,9 +83,11 @@ class Product
 
     /**
      * Product constructor.
+     * @param string|int $id
      */
-    public function __construct()
+    public function __construct($id)
     {
+        $this->id = $id;
         $this->ingredients = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
