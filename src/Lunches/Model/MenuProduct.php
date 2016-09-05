@@ -43,6 +43,12 @@ class MenuProduct
      */
     protected $position;
 
+    public function __construct(Menu $menu, Product $product)
+    {
+        $this->menu = $menu;
+        $this->product = $product;
+    }
+
     public function sameProduct(Product $product)
     {
         return $this->product->getId() === $product->getId();

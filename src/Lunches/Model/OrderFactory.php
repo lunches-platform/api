@@ -5,7 +5,6 @@ namespace Lunches\Model;
 use Lunches\Exception\LineItemException;
 use Lunches\Exception\RuntimeException;
 use Lunches\Exception\ValidationException;
-use Doctrine\ORM\EntityManager;
 
 class OrderFactory
 {
@@ -24,17 +23,19 @@ class OrderFactory
     /** @var UserRepository  */
     protected $userRepo;
 
-    /** @var  EntityManager */
-    protected $em;
-
-    public function __construct(EntityManager $entityManager)
+    public function __construct(
+        OrderRepository $orderRepo,
+        ProductRepository $productRepo,
+        MenuRepository $menuRepo,
+        PriceRepository $priceRepo,
+        UserRepository $userRepo
+    )
     {
-        $this->em = $entityManager;
-        $this->orderRepo = $entityManager->getRepository('Lunches\Model\Order');
-        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product');
-        $this->menuRepo = $entityManager->getRepository('Lunches\Model\Menu');
-        $this->priceRepo = $entityManager->getRepository('Lunches\Model\Price');
-        $this->userRepo = $entityManager->getRepository('Lunches\Model\User');
+        $this->orderRepo = $orderRepo;
+        $this->productRepo = $productRepo;
+        $this->menuRepo = $menuRepo;
+        $this->priceRepo = $priceRepo;
+        $this->userRepo = $userRepo;
     }
 
     /**
@@ -82,9 +83,11 @@ class OrderFactory
      */
     private function getUser(array $data)
     {
+        // TODO move that check to all required Order fields like LineItem has, so we can remove this method completely
         if (!array_key_exists('userId', $data)) {
             throw ValidationException::invalidOrder('Each order must have userId');
         }
+        // TODO refactor to get($userId) and incapsulate exception
         $user = $this->userRepo->find($data['userId']);
 
         if (!$user instanceof User) {
@@ -96,6 +99,7 @@ class OrderFactory
 
     private function getMenus(\DateTime $shipmentDate)
     {
+        // TODO refactor to getByDate() and incapsulate exception
         $menus = $this->menuRepo->findByDate($shipmentDate);
         if (!$menus) {
             throw RuntimeException::notFound('Menu', 'There is no menu for specified date');
@@ -180,6 +184,7 @@ class OrderFactory
     {
         $product = $this->productRepo->get($productId);
 
+        // TODO runs for each LineItem, move outside
         $menus = $this->getMenus($shipmentDate);
         foreach ($menus as $menu) {
             if ($menu->hasProduct($product)) {
