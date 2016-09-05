@@ -79,7 +79,7 @@ class ChangeOrderStatusCommand extends Command
 
             /** @var Order $order */
             try {
-                $order->delivered($carrier);
+                $order->deliver($carrier);
             } catch (OrderException $e) {
                 $this->writeError($order, $e);
                 continue;

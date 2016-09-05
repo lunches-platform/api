@@ -208,7 +208,7 @@ class OrderTest extends \PHPUnit_Framework_TestCase
     {
         $order = new Order();
         $order->startProgress();
-        $order->delivered('Carrier');
+        $order->deliver('Carrier');
 
         self::assertEquals(Order::STATUS_DELIVERED, $order->currentStatus());
     }
@@ -218,7 +218,7 @@ class OrderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(OrderException::class);
 
         $order = new Order();
-        $order->delivered('Carrier');
+        $order->deliver('Carrier');
     }
 
     public function testCloseOrder()
@@ -325,7 +325,7 @@ class OrderTest extends \PHPUnit_Framework_TestCase
     {
         $order = $this->getPaidOrder();
         $order->startProgress();
-        $order->delivered('Carrier');
+        $order->deliver('Carrier');
 
         return $order;
     }
@@ -334,7 +334,7 @@ class OrderTest extends \PHPUnit_Framework_TestCase
     {
         $order = new Order();
         $order->startProgress();
-        $order->delivered('Carrier');
+        $order->deliver('Carrier');
 
         return $order;
     }
