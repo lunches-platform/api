@@ -135,18 +135,14 @@ class OrderFactory
 
         $lineItems = $orderedProductIds = [];
         foreach ($data['items'] as $line) {
-            $lineItems[] = $lineItem = $this->createLineItem($line, $shipmentDate);
+            $lineItem = $this->createLineItem($line, $shipmentDate);
 
             // order only unique products
             if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
                 continue;
             }
             $orderedProductIds[] = $productId;
-        }
-        $lineItems = array_filter($lineItems);
-
-        if (count($lineItems) === 0) {
-            throw ValidationException::invalidOrder('There are no valid LineItems provided');
+            $lineItems[] = $lineItem;
         }
 
         return $lineItems;
