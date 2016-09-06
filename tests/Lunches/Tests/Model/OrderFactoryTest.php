@@ -13,6 +13,7 @@ use Lunches\Model\Order;
 use Lunches\Model\OrderFactory;
 use Lunches\Model\OrderRepository;
 use Lunches\Model\Price;
+use Lunches\Model\PriceItem;
 use Lunches\Model\PriceRepository;
 use Lunches\Model\Prices;
 use Lunches\Model\Product;
@@ -87,10 +88,10 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     }
     public function testOrderDate()
     {
-        $data = $this->getOrderData(['shipmentDate' => $this->tomorrowDate()]);
+        $data = $this->getOrderData(['shipmentDate' => $this->getDate('tomorrow')]);
         $order = $this->factory->createNewFromArray($data);
 
-        self::assertEquals($this->tomorrowDate(true), $order->getShipmentDate());
+        self::assertEquals($this->getDate('tomorrow', true), $order->getShipmentDate());
     }
     public function testDateIsNotProvided()
     {
@@ -126,7 +127,6 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals($date, $order->getShipmentDate());
     }
-
     public function testNoLineItems()
     {
         $this->setExpectedException(ValidationException::class, 'Invalid order. There are no valid LineItems provided');
@@ -227,6 +227,18 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
+    public function testPriceShouldBeFloat()
+    {
+        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $this->getDate('tomorrow')]));
+        
+        self::assertTrue(is_float($order->getPrice()));
+    }
+    public function testPricesNotFound()
+    {
+        $this->setExpectedException(RuntimeException::class);
+        $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $this->getDate('next week')]));
+    }
+
 
 
     private function getOrderRepo()
@@ -271,7 +283,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $menuRepo->method('findByDate')->will(self::returnCallback(function (\DateTime $date) {
             /** @noinspection TypeUnsafeComparisonInspection */
-            if ($date == $this->tomorrowDate(true)) {
+            if ($date == $this->getDate('tomorrow', true)) {
                 /** @var ProductRepository $productRepo */
                 $productRepo = $this->getProductRepo();
                 $product = $productRepo->get($this->existId());
@@ -293,8 +305,24 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $priceRepo->method('findByDate')->willReturn(new Prices([new Price(100, $this->tomorrowDate(true))]));
-        
+        $priceRepo->method('findByDate')->will(self::returnCallback(function (\DateTime $dateTime) {
+
+            $tomorrow = $this->getDate('tomorrow', true);
+            
+            if ($dateTime == $tomorrow) {
+                /** @var ProductRepository $productRepo */
+                $productRepo = $this->getProductRepo();
+
+                $price = new Price(100, $tomorrow);
+                $price->setItems([
+                    new PriceItem($price, $productRepo->get($this->existId()), 'big'),
+                ]);
+                    
+                return new Prices([$price]);
+            }
+            return new Prices();
+        }));
+
         return $priceRepo;
     }
 
@@ -334,9 +362,9 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     {
         return 'notCooking';
     }
-    private function tomorrowDate($asDateTime = false)
+    private function getDate($time, $asDateTime = false)
     {
-        $tomorrow = new \DateTime('tomorrow');
+        $tomorrow = new \DateTime($time);
         if ($asDateTime ===  true) {
             return $tomorrow;
         }
@@ -347,7 +375,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         $data = [
             'address' => $address = 'Some address',
             'userId' => $this->existId(),
-            'shipmentDate' => $this->tomorrowDate(),
+            'shipmentDate' => $this->getDate('tomorrow'),
             'items' => [
                 [
                     'productId' => $this->existId(),
