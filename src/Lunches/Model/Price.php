@@ -147,6 +147,10 @@ class Price
         ];
     }
 
+    /**
+     * @param ArrayCollection $items
+     * @return bool
+     */
     public function areItemsEquals($items)
     {
         if ($this->items->count() !== $items->count()) {

@@ -110,10 +110,21 @@ $app['lunches.controller.transactions'] = function () use ($app) {
 };
 
 $app['lunches.factory.order'] = function () use ($app) {
-    return new \Lunches\Model\OrderFactory($app['doctrine.em']);
+    $entityManager = $app['doctrine.em'];
+
+    return new \Lunches\Model\OrderFactory(
+        $this->orderRepo = $entityManager->getRepository('Lunches\Model\Order'),
+        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product'),
+        $this->menuRepo = $entityManager->getRepository('Lunches\Model\Menu'),
+        $this->priceRepo = $entityManager->getRepository('Lunches\Model\Price'),
+        $this->userRepo = $entityManager->getRepository('Lunches\Model\User')
+    );
 };
 $app['lunches.factory.price'] = function () use ($app) {
-    return new \Lunches\Model\PriceFactory($app['doctrine.em']);
+    $entityManager = $app['doctrine.em'];
+    return new \Lunches\Model\PriceFactory(
+        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product')
+    );
 };
 $app->register(new Lunches\Silex\ConsoleServiceProvider(), array(
     'console.name'              => 'MyApplication',

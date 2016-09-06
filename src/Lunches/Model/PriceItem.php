@@ -79,6 +79,7 @@ class PriceItem
     }
 
     /**
+     * TODO rename getters
      * @return Product
      */
     public function getProduct()

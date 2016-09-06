@@ -1,6 +1,6 @@
 /vendor
 .idea
-api.paw
+LunchesAPI.paw
 composer.phar
 shared
 public/.htaccess

@@ -165,10 +165,6 @@ class Order
         $lineItem->setOrder($this);
     }
 
-    /**
-     * TODO refactoring idea:
-     * TODO create OrderStatus interface and $this->status will hold all status info instead of two properties
-     */
     private function orderCreated()
     {
         $this->createdOrder = new CreatedOrder($this, new \DateTime());
@@ -177,25 +173,23 @@ class Order
 
     public function startProgress()
     {
-        if ($this->status !== self::STATUS_CREATED) {
-            throw OrderException::failedToChangeStatus('Just "created" orders can became in progress');
-        }
+        $this->assertStatus(self::STATUS_CREATED, 'Just "created" orders can became in progress');
         $this->status = self::STATUS_IN_PROGRESS;
     }
 
-    public function delivered($carrier)
+    public function deliver($carrier)
     {
-        if ($this->status !== self::STATUS_IN_PROGRESS) {
-            throw OrderException::failedToChangeStatus('Only "in progress" orders can become "delivered"');
-        }
+        $this->assertStatus(self::STATUS_IN_PROGRESS, 'Only "in progress" orders can become "delivered"');
         $this->deliveredOrder = new DeliveredOrder($this, new \DateTime(), $carrier);
         $this->status = self::STATUS_DELIVERED;
     }
 
     public function close()
     {
-        if (!$this->getPayment()->isPaid() || $this->status !== self::STATUS_DELIVERED) {
-            throw OrderException::failedToChangeStatus('To close Order it should be paid and delivered');
+        $this->assertStatus(self::STATUS_DELIVERED, 'To close Order it should be delivered');
+
+        if (!$this->getPayment()->isPaid()) {
+            throw OrderException::failedToChangeStatus('To close Order it should be paid');
         }
         $this->status = self::STATUS_CLOSED;
     }
@@ -208,23 +202,23 @@ class Order
      */
     public function cancel($reason = '')
     {
-        if ($this->status !== self::STATUS_CREATED) {
-            throw OrderException::failedToChangeStatus('Just "created" orders can be canceled');
-        }
+        $this->assertStatus(self::STATUS_CREATED, 'Just "created" orders can be canceled');
 
         $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
-        $this->status = self::STATUS_CANCELED;
 
         if ($this->getPayment()->isPaid()) {
             return new Transaction(Transaction::TYPE_REFUND, $this->price, $this->user);
         }
+        $this->status = self::STATUS_CANCELED;
 
         return true;
     }
 
     public function reject($reason)
     {
-        $this->disallowClosed();
+        if ($this->status === self::STATUS_CLOSED) {
+            throw OrderException::failedToChangeStatus('Order is closed, can\'t reject');
+        }
         if ($this->status === self::STATUS_REJECTED) {
             throw OrderException::failedToChangeStatus('Such order has been already rejected');
         }
@@ -241,13 +235,6 @@ class Order
     public function currentStatus()
     {
         return $this->status;
-    }
-
-    private function disallowClosed()
-    {
-        if ($this->status === self::STATUS_CLOSED) {
-            throw OrderException::failedToChangeStatus('Order is closed, action can\'t be performed');
-        }
     }
 
     /**
@@ -271,7 +258,8 @@ class Order
      */
     public function setLineItems($lineItems)
     {
-        $this->lineItems = $lineItems;
+        $this->lineItems->clear();
+        array_map([$this, 'addLineItem'], $lineItems);
     }
 
     /**
@@ -370,5 +358,12 @@ class Order
         $this->payment->setOrder($this);
 
         return $this->payment;
+    }
+
+    private function assertStatus($status, $errMsg)
+    {
+        if ($this->status !== $status) {
+            throw OrderException::failedToChangeStatus($errMsg);
+        }
     }
 }

@@ -93,7 +93,7 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @return array
+     * @return Order[]
      */
     public function findPaidAndDelivered()
     {
