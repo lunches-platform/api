@@ -2,6 +2,7 @@
 
 namespace Lunches\Tests\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Lunches\Exception\OrderException;
 use Lunches\Exception\ValidationException;
 use Lunches\Model\LineItem;
@@ -32,6 +33,19 @@ class OrderTest extends \PHPUnit_Framework_TestCase
         $order->addLineItem($lineItem);
 
         self::assertSame($lineItem, $order->getLineItems()[0]);
+    }
+
+    public function testSetLineItems()
+    {
+        $order = new Order();
+        $lineItem1 = new LineItem();
+        $lineItem2 = new LineItem();
+
+        $order->setLineItems([$lineItem1, $lineItem2]);
+
+        self::assertInstanceOf(ArrayCollection::class, $order->getLineItems());
+        self::assertSame($lineItem1, $order->getLineItems()[0]);
+        self::assertSame($lineItem2, $order->getLineItems()[1]);
     }
 
     public function testAddLineItems()

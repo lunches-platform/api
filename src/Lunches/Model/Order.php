@@ -258,7 +258,8 @@ class Order
      */
     public function setLineItems($lineItems)
     {
-        $this->lineItems = $lineItems;
+        $this->lineItems->clear();
+        array_map([$this, 'addLineItem'], $lineItems);
     }
 
     /**
