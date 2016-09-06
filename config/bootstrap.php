@@ -121,7 +121,10 @@ $app['lunches.factory.order'] = function () use ($app) {
     );
 };
 $app['lunches.factory.price'] = function () use ($app) {
-    return new \Lunches\Model\PriceFactory($app['doctrine.em']);
+    $entityManager = $app['doctrine.em'];
+    return new \Lunches\Model\PriceFactory(
+        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product')
+    );
 };
 $app->register(new Lunches\Silex\ConsoleServiceProvider(), array(
     'console.name'              => 'MyApplication',

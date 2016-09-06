@@ -4,24 +4,20 @@ namespace Lunches\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Lunches\Exception\ValidationException;
-use Doctrine\ORM\EntityManager;
 
 class PriceFactory
 {
     /** @var ProductRepository  */
     protected $productRepo;
-    
-    /** @var  EntityManager */
-    protected $em;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(ProductRepository $productRepo)
     {
-        $this->em = $entityManager;
-        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product');
+        $this->productRepo = $productRepo;
     }
 
     public function createFromArray($array)
     {
+        // TODO move to separate method
         $required = ['date', 'items', 'price'];
         if (count(array_diff_key(array_flip($required), $array)) > 0) {
             throw ValidationException::requiredEmpty('Invalid price', $required);
@@ -58,6 +54,9 @@ class PriceFactory
         foreach ($items as $key => $item) {
             $priceItems[] = $this->createItem($price, $item);
         }
+        if (count($priceItems) === 0) {
+            throw ValidationException::invalidPrice('Invalid price provided. Price must have at least one price item');
+        }
 
         return $priceItems;
     }
@@ -68,6 +67,7 @@ class PriceFactory
             throw ValidationException::invalidPrice('Price item must have "size" of product specified');
         }
 
+        // TODO use ProductRepository::get() instead of find() and remove check for product existence as it is not responsibility of this method
         if (!array_key_exists('productId', $item) || !$product = $this->productRepo->find($item['productId'])) {
             throw ValidationException::invalidPrice('Price item must contain valid product');
         }
