@@ -12,16 +12,16 @@ use Underscore\Types\Arrays;
 class Prices extends ArrayCollection
 {
     /**
-     * @param bool $groupByPrice
+     * @param bool $groupByDate
      * @return array
      */
-    public function toArray($groupByPrice = false)
+    public function toArray($groupByDate = false)
     {
         $prices = array_map(function (Price $price) {
             return $price->toArray();
         }, $this->getValues());
 
-        if ($groupByPrice === true) {
+        if ($groupByDate === true) {
             $prices = Arrays::group($prices, function($price) {
                 return $price['date'];
             });
@@ -34,6 +34,10 @@ class Prices extends ArrayCollection
     {
         foreach ($this->getIterator() as $priceVariant) {
 
+            /** @var Price $priceVariant */
+            if ($priceVariant->getDate() != $order->getShipmentDate()) {
+                continue;
+            }
             $priceItems = PriceFactory::createPriceItemsFromOrder($order, $priceVariant);
 
             if ($priceVariant->areItemsEquals($priceItems)) {
@@ -67,7 +71,7 @@ class Prices extends ArrayCollection
      *
      * @return \Doctrine\Common\Collections\Collection|static
      */
-    private function getSingleItemPrices()
+    public function getSingleItemPrices()
     {
         return $this->filter(function (Price $price) {
             return count($price->getItems()) === 1;
