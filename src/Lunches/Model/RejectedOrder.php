@@ -21,7 +21,7 @@ class RejectedOrder
     protected $at;
     /**
      * @var string
-     * @Column(type="string", nullable=false)
+     * @Column(type="string", nullable=true)
      */
     protected $reason;
 
