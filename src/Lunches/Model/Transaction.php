@@ -120,6 +120,11 @@ class Transaction
     {
         return $this->amount;
     }
+
+    public function paymentDate()
+    {
+        return $this->paymentDate;
+    }
     private function updateUserBalance()
     {
         if ($this->type === self::TYPE_INCOME || $this->type === self::TYPE_REFUND) {
@@ -133,8 +138,8 @@ class Transaction
     private function setAmount($amount)
     {
         $amount = (float) $amount;
-        if ($amount == 0.0) {
-            throw ValidationException::invalidTransaction('Amount of transaction can not be zero');
+        if ($amount <= 0.0) {
+            throw ValidationException::invalidTransaction('Amount of transaction can not be negative or zero');
         }
         if ($amount > 100000) {
             throw ValidationException::invalidTransaction('Transaction amount can not be higher than 100 000.00');
@@ -145,7 +150,7 @@ class Transaction
     private function setType($type)
     {
         if (empty($type)) {
-            throw ValidationException::invalidTransaction('Type of transaction is required. "income" or "outcome" is allowed');
+            throw ValidationException::invalidTransaction('Type of transaction is required.');
         }
 
         if (!in_array($type, [self::TYPE_INCOME, self::TYPE_OUTCOME, self::TYPE_REFUND], true)) {
