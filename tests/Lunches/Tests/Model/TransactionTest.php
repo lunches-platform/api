@@ -58,11 +58,12 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
     public function testToArray()
     {
         $transaction = new Transaction(Transaction::TYPE_INCOME, 100, $this->getValidUser());
-        self::assertTrue(is_array($transaction->toArray()));
-        self::arrayHasKey('id');
-        self::arrayHasKey('type');
-        self::arrayHasKey('amount');
-        self::arrayHasKey('created');
+        $transactionArr = $transaction->toArray();
+        self::assertTrue(is_array($transactionArr));
+        self::assertArrayHasKey('id', $transactionArr);
+        self::assertArrayHasKey('type', $transactionArr);
+        self::assertArrayHasKey('amount', $transactionArr);
+        self::assertArrayHasKey('created', $transactionArr);
     }
 
     public function testIncomeShouldRechargeUserBalance()
