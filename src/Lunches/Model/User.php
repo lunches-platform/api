@@ -141,6 +141,7 @@ class User
 
     private function setUsername($name)
     {
+        // TODO use Assertion lib
         if (empty($name)) {
             throw ValidationException::invalidUser('Username is required');
         }
@@ -156,6 +157,7 @@ class User
 
     private function setAddress($address)
     {
+        // TODO use Assertion lib
         if (empty($address)) {
             throw ValidationException::invalidUser('Address is required');
         }
