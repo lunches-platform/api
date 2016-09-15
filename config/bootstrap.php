@@ -123,7 +123,7 @@ $app['lunches.factory.order'] = function () use ($app) {
 $app['lunches.factory.price'] = function () use ($app) {
     $entityManager = $app['doctrine.em'];
     return new \Lunches\Model\PriceFactory(
-        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product')
+        $entityManager->getRepository('Lunches\Model\Product')
     );
 };
 $app->register(new Lunches\Silex\ConsoleServiceProvider(), array(
