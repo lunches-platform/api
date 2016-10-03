@@ -113,11 +113,11 @@ $app['lunches.factory.order'] = function () use ($app) {
     $entityManager = $app['doctrine.em'];
 
     return new \Lunches\Model\OrderFactory(
-        $this->orderRepo = $entityManager->getRepository('Lunches\Model\Order'),
-        $this->productRepo = $entityManager->getRepository('Lunches\Model\Product'),
-        $this->menuRepo = $entityManager->getRepository('Lunches\Model\Menu'),
-        $this->priceRepo = $entityManager->getRepository('Lunches\Model\Price'),
-        $this->userRepo = $entityManager->getRepository('Lunches\Model\User')
+        $entityManager->getRepository('Lunches\Model\Order'),
+        $entityManager->getRepository('Lunches\Model\Product'),
+        $entityManager->getRepository('Lunches\Model\Menu'),
+        $entityManager->getRepository('Lunches\Model\Price'),
+        $entityManager->getRepository('Lunches\Model\User')
     );
 };
 $app['lunches.factory.price'] = function () use ($app) {
