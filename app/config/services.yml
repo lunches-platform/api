@@ -1,0 +1,8 @@
+parameters:
+
+services:
+    json_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer
+        public: false
+        tags:
+            - { name: serializer.normalizer }

@@ -1,0 +1,113 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+parameters:
+    locale: en
+
+framework:
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        handler_id:  ~
+    fragments:       ~
+    http_method_override: true
+    assets: ~
+    serializer:
+        enabled: true
+        enable_annotations: true
+        cache: serializer.mapping.cache.apc
+
+sensio_framework_extra:
+    request: { converters: true }
+
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    cache: false
+
+doctrine:
+    dbal:
+        driver:   pdo_mysql
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        entity_managers:
+            default:
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: true
+                mappings:
+                    gedmo_timestampable:
+                        type: annotation
+                        prefix: Gedmo\Timestampable\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Timestampable"
+                        is_bundle: false
+
+stof_doctrine_extensions:
+    default_locale: en_US
+    orm:
+        default:
+            timestampable: true
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+
+fos_rest:
+    param_fetcher_listener: true
+    view:
+        view_response_listener: true
+        empty_content: 204
+    routing_loader:
+        default_format: json
+        include_format: false # remove /resource/{id}.{_format} format part
+    format_listener:
+        enabled: true
+        rules:
+            - { path: '^/', fallback_format: json, prefer_extension: false }
+#            - { path: '^/', priorities: ['json','html'], fallback_format: json, prefer_extension: false }
+    exception:
+        enabled: true
+#        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
+        codes:
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'InvalidArgumentException': 400
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+            'Doctrine\ORM\ORMException': 400
+            'DomainException': 400
+        messages:
+            'DomainException': true
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
+            'FOS\RestBundle\Exception\InvalidParameterException': true
+    body_converter:
+        enabled: true
+
+nelmio_cors:
+    paths:
+        '^/':
+            allow_origin: ['*']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            max_age: 3600

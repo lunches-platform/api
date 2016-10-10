@@ -3,7 +3,7 @@
 namespace Lunches\Command;
 
 use Doctrine\ORM\EntityManager;
-use Knp\Command\Command;
+use Symfony\Component\Console\Command\Command;
 use Lunches\Exception\OrderException;
 use Lunches\Model\Order;
 use Lunches\Model\OrderRepository;
