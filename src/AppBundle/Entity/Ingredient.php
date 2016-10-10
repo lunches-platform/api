@@ -17,6 +17,7 @@ use Swagger\Annotations AS SWG;
  * @Table(name="ingredient", indexes={
  *     @Index(name="created", columns={"created"})
  * })
+ * @SWG\Definition(required={"name"})
  */
 class Ingredient
 {

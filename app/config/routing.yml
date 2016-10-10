@@ -1,3 +1,7 @@
 dishes:
     type: rest
     resource: "@AppBundle/Controller/DishesController.php"
+
+images:
+    type: rest
+    resource: "@AppBundle/Controller/ImagesController.php"

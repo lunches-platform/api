@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -9,12 +9,14 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 
 /**
  * @Entity(repositoryClass="ImageRepository")
  * @Table(name="image", indexes={
  *     @Index(name="created", columns={"created"})
  * })
+ * @SWG\Definition(required={"id","url","format","width","height"})
  */
 class Image
 {
@@ -23,30 +25,35 @@ class Image
      * @Id
      * @GeneratedValue(strategy="NONE")
      * @Column(type="string")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @Column(type="string", length=2094, nullable=false)
+     * @SWG\Property()
      */
     protected $url;
 
     /**
      * @var string
      * @Column(type="string", length=10, nullable=false)
+     * @SWG\Property()
      */
     protected $format;
 
     /**
      * @var int
      * @Column(type="integer", nullable=false)
+     * @SWG\Property()
      */
     protected $width;
 
     /**
      * @var int
      * @Column(type="integer", nullable=false)
+     * @SWG\Property()
      */
     protected $height;
 
@@ -55,6 +62,7 @@ class Image
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     private $created;
 
@@ -63,6 +71,7 @@ class Image
      *
      * @Gedmo\Timestampable(on="update")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     private $updated;
 
