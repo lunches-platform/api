@@ -6,3 +6,7 @@ services:
         public: false
         tags:
             - { name: serializer.normalizer }
+
+    app_bundle.controller.dishes_controller:
+        class: AppBundle\Controller\DishesController
+        arguments: ['@doctrine']
