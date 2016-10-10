@@ -60,11 +60,11 @@ class Dish
 //     */
 //    protected $images;
 
-//    /**
-//     * @var Ingredient[]
-//     * @ORM\OneToMany(targetEntity="Ingredient", mappedBy="product", cascade={"persist"})
-//     */
-//    protected $ingredients;
+    /**
+     * @var Ingredient[]
+     * @ORM\OneToMany(targetEntity="Ingredient", mappedBy="dish", cascade={"persist"})
+     */
+    protected $ingredients;
 
     const SIZE_SMALL = 'small';
     const SIZE_MEDIUM = 'medium';
@@ -92,11 +92,11 @@ class Dish
      */
     public function toArray()
     {
-//        $ingredients = [];
-//        foreach ($this->getIngredients() as $ingredient) {
-//             $ingredients[] = $ingredient->getName();
-//        }
-//
+        $ingredients = [];
+        foreach ($this->getIngredients() as $ingredient) {
+             $ingredients[] = $ingredient->getName();
+        }
+
 //        $images = [];
 //        foreach ($this->images as $image) {
 //            /** @var $image ProductImage */
@@ -107,7 +107,7 @@ class Dish
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type,
-//            'ingredients' => $ingredients,
+            'ingredients' => $ingredients,
 //            'images' => $images,
         ];
     }
@@ -168,22 +168,22 @@ class Dish
         $this->created = $created;
     }
 
-//    /**
-//     * @return Ingredient[] 
-//     */
-//    public function getIngredients()
-//    {
-//        return $this->ingredients;
-//    }
-//
-//    /**
-//     * @param Ingredient[] $ingredients
-//     */
-//    public function setIngredients($ingredients)
-//    {
-//        $this->ingredients = $ingredients;
-//    }
-//
+    /**
+     * @return Ingredient[] 
+     */
+    public function getIngredients()
+    {
+        return $this->ingredients;
+    }
+
+    /**
+     * @param Ingredient[] $ingredients
+     */
+    public function setIngredients($ingredients)
+    {
+        $this->ingredients = $ingredients;
+    }
+
 //    public function addImage(ProductImage $image)
 //    {
 //        $this->images[] = $image;

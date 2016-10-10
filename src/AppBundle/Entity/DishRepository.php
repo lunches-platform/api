@@ -16,13 +16,9 @@ class DishRepository extends EntityRepository
     public function findList()
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select([
-            'd',
-//            'i'
-        ])
+        $qb->select([ 'd', 'i' ])
             ->from('AppBundle:Dish', 'd')
-            // TODO enable ingredients
-//            ->leftJoin('d.ingredients', 'i')
+            ->leftJoin('d.ingredients', 'i')
             ->orderBy('d.created', 'DESC')
             ->setMaxResults(100);
 

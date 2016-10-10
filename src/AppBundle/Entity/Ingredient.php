@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -10,9 +10,10 @@ use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 
 /**
- * @Entity(repositoryClass="Lunches\Model\IngredientRepository")
+ * @Entity(repositoryClass="AppBundle\Entity\IngredientRepository")
  * @Table(name="ingredient", indexes={
  *     @Index(name="created", columns={"created"})
  * })
@@ -24,12 +25,14 @@ class Ingredient
      * @Id
      * @GeneratedValue
      * @Column(type="integer")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @Column(type="string", length=50, nullable=false)
+     * @SWG\Property()
      */
     protected $name;
 
@@ -38,6 +41,7 @@ class Ingredient
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     private $created;
 
@@ -46,14 +50,15 @@ class Ingredient
      *
      * @Gedmo\Timestampable(on="update")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     private $updated;
 
     /**
-     * @var string
-     * @ManyToOne(targetEntity="Product")
+     * @var Dish
+     * @ManyToOne(targetEntity="AppBundle\Entity\Dish")
      */
-    protected $product;
+    protected $dish;
 
     /**
      * @param array $data
@@ -110,19 +115,19 @@ class Ingredient
     }
 
     /**
-     * @return string
+     * @return Dish
      */
-    public function getProduct()
+    public function getDish()
     {
-        return $this->product;
+        return $this->dish;
     }
 
     /**
-     * @param string $product
+     * @param Dish $dish
      */
-    public function setProduct($product)
+    public function setDish(Dish $dish)
     {
-        $this->product = $product;
+        $this->dish = $dish;
     }
 
     /**
