@@ -43,7 +43,7 @@ $app['doctrine.em'] = function () use ($app) {
     );
 };
 $app['doctrine.config'] = function () use ($app) {
-    return Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__ . '/src'], true, $app['shared_dir']);
+    return Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__ . '/../src'], true, $app['shared_dir']);
 };
 
 $app['doctrine.event_manager'] = function () use ($app) {
