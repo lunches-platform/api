@@ -1,7 +1,6 @@
 <?php
 
-namespace Lunches\Model;
-
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -9,49 +8,55 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Swagger\Annotations as SWG;
 
 /**
- * Class MenuProduct.
- * @Entity(repositoryClass="Lunches\Model\MenuProductRepository")
- * @Table(name="menu_product")
+ * Class MenuDish.
+ * @Entity(repositoryClass="AppBundle\Entity\MenuDishRepository")
+ * @Table(name="menu_dish")
+ * @SWG\Definition(required={"menu","dish"})
  */
-class MenuProduct
+class MenuDish
 {
     /**
      * @var int
      * @Column(type="integer") 
      * @Id 
      * @GeneratedValue
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var Menu
-     * @ManyToOne(targetEntity="Menu", inversedBy="menuProducts")
+     * @ManyToOne(targetEntity="Menu", inversedBy="menuDishes")
+     * @SWG\Property(ref="#/definitions/Menu")
      */
     protected $menu;
 
     /**
-     * @var Product
-     * @ManyToOne(targetEntity="Product")
+     * @var Dish
+     * @ManyToOne(targetEntity="Dish")
+     * @SWG\Property(ref="#/definitions/Dish")
      */
-    protected $product;
+    protected $dish;
 
     /**
      * @var integer
      * @Column(type="integer", name="position")
+     * @SWG\Property()
      */
     protected $position;
 
-    public function __construct(Menu $menu, Product $product)
+    public function __construct(Menu $menu, Dish $dish)
     {
         $this->menu = $menu;
-        $this->product = $product;
+        $this->dish = $dish;
     }
 
-    public function sameProduct(Product $product)
+    public function sameDish(Dish $dish)
     {
-        return $this->product->getId() === $product->getId();
+        return $this->dish->getId() === $dish->getId();
     }
 
     /**
@@ -79,19 +84,19 @@ class MenuProduct
     }
 
     /**
-     * @return Product
+     * @return Dish
      */
-    public function getProduct()
+    public function getDish()
     {
-        return $this->product;
+        return $this->dish;
     }
 
     /**
-     * @param Product $product
+     * @param Dish $dish
      */
-    public function setProduct($product)
+    public function setDish($dish)
     {
-        $this->product = $product;
+        $this->dish = $dish;
     }
 
     /**

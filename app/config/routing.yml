@@ -9,3 +9,7 @@ images:
 users:
     type: rest
     resource: "@AppBundle/Controller/UsersController.php"
+
+menus:
+    type: rest
+    resource: "@AppBundle/Controller/MenusController.php"

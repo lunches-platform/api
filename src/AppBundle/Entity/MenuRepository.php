@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -17,11 +17,11 @@ class MenuRepository extends EntityRepository
     public function getMenus(\DateTime $startDate = null, \DateTime $endDate = null)
     {
         $qb = $this->_em->createQueryBuilder();
-        $qb->select(['m', 'mp', 'p', 'i'])
-            ->from('Lunches\Model\Menu', 'm')
-            ->join('m.menuProducts', 'mp')
-            ->join('mp.product', 'p')
-            ->leftJoin('p.ingredients', 'i')
+        $qb->select(['m', 'md', 'd', 'i'])
+            ->from('AppBundle:Menu', 'm')
+            ->join('m.menuDishes', 'md')
+            ->join('md.dish', 'd')
+            ->leftJoin('d.ingredients', 'i')
             ->orderBy('m.date', 'ASC')
             ->setMaxResults(100);
 

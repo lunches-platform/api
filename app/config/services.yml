@@ -22,3 +22,7 @@ services:
     app_bundle.controller.users_controller:
         class: AppBundle\Controller\UsersController
         arguments: ['@doctrine']
+
+    app_bundle.controller.menus_controller:
+        class: AppBundle\Controller\MenusController
+        arguments: ['@doctrine']

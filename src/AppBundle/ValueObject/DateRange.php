@@ -1,8 +1,8 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\ValueObject;
 
-use Lunches\Exception\ValidationException;
+use AppBundle\Exception\ValidationException;
 
 class DateRange
 {
