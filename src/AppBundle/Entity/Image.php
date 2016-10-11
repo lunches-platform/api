@@ -18,7 +18,7 @@ use Swagger\Annotations AS SWG;
  * })
  * @SWG\Definition(required={"id","url","format","width","height"})
  */
-class Image
+class Image implements \JsonSerializable
 {
     /**
      * @var string
@@ -78,7 +78,7 @@ class Image
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             'id' => $this->id,

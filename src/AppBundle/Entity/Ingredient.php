@@ -19,7 +19,7 @@ use Swagger\Annotations AS SWG;
  * })
  * @SWG\Definition(required={"name"})
  */
-class Ingredient
+class Ingredient implements \JsonSerializable
 {
     /**
      * @var int
@@ -89,7 +89,7 @@ class Ingredient
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             'id' => $this->id,
