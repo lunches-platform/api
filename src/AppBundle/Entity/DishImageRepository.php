@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Exception\RuntimeException;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -9,4 +10,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class DishImageRepository extends EntityRepository
 {
+    public function get($dishId, $imageId)
+    {
+        $dishImage = $this->findOneBy([
+            'image' => $imageId,
+            'dish' => $dishId,
+        ]);
+        if (!$dishImage instanceof DishImage) {
+            throw RuntimeException::notFound('DishImage');
+        }
+        return $dishImage;
+    }
 }

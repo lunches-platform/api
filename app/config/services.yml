@@ -14,3 +14,7 @@ services:
     app_bundle.controller.images_controller:
         class: AppBundle\Controller\ImagesController
         arguments: ['@doctrine']
+
+    app_bundle.controller.dish_images_controller:
+        class: AppBundle\Controller\DishImagesController
+        arguments: ['@doctrine']

@@ -59,7 +59,7 @@ class ImagesController
      *     @SWG\Parameter(
      *         name="file",
      *         type="file",
-     *         in="form",
+     *         in="formData",
      *         description="File to upload",
      *         required=true
      *     ),

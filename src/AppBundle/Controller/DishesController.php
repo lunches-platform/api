@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Dish;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\View;
 use Swagger\Annotations as SWG;
@@ -20,6 +21,28 @@ class DishesController
     public function __construct(Registry $doctrine)
     {
         $this->doctrine = $doctrine;
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/dishes/{dish}",
+     *     description="Get Dish by ID",
+     *     operationId="getDishAction",
+     *     @SWG\Parameter(
+     *         description="ID of dish", type="string", in="path", name="dishId", required=true,
+     *     ),
+     *     @SWG\Response(
+     *         response=200, description="Dish",
+     *         @SWG\Schema(ref="#/definitions/Dish")
+     *     ),
+     * )
+     * @param Dish $dish
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @View
+     */
+    public function getDishAction(Dish $dish)
+    {
+        return $dish;
     }
 
     /**

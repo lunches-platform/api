@@ -1,6 +1,6 @@
 dishes:
     type: rest
-    resource: "@AppBundle/Controller/DishesController.php"
+    resource: "routing/dishes.yml"
 
 images:
     type: rest
