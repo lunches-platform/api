@@ -14,7 +14,7 @@ use Swagger\Annotations as SWG;
  * })
  * @SWG\Definition(required={"name","type","unit"})
  */
-class Dish
+class Dish implements \JsonSerializable
 {
     /**
      * @var int
@@ -54,11 +54,11 @@ class Dish
      */
     private $updated;
 
-//    /**
-//     * @var ProductImage[]
-//     * @ORM\OneToMany(targetEntity="ProductImage", mappedBy="product", cascade={"persist"})
-//     */
-//    protected $images;
+    /**
+     * @var DishImage[]
+     * @ORM\OneToMany(targetEntity="DishImage", mappedBy="dish", cascade={"persist"})
+     */
+    protected $images;
 
     /**
      * @var Ingredient[]
@@ -77,7 +77,7 @@ class Dish
     ];
 
     /**
-     * Product constructor.
+     * Dish constructor.
      * @param string|int $id
      */
     public function __construct($id)
@@ -90,25 +90,19 @@ class Dish
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         $ingredients = [];
         foreach ($this->getIngredients() as $ingredient) {
              $ingredients[] = $ingredient->getName();
         }
 
-//        $images = [];
-//        foreach ($this->images as $image) {
-//            /** @var $image ProductImage */
-//            $images[] = $image->toArray(true);
-//        }
-
         return [
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type,
             'ingredients' => $ingredients,
-//            'images' => $images,
+            'images' => $this->images,
         ];
     }
 
@@ -184,28 +178,28 @@ class Dish
         $this->ingredients = $ingredients;
     }
 
-//    public function addImage(ProductImage $image)
-//    {
-//        $this->images[] = $image;
-//        $image->setProduct($this);
-//    }
-//
-//    public function hasImage(ProductImage $productImage)
-//    {
-//        foreach ($this->images as $image) {
-//            if ($image->getImage()->getId() === $productImage->getImage()->getId()) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-//
-//    /**
-//     * @return ProductImage[]
-//     */
-//    public function getImages()
-//    {
-//        return $this->images;
-//    }
+    public function addImage(DishImage $image)
+    {
+        $this->images[] = $image;
+        $image->setDish($this);
+    }
+
+    public function hasImage(DishImage $dishImage)
+    {
+        foreach ($this->images as $image) {
+            if ($image->getImage()->getId() === $dishImage->getImage()->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return DishImage[]
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
 }

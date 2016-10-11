@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -13,12 +13,12 @@ use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @Entity
- * @Table(name="product_image", indexes={
+ * @Entity(repositoryClass="DishImageRepository")
+ * @Table(name="dish_image", indexes={
  *     @Index(name="created", columns={"created"})
  * })
  */
-class ProductImage
+class DishImage implements \JsonSerializable
 {
     /**
      * @var string
@@ -40,10 +40,10 @@ class ProductImage
     protected $isCover;
 
     /**
-     * @var Product
-     * @ManyToOne(targetEntity="Product", inversedBy="images")
+     * @var Dish
+     * @ManyToOne(targetEntity="AppBundle\Entity\Dish", inversedBy="images")
      */
-    protected $product;
+    protected $dish;
     /**
      * @var \DateTime $created
      *
@@ -60,25 +60,17 @@ class ProductImage
     private $updated;
 
     /**
-     * @param bool $short
      * @return array
      */
-    public function toArray($short = false)
+    public function jsonSerialize()
     {
-        if ($short === true) {
-            return [
-                'url' => cloudinary_url($this->getImage()->getId(), array('quality' => 'auto:eco')),
-                'isCover' => $this->isCover(),
-            ];
-        }
-
         return [
-            'id' => $this->id,
-            'image' => $this->image->toArray(),
-            'product' => $this->product->toArray(),
-            'isCover' => $this->isCover,
-            'created' => $this->created->format('Y-m-d H:i:s'),
-            'updated' => $this->updated->format('Y-m-d H:i:s'),
+//            'id' => $this->id,
+            'url' => cloudinary_url($this->getImage()->getId(), array('quality' => 'auto:eco')),
+            'isCover' => $this->isCover(),
+//            'image' => $this->image,
+//            'created' => $this->created->format('Y-m-d H:i:s'),
+//            'updated' => $this->updated->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -164,29 +156,29 @@ class ProductImage
      */
     public function setIsCover($isCover)
     {
-        foreach($this->product->getImages() as $productImage) {
-            if ($productImage === $this) {
+        foreach($this->dish->getImages() as $dishImage) {
+            if ($dishImage === $this) {
                 continue;
             }
-            $productImage->resetCover();
+            $dishImage->resetCover();
         }
         $this->isCover = $isCover;
     }
 
     /**
-     * @return Product
+     * @return Dish
      */
-    public function getProduct()
+    public function getDish()
     {
-        return $this->product;
+        return $this->dish;
     }
 
     /**
-     * @param Product $product
+     * @param Dish $dish
      */
-    public function setProduct($product)
+    public function setDish($dish)
     {
-        $this->product = $product;
+        $this->dish = $dish;
     }
 
 }
