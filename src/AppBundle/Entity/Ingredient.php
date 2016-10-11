@@ -58,6 +58,7 @@ class Ingredient implements \JsonSerializable
     /**
      * @var Dish
      * @ManyToOne(targetEntity="AppBundle\Entity\Dish")
+     * @SWG\Property(ref="#/definitions/Dish")
      */
     protected $dish;
 

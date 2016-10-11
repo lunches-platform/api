@@ -12,7 +12,7 @@ use Swagger\Annotations as SWG;
  * @ORM\Table(name="dish", indexes={
  *     @ORM\Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"name","type","unit"})
+ * @SWG\Definition(required={"name","type"})
  */
 class Dish implements \JsonSerializable
 {
@@ -21,12 +21,14 @@ class Dish implements \JsonSerializable
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @SWG\Property()
      */
     protected $name;
 
@@ -35,6 +37,7 @@ class Dish implements \JsonSerializable
      *
      * @var string
      * @ORM\Column(type="string", length=10, nullable=false)
+     * @SWG\Property(enum={"meat","garnish","salad"})
      */
     protected $type;
 
@@ -43,6 +46,7 @@ class Dish implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     private $created;
 
@@ -51,18 +55,21 @@ class Dish implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     private $updated;
 
     /**
      * @var DishImage[]
      * @ORM\OneToMany(targetEntity="DishImage", mappedBy="dish", cascade={"persist"})
+     * @SWG\Property(ref="#/definitions/DishImage")
      */
     protected $images;
 
     /**
      * @var Ingredient[]
      * @ORM\OneToMany(targetEntity="Ingredient", mappedBy="dish", cascade={"persist"})
+     * @SWG\Property(ref="#/definitions/Ingredient")
      */
     protected $ingredients;
 

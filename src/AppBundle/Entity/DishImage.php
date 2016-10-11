@@ -11,12 +11,14 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations as SWG;
 
 /**
  * @Entity(repositoryClass="DishImageRepository")
  * @Table(name="dish_image", indexes={
  *     @Index(name="created", columns={"created"})
  * })
+ * @SWG\Definition(required={"image","dish"})
  */
 class DishImage implements \JsonSerializable
 {
@@ -25,23 +27,27 @@ class DishImage implements \JsonSerializable
      * @Id
      * @GeneratedValue
      * @Column(type="integer")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var Image
      * @ManyToOne(targetEntity="Image")
+     * @SWG\Property(ref="#/definitions/Image")
      */
     protected $image;
     /**
      * @var bool
      * @Column(type="boolean", name="is_cover")
+     * @SWG\Property()
      */
     protected $isCover;
 
     /**
      * @var Dish
      * @ManyToOne(targetEntity="AppBundle\Entity\Dish", inversedBy="images")
+     * @SWG\Property(ref="#/definitions/Dish")
      */
     protected $dish;
     /**
@@ -49,6 +55,7 @@ class DishImage implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     private $created;
     /**
@@ -56,6 +63,7 @@ class DishImage implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="update")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     private $updated;
 
