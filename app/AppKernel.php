@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new Speicher210\CloudinaryBundle\Speicher210CloudinaryBundle(),
             new AppBundle\AppBundle(),
         ];
 

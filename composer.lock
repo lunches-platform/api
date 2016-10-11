@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1efa7525d0868bdf0c982fcab77f2911",
-    "content-hash": "ecfc66a52affa4e1fce4a41771318a87",
+    "hash": "c29d1342bfaae1ea84b452560eb2743e",
+    "content-hash": "f1d4834e6cb7b97d6b6ce88eae5d696d",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -1933,6 +1933,60 @@
             ],
             "description": "A security checker for your composer.lock",
             "time": "2016-09-23 18:09:57"
+        },
+        {
+            "name": "speicher210/cloudinary-bundle",
+            "version": "0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Speicher210/CloudinaryBundle.git",
+                "reference": "e183387930bac147c7d73b69a4d593b515809451"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Speicher210/CloudinaryBundle/zipball/e183387930bac147c7d73b69a4d593b515809451",
+                "reference": "e183387930bac147c7d73b69a4d593b515809451",
+                "shasum": ""
+            },
+            "require": {
+                "cloudinary/cloudinary_php": "~1.1",
+                "php": ">=5.3.3",
+                "symfony/console": "~2.5|~3.0",
+                "symfony/finder": "~2.5|~3.0",
+                "symfony/framework-bundle": "~2.5|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8",
+                "symfony/phpunit-bridge": "~2.7|~3.0",
+                "twig/twig": "~1.0"
+            },
+            "suggest": {
+                "twig/twig": "Allow to use the cloudinary_url function/filter"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Speicher210\\CloudinaryBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dragos Protung",
+                    "email": "dragos@protung.ro",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Bundle for Cloudinary PHP API library",
+            "homepage": "https://github.com/Speicher210/CloudinaryBundle",
+            "keywords": [
+                "bundle",
+                "cloudinary"
+            ],
+            "time": "2016-05-24 15:21:37"
         },
         {
             "name": "stof/doctrine-extensions-bundle",

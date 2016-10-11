@@ -111,3 +111,9 @@ nelmio_cors:
             allow_origin: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             max_age: 3600
+
+speicher210_cloudinary:
+    cloud_name: "%cloudinary.cloud_name%"
+    access_identifier:
+        api_key: "%cloudinary.api_key%"
+        api_secret: "%cloudinary.api_secret%"

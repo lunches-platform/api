@@ -34,7 +34,8 @@
         "cloudinary/cloudinary_php":"1.4.0",
         "anahkiasen/underscore-php": "2.0.0",
         "ramsey/uuid-doctrine": "1.2.*",
-        "webmozart/assert": "1.1.*"
+        "webmozart/assert": "1.1.*",
+        "speicher210/cloudinary-bundle": "0.4.*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.*",
