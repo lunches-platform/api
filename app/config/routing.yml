@@ -5,3 +5,7 @@ dishes:
 images:
     type: rest
     resource: "@AppBundle/Controller/ImagesController.php"
+
+users:
+    type: rest
+    resource: "@AppBundle/Controller/UsersController.php"

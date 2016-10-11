@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
@@ -12,45 +12,53 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Lunches\Exception\UserException;
 use Lunches\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
+use Swagger\Annotations as SWG;
 
 /**
- * @Entity(repositoryClass="Lunches\Model\UserRepository")
+ * @Entity(repositoryClass="AppBundle\Entity\UserRepository")
  * @Table(name="user", indexes={
  *     @Index(name="created", columns={"created"})
  * })
+ * @SWG\Definition(required={"clientId","name","address"})
  */
-class User
+class User implements \JsonSerializable
 {
     /**
      * @var string
      * @Id
      * @Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @Column(type="string", name="full_name", length=255, nullable=false)
+     * @SWG\Property()
      */
     protected $fullname;
     /**
      * @var float
      * @Column(type="float", nullable=false)
+     * @SWG\Property()
      */
     protected $balance;
     /**
      * @var float
      * @Column(type="float", nullable=true)
+     * @SWG\Property()
      */
     protected $credit = 0;
     /**
      * @var int
-     * @Column(type="integer", nullable=false)
+     * @Column(type="integer", name="client_id", nullable=false)
+     * @SWG\Property()
      */
     protected $clientId;
     /**
-     * @var float
+     * @var string
      * @Column(type="string", nullable=false)
+     * @SWG\Property()
      */
     protected $address;
 
@@ -59,6 +67,7 @@ class User
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     protected $created;
 
@@ -122,7 +131,7 @@ class User
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             'id' => $this->id,
