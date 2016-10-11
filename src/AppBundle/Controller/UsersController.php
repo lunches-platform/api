@@ -55,11 +55,11 @@ class UsersController
         $like = $params->get('like');
         $repo = $this->doctrine->getRepository('AppBundle:User');
         if ($like) {
-            $products = $repo->findByLikePattern($like);
+            $users = $repo->findByLikePattern($like);
         } else {
-            $products = $repo->findAll();
+            $users = $repo->findAll();
         }
-        return $products;
+        return $users;
     }
 
     /**
