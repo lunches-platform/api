@@ -1,25 +1,27 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle;
 
-use Lunches\Exception\LineItemException;
-use Lunches\Exception\RuntimeException;
-use Lunches\Exception\ValidationException;
-use Lunches\Model\Menu;
-use Lunches\Model\MenuProduct;
-use Lunches\Model\MenuRepository;
-use Lunches\Model\Order;
-use Lunches\Model\OrderFactory;
-use Lunches\Model\OrderRepository;
-use Lunches\Model\Price;
-use Lunches\Model\PriceItem;
-use Lunches\Model\PriceRepository;
-use Lunches\Model\Prices;
-use Lunches\Model\Product;
-use Lunches\Model\ProductRepository;
-use Lunches\Model\User;
-use Lunches\Model\UserRepository;
+
+use AppBundle\Entity\Dish;
+use AppBundle\Entity\DishRepository;
+use AppBundle\Entity\Menu;
+use AppBundle\Entity\MenuDish;
+use AppBundle\Entity\MenuRepository;
+use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderRepository;
+use AppBundle\Entity\Price;
+use AppBundle\Entity\PriceItem;
+use AppBundle\Entity\PriceRepository;
+use AppBundle\Entity\Prices;
+use AppBundle\Entity\User;
+use AppBundle\Entity\UserRepository;
+use AppBundle\Exception\LineItemException;
+use AppBundle\Exception\RuntimeException;
+use AppBundle\Exception\ValidationException;
+use AppBundle\OrderFactory;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,13 +29,19 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     protected $factory;
     public function setUp()
     {
-        $this->factory = new OrderFactory(
+        $doctrine = $this->getMockBuilder(Registry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $doctrine->method('getRepository')->will(self::onConsecutiveCalls(
             $this->getOrderRepo(),
-            $this->getProductRepo(),
+            $this->getDishRepo(),
             $this->getMenuRepo(),
             $this->getPriceRepo(),
             $this->getUserRepo()
-        );
+        ));
+
+        $this->factory = new OrderFactory($doctrine);
     }
     public function testCreateWithNoData()
     {
@@ -115,14 +123,14 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     }
     public function testOrderForToday()
     {
-        $this->setExpectedException(ValidationException::class, 'Invalid date provided. Can not order product for today or in the past');
+        $this->setExpectedException(ValidationException::class, 'Invalid date provided. Can not order dish for today or in the past');
         $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTime())->format('Y-m-d')]));
 
         self::assertEquals($date, $order->getShipmentDate());
     }
     public function testOrderInThePast()
     {
-        $this->setExpectedException(ValidationException::class, 'Invalid date provided. Can not order product for today or in the past');
+        $this->setExpectedException(ValidationException::class, 'Invalid date provided. Can not order dish for today or in the past');
         $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTime('yesterday'))->format('Y-m-d')]));
 
         self::assertEquals($date, $order->getShipmentDate());
@@ -147,11 +155,11 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             'items' => [
                 [
                     'size' => 'big',
-                    'productId' => $this->existId(),
+                    'dishId' => $this->existId(),
                 ],
                 [
                     'size' => 'big',
-                    'productId' => $this->existId(),
+                    'dishId' => $this->existId(),
                 ]
             ]
         ]));
@@ -160,12 +168,12 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     }
     public function testLineItemRequiredFields()
     {
-        $errMsg = 'Invalid LineItem. There are no required fields. Required are productId, size';
+        $errMsg = 'Invalid LineItem. There are no required fields. Required are dishId, size';
 
         $emptySizeLineItem = [
-            'productId' => 'some'
+            'dishId' => 'some'
         ];
-        $emptyProductIdLineItem = [
+        $emptyDishIdLineItem = [
             'size' => 'big'
         ];
         try {
@@ -174,7 +182,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             self::assertEquals($errMsg, $e->getMessage());
         }
         try {
-            $this->factory->createNewFromArray($this->getOrderData(['items' => [$emptyProductIdLineItem]]));
+            $this->factory->createNewFromArray($this->getOrderData(['items' => [$emptyDishIdLineItem]]));
         } catch (ValidationException $e) {
             self::assertEquals($errMsg, $e->getMessage());
         }
@@ -186,29 +194,29 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         $this->factory->createNewFromArray($this->getOrderData(['items' => [
             [
                 'size' => 'not allowed size name',
-                'productId' => $this->existId(),
+                'dishId' => $this->existId(),
             ]
         ]]));
     }
-    public function testLineItemWithNotFoundProduct()
+    public function testLineItemWithNotFoundDish()
     {
-        $this->setExpectedException(RuntimeException::class, 'Product not found');
+        $this->setExpectedException(RuntimeException::class, 'Dish not found');
 
         $this->factory->createNewFromArray($this->getOrderData(['items' => [
             [
                 'size' => 'big',
-                'productId' => $this->notExistId(),
+                'dishId' => $this->notExistId(),
             ]
         ]]));
     }
-    public function testLineItemProductNotCookingToday()
+    public function testLineItemDishNotCookingToday()
     {
         $this->setExpectedException(LineItemException::class);
 
         $this->factory->createNewFromArray($this->getOrderData(['items' => [
             [
                 'size' => 'big',
-                'productId' => $this->notCookingProduct(),
+                'dishId' => $this->notCookingDish(),
             ]
         ]]));
     }
@@ -221,7 +229,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             'items' => [
                 [
                     'size' => 'big',
-                    'productId' => $this->existId(),
+                    'dishId' => $this->existId(),
                 ]
             ]
         ]));
@@ -253,26 +261,26 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         return $orderRepo;
     }
 
-    private function getProductRepo()
+    private function getDishRepo()
     {
-        $productRepo = $this->getMockBuilder(ProductRepository::class)
+        $dishRepo = $this->getMockBuilder(DishRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['find'])
             ->getMock();
 
-        $products = [
-            $this->existId() => new Product($this->existId()),
-            $this->notCookingProduct() => new Product($this->notCookingProduct()),
+        $dishes = [
+            $this->existId() => new Dish($this->existId()),
+            $this->notCookingDish() => new Dish($this->notCookingDish()),
         ];
 
         $map = [
-            [$this->existId(), null, null, $products[$this->existId()]],
-            [$this->notCookingProduct(), null, null, $products[$this->notCookingProduct()]],
+            [$this->existId(), null, null, $dishes[$this->existId()]],
+            [$this->notCookingDish(), null, null, $dishes[$this->notCookingDish()]],
             [$this->notExistId(), null, null, null],
         ];
-        $productRepo->method('find')->will(self::returnValueMap($map));
+        $dishRepo->method('find')->will(self::returnValueMap($map));
 
-        return $productRepo;
+        return $dishRepo;
     }
 
     private function getMenuRepo()
@@ -284,11 +292,11 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         $menuRepo->method('findByDate')->will(self::returnCallback(function (\DateTime $date) {
             /** @noinspection TypeUnsafeComparisonInspection */
             if ($date == $this->getDate('tomorrow', true)) {
-                /** @var ProductRepository $productRepo */
-                $productRepo = $this->getProductRepo();
-                $product = $productRepo->get($this->existId());
+                /** @var DishRepository $dishRepo */
+                $dishRepo = $this->getDishRepo();
+                $dish = $dishRepo->get($this->existId());
                 $menu = new Menu();
-                $menu->addProduct(new MenuProduct($menu, $product));
+                $menu->addDish(new MenuDish($menu, $dish));
 
                 return [$menu];
             }
@@ -310,12 +318,12 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             $tomorrow = $this->getDate('tomorrow', true);
             
             if ($dateTime == $tomorrow) {
-                /** @var ProductRepository $productRepo */
-                $productRepo = $this->getProductRepo();
+                /** @var DishRepository $dishRepo */
+                $dishRepo = $this->getDishRepo();
 
                 $price = new Price(100, $tomorrow);
                 $price->setItems([
-                    new PriceItem($price, $productRepo->get($this->existId()), 'big'),
+                    new PriceItem($price, $dishRepo->get($this->existId()), 'big'),
                 ]);
                     
                 return new Prices([$price]);
@@ -358,7 +366,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     {
         return 'notExist';
     }
-    private function notCookingProduct()
+    private function notCookingDish()
     {
         return 'notCooking';
     }
@@ -378,7 +386,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             'shipmentDate' => $this->getDate('tomorrow'),
             'items' => [
                 [
-                    'productId' => $this->existId(),
+                    'dishId' => $this->existId(),
                     'size' => 'big'
                 ]
             ],

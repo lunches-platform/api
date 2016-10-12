@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
 
-use Lunches\Exception\RuntimeException;
-use Lunches\Model\LineItem;
-use Lunches\Model\Order;
-use Lunches\Model\Price;
-use Lunches\Model\PriceItem;
-use Lunches\Model\Prices;
-use Lunches\Model\Product;
+use AppBundle\Entity\Dish;
+use AppBundle\Entity\LineItem;
+use AppBundle\Entity\Order;
+use AppBundle\Entity\Price;
+use AppBundle\Entity\PriceItem;
+use AppBundle\Entity\Prices;
+use AppBundle\Exception\RuntimeException;
 
 class PricesTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,13 +53,13 @@ class PricesTest extends \PHPUnit_Framework_TestCase
     {
         $price1 = new Price(45, new \DateTime());
         $price1->setItems([
-            new PriceItem($price1, new Product(1), 'small'),
+            new PriceItem($price1, new Dish(1), 'small'),
         ]);
 
         $price2 = new Price(70, new \DateTime());
         $price2->setItems([
-            new PriceItem($price2, new Product(1), 'big'),
-            new PriceItem($price2, new Product(2), 'big')
+            new PriceItem($price2, new Dish(1), 'big'),
+            new PriceItem($price2, new Dish(2), 'big')
         ]);
 
         $prices = new Prices([$price1, $price2]);
@@ -70,16 +70,16 @@ class PricesTest extends \PHPUnit_Framework_TestCase
     public function testFindLineItemPrice()
     {
         $lineItem = new LineItem();
-        $lineItem->setProduct(new Product(1));
+        $lineItem->setDish(new Dish(1));
         $lineItem->setSize('big');
 
         $price1 = new Price(45, new \DateTime());
         $price1->setItems([
-            new PriceItem($price1, new Product(1), 'small'),
+            new PriceItem($price1, new Dish(1), 'small'),
         ]);
         $price2 = new Price(55, new \DateTime());
         $price2->setItems([
-            new PriceItem($price2, new Product(1), 'big'),
+            new PriceItem($price2, new Dish(1), 'big'),
         ]);
 
         $prices = new Prices([$price1, $price2]);
@@ -89,10 +89,10 @@ class PricesTest extends \PHPUnit_Framework_TestCase
     }
     public function testLineItemPriceNotFound()
     {
-        $this->setExpectedException(RuntimeException::class, 'Price not found for product #3');
+        $this->setExpectedException(RuntimeException::class, 'Price not found for dish #3');
 
         $lineItem = new LineItem();
-        $lineItem->setProduct(new Product(3));
+        $lineItem->setDish(new Dish(3));
         $lineItem->setSize('small');
 
         $prices = $this->createValidPrices();
@@ -123,47 +123,47 @@ class PricesTest extends \PHPUnit_Framework_TestCase
     {
         $price1 = new Price(25, new \DateTime());
         $price1->setItems([
-            new PriceItem($price1, new Product(3), 'big'),
+            new PriceItem($price1, new Dish(3), 'big'),
         ]);
         $price2 = new Price(30, new \DateTime());
         $price2->setItems([
-            new PriceItem($price2, new Product(4), 'big')
+            new PriceItem($price2, new Dish(4), 'big')
         ]);
         $price3 = new Price(45, new \DateTime());
         $price3->setItems([
-            new PriceItem($price3, new Product(1), 'small'),
-            new PriceItem($price3, new Product(2), 'small')
+            new PriceItem($price3, new Dish(1), 'small'),
+            new PriceItem($price3, new Dish(2), 'small')
         ]);
 
         $price4 = new Price(70, new \DateTime());
         $price4->setItems([
-            new PriceItem($price4, new Product(1), 'big'),
-            new PriceItem($price4, new Product(2), 'big')
+            new PriceItem($price4, new Dish(1), 'big'),
+            new PriceItem($price4, new Dish(2), 'big')
         ]);
 
         // tomorrow
         $price5 = new Price(75, new \DateTime('tomorrow'));
         $price5->setItems([
-            new PriceItem($price5, new Product(1), 'big'),
-            new PriceItem($price5, new Product(2), 'big')
+            new PriceItem($price5, new Dish(1), 'big'),
+            new PriceItem($price5, new Dish(2), 'big')
         ]);
 
         return new Prices([ $price1, $price2, $price3, $price4, $price5 ]);
     }
 
-    private function getOrder($size = 'big', $product1Id = 1, $product2Id = 2)
+    private function getOrder($size = 'big', $dish1Id = 1, $dish2Id = 2)
     {
         $size = $size ?: 'big';
-        $product1 = new Product($product1Id);
-        $product2 = new Product($product2Id);
+        $dish1 = new Dish($dish1Id);
+        $dish2 = new Dish($dish2Id);
 
         $lineItem1 = new LineItem();
         $lineItem1->setSize($size);
-        $lineItem1->setProduct($product1);
+        $lineItem1->setDish($dish1);
 
         $lineItem2 = new LineItem();
         $lineItem2->setSize($size);
-        $lineItem2->setProduct($product2);
+        $lineItem2->setDish($dish2);
 
         $order = new Order();
         $order->setLineItems([ $lineItem1, $lineItem2 ]);

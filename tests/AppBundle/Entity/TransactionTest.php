@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
 
-use Lunches\Exception\ValidationException;
-use Lunches\Model\Transaction;
-use Lunches\Model\User;
+use AppBundle\Entity\Transaction;
+use AppBundle\Entity\User;
+use AppBundle\Exception\ValidationException;
 
 class TransactionTest extends \PHPUnit_Framework_TestCase
 {
@@ -55,10 +55,10 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         self::assertEquals($date, $transaction->paymentDate());
     }
 
-    public function testToArray()
+    public function testJsonSerialize()
     {
         $transaction = new Transaction(Transaction::TYPE_INCOME, 100, $this->getValidUser());
-        $transactionArr = $transaction->toArray();
+        $transactionArr = json_decode(json_encode($transaction), true);
         self::assertTrue(is_array($transactionArr));
         self::assertArrayHasKey('id', $transactionArr);
         self::assertArrayHasKey('type', $transactionArr);

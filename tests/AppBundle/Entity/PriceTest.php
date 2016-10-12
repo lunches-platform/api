@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
 
+use AppBundle\Entity\Dish;
+use AppBundle\Entity\Price;
+use AppBundle\Entity\PriceItem;
+use AppBundle\Exception\ValidationException;
 use Doctrine\Common\Collections\ArrayCollection;
-use Lunches\Exception\ValidationException;
-use Lunches\Model\Price;
-use Lunches\Model\PriceItem;
-use Lunches\Model\Product;
 
 class PriceTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,7 +31,6 @@ class PriceTest extends \PHPUnit_Framework_TestCase
         self::assertArrayHasKey('date', $array);
         self::assertArrayHasKey('price', $array);
         self::assertArrayHasKey('items', $array);
-        self::assertTrue(is_array($array['items']));
     }
     public function testGetValueWhenNoItemsAssigned()
     {
@@ -67,7 +66,7 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     public function testHasPriceItemEmptyItems()
     {
         $price = new Price(100, new \DateTime());
-        $priceItem = new PriceItem($price, new Product(1), 'big');
+        $priceItem = new PriceItem($price, new Dish(1), 'big');
 
         self::assertFalse($price->hasPriceItem($priceItem));
     }
@@ -120,9 +119,9 @@ class PriceTest extends \PHPUnit_Framework_TestCase
         $price1 = new Price(100, new \DateTime('tomorrow'));
         $price2 = new Price(100, new \DateTime('tomorrow'));
 
-        $priceItem1 = new PriceItem($price1, new Product(1), 'big');
-        $priceItem2 = new PriceItem($price2, new Product(2), 'small');
-        $priceItem3 = new PriceItem($price2, new Product(3), 'medium');
+        $priceItem1 = new PriceItem($price1, new Dish(1), 'big');
+        $priceItem2 = new PriceItem($price2, new Dish(2), 'small');
+        $priceItem3 = new PriceItem($price2, new Dish(3), 'medium');
 
         $price1->setItems($items1 = [$priceItem1]);
         $price2->setItems($items2 = [$priceItem2, $priceItem3]);
@@ -135,10 +134,10 @@ class PriceTest extends \PHPUnit_Framework_TestCase
         $price1 = new Price(100, new \DateTime('tomorrow'));
         $price2 = new Price(100, new \DateTime('tomorrow'));
 
-        $priceItem1 = new PriceItem($price1, new Product(1), 'big');
-        $priceItem2 = new PriceItem($price1, new Product(2), 'small');
-        $priceItem3 = new PriceItem($price1, new Product(3), 'medium');
-        $priceItem4 = new PriceItem($price1, new Product(4), 'medium');
+        $priceItem1 = new PriceItem($price1, new Dish(1), 'big');
+        $priceItem2 = new PriceItem($price1, new Dish(2), 'small');
+        $priceItem3 = new PriceItem($price1, new Dish(3), 'medium');
+        $priceItem4 = new PriceItem($price1, new Dish(4), 'medium');
 
         $items1 = [$priceItem1, $priceItem2, $priceItem3];
         $items2 = [$priceItem1, $priceItem2, $priceItem4];
@@ -151,8 +150,8 @@ class PriceTest extends \PHPUnit_Framework_TestCase
 
     private function createItems($price)
     {
-        $priceItem1 = new PriceItem($price, new Product(1), 'big');
-        $priceItem2 = new PriceItem($price, new Product(2), 'small');
+        $priceItem1 = new PriceItem($price, new Dish(1), 'big');
+        $priceItem2 = new PriceItem($price, new Dish(2), 'small');
         
         return [$priceItem1, $priceItem2];
     }
