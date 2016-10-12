@@ -1,0 +1,9 @@
+dishes:
+    type: rest
+    resource: "@AppBundle/Controller/DishesController.php"
+
+dish_images:
+    type: rest
+    parent: dishes
+    resource: "@AppBundle/Controller/DishImagesController.php"
+

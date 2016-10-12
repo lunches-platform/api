@@ -1,0 +1,48 @@
+parameters:
+
+services:
+    json_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer
+        public: false
+        tags:
+            - { name: serializer.normalizer }
+
+    app_bundle.factory.price:
+        class: AppBundle\Entity\PriceFactory
+        arguments: ['@doctrine']
+
+    app_bundle.factory.order:
+        class: AppBundle\OrderFactory
+        arguments: ['@doctrine']
+
+    app_bundle.controller.dishes_controller:
+        class: AppBundle\Controller\DishesController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.images_controller:
+        class: AppBundle\Controller\ImagesController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.dish_images_controller:
+        class: AppBundle\Controller\DishImagesController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.users_controller:
+        class: AppBundle\Controller\UsersController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.menus_controller:
+        class: AppBundle\Controller\MenusController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.prices_controller:
+        class: AppBundle\Controller\PricesController
+        arguments: ['@doctrine', '@app_bundle.factory.price']
+
+    app_bundle.controller.transactions_controller:
+        class: AppBundle\Controller\TransactionsController
+        arguments: ['@doctrine', '%access_token%']
+
+    app_bundle.controller.orders_controller:
+        class: AppBundle\Controller\OrdersController
+        arguments: ['@doctrine', '@app_bundle.factory.order', '%access_token%']

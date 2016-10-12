@@ -1,0 +1,16 @@
+security:
+
+    providers:
+        in_memory:
+            memory: ~
+
+    firewalls:
+        # disables authentication for assets and the profiler
+        dev:
+            pattern: ^/(_(profiler)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+
+            # http_basic: ~

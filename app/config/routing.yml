@@ -1,0 +1,31 @@
+dishes:
+    type: rest
+    resource: "routing/dishes.yml"
+
+images:
+    type: rest
+    resource: "@AppBundle/Controller/ImagesController.php"
+
+users:
+    type: rest
+    resource: "@AppBundle/Controller/UsersController.php"
+
+menus:
+    type: rest
+    resource: "@AppBundle/Controller/MenusController.php"
+
+prices:
+    type: rest
+    resource: "@AppBundle/Controller/PricesController.php"
+
+transactions:
+    type: rest
+    resource: "@AppBundle/Controller/TransactionsController.php"
+
+orders:
+    type: rest
+    resource: "@AppBundle/Controller/OrdersController.php"
+
+default:
+    type: annotation
+    resource: "@AppBundle/Controller/DefaultController.php"
