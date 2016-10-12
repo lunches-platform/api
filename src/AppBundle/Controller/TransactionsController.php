@@ -186,7 +186,7 @@ class TransactionsController
      *         name="paymentDate",
      *         required=false,
      *         in="body",
-     *         description="Payment date when transaction was actually commited",
+     *         description="Payment date when transaction was actually committed",
      *         @SWG\Schema(ref="#/definitions/Transaction"),
      *     ),
      *     @SWG\Response(response=201, description="Newly registered transaction", @SWG\Schema(ref="#/definitions/Transaction") ),

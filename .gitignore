@@ -1,13 +1,5 @@
-/vendor
-.idea
 LunchesAPI.paw
 composer.phar
-shared
-public/.htaccess
-config/local.php
-config/qa.php
-config/prod.php
-
 /app/config/parameters.yml
 /build/
 /phpunit.xml
@@ -17,8 +9,6 @@ config/prod.php
 !var/cache/.gitkeep
 !/var/logs
 /var/logs/*
-!/var/sessions
-/var/sessions/*
 /vendor/
 /web/bundles/
 .idea

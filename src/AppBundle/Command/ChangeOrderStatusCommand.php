@@ -40,6 +40,7 @@ class ChangeOrderStatusCommand extends ContainerAwareCommand
      * @return int|null|void
      * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
