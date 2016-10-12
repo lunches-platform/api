@@ -1,9 +1,11 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\ValueObject;
 
+use AppBundle\Entity\Order;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
+use Swagger\Annotations AS SWG;
 
 /** @Embeddable */
 class CreatedOrder
@@ -13,8 +15,11 @@ class CreatedOrder
      */
     protected $order;
     /**
+     * Date and time when order was created
+     *
      * @var \DateTime
      * @Column(type="datetime")
+     * @SWG\Property(property="created_at"),
      */
     protected $at;
 

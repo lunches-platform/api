@@ -1,7 +1,8 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\DateRange;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -12,7 +13,7 @@ class OrderRepository extends EntityRepository
 {
     public function generateOrderNumber()
     {
-        $dql = 'SELECT MAX(o.orderNumber) FROM Lunches\Model\Order o';
+        $dql = 'SELECT MAX(o.orderNumber) FROM AppBundle\Entity\Order o';
         $number = $this->_em->createQuery($dql)->getSingleScalarResult();
         
         return !$number ? 1000 : ++$number;
@@ -26,7 +27,7 @@ class OrderRepository extends EntityRepository
         $qb = $this->_em->createQueryBuilder();
 
         $qb->select(['o'])
-            ->from('Lunches\Model\Order', 'o');
+            ->from('AppBundle\Entity\Order', 'o');
 
         if (array_key_exists('username', $filters)) {
             $qb->join('o.user', 'u')->andWhere('u.fullname = :username')->setParameter('username', $filters['username']);
@@ -49,7 +50,7 @@ class OrderRepository extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['o'])
-            ->from('Lunches\Model\Order', 'o')
+            ->from('AppBundle\Entity\Order', 'o')
             ->where('o.shipmentDate = :date')
         ;
         $qb->setParameter('date', $shipmentDate);
@@ -57,19 +58,19 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByUsername($username, $paid = null, $withCanceled = 0, DateRange $dateRange = null)
+    public function findByUser(User $user, $paid = null, $withCanceled = 0, DateRange $dateRange = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['o'])
-            ->from('Lunches\Model\Order', 'o')
+            ->from('AppBundle\Entity\Order', 'o')
             ->join('o.user', 'u')
-            ->where('u.fullname = :username')
+            ->where('u.id = :userId')
             ->orderBy('o.shipmentDate', 'DESC')
         ;
         if ((int) $withCanceled === 0) {
             $qb->andWhere("o.status != 'canceled'");
         }
-        $qb->setParameter('username', $username);
+        $qb->setParameter('userId', $user);
 
         if ($paid !== null) {
             $qb->andWhere('o.payment.status = :paid');
@@ -87,7 +88,7 @@ class OrderRepository extends EntityRepository
      */
     public function findNonPaidOrders(User $user)
     {
-        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 0 AND o.status NOT IN('canceled', 'rejected') AND o.user = :user ORDER BY o.createdOrder.at ASC";
+        $dql = "SELECT o FROM \AppBundle\Entity\Order o WHERE o.payment.status = 0 AND o.status NOT IN('canceled', 'rejected') AND o.user = :user ORDER BY o.createdOrder.at ASC";
 
         return $this->_em->createQuery($dql)->setParameter('user', $user)->getResult();
     }
@@ -97,7 +98,7 @@ class OrderRepository extends EntityRepository
      */
     public function findPaidAndDelivered()
     {
-        $dql = "SELECT o FROM \Lunches\Model\Order o WHERE o.payment.status = 1 AND o.status = 'delivered'";
+        $dql = "SELECT o FROM \AppBundle\Entity\Order o WHERE o.payment.status = 1 AND o.status = 'delivered'";
 
         return $this->_em->createQuery($dql)->getResult();
     }

@@ -1,15 +1,25 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle;
 
-use Lunches\Exception\LineItemException;
-use Lunches\Exception\RuntimeException;
-use Lunches\Exception\ValidationException;
+use AppBundle\Entity\Dish;
+use AppBundle\Entity\DishRepository;
+use AppBundle\Entity\LineItem;
+use AppBundle\Entity\MenuRepository;
+use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderRepository;
+use AppBundle\Entity\PriceRepository;
+use AppBundle\Entity\User;
+use AppBundle\Entity\UserRepository;
+use AppBundle\Exception\LineItemException;
+use AppBundle\Exception\RuntimeException;
+use AppBundle\Exception\ValidationException;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class OrderFactory
 {
-    /** @var ProductRepository  */
-    protected $productRepo;
+    /** @var DishRepository  */
+    protected $dishRepository;
 
     /** @var OrderRepository  */
     protected $orderRepo;
@@ -23,29 +33,22 @@ class OrderFactory
     /** @var UserRepository  */
     protected $userRepo;
 
-    public function __construct(
-        OrderRepository $orderRepo,
-        ProductRepository $productRepo,
-        MenuRepository $menuRepo,
-        PriceRepository $priceRepo,
-        UserRepository $userRepo
-    )
+    public function __construct(Registry $doctrine)
     {
-        $this->orderRepo = $orderRepo;
-        $this->productRepo = $productRepo;
-        $this->menuRepo = $menuRepo;
-        $this->priceRepo = $priceRepo;
-        $this->userRepo = $userRepo;
+        $this->orderRepo = $doctrine->getRepository('AppBundle:Order');
+        $this->dishRepository = $doctrine->getRepository('AppBundle:Dish');
+        $this->menuRepo = $doctrine->getRepository('AppBundle:Menu');
+        $this->priceRepo = $doctrine->getRepository('AppBundle:Price');
+        $this->userRepo = $doctrine->getRepository('AppBundle:User');
     }
 
     /**
      * @param array $data
      *
      * @return Order
-     * @throws \Lunches\Exception\LineItemException
-     *
-     * @throws \Lunches\Exception\ValidationException
-     * @throws \Lunches\Exception\RuntimeException
+     * @throws \AppBundle\Exception\LineItemException
+     * @throws \AppBundle\Exception\RuntimeException
+     * @throws \AppBundle\Exception\ValidationException
      */
     public function createNewFromArray(array $data)
     {
@@ -75,9 +78,7 @@ class OrderFactory
 
     /**
      * @param array $data
-     *
      * @return User
-     *
      * @throws RuntimeException
      * @throws ValidationException
      */
@@ -124,7 +125,7 @@ class OrderFactory
      * @param \DateTime $shipmentDate
      *
      * @return LineItem[]
-     * @throws \Lunches\Exception\LineItemException
+     * @throws \AppBundle\Exception\LineItemException
      * @throws ValidationException
      */
     private function createLineItems($data, $shipmentDate)
@@ -132,13 +133,15 @@ class OrderFactory
         if (!array_key_exists('items', $data) || !is_array($data['items'])) {
             throw ValidationException::invalidOrder('There are no valid LineItems provided');
         }
+        /** @var array $items */
+        $items = $data['items'];
 
         $lineItems = $orderedProductIds = [];
-        foreach ($data['items'] as $line) {
+        foreach ($items as $line) {
             $lineItem = $this->createLineItem($line, $shipmentDate);
 
             // order only unique products
-            if (in_array($productId = $lineItem->getProduct()->getId(), $orderedProductIds, true)) {
+            if (in_array($productId = $lineItem->getDish()->getId(), $orderedProductIds, true)) {
                 continue;
             }
             $orderedProductIds[] = $productId;
@@ -153,9 +156,8 @@ class OrderFactory
      * @param \DateTime $shipmentDate
      *
      * @return bool|LineItem
-     * @throws \Lunches\Exception\ValidationException
-     *
-     * @throws LineItemException
+     * @throws \AppBundle\Exception\LineItemException
+     * @throws \AppBundle\Exception\ValidationException
      */
     private function createLineItem(array $line, \DateTime $shipmentDate)
     {
@@ -163,27 +165,25 @@ class OrderFactory
 
         $lineItem = new LineItem();
         $lineItem->setSize($line['size']);
-        $lineItem->setProduct($this->getProduct($line['productId'], $shipmentDate));
+        $lineItem->setDish($this->getDish($line['productId'], $shipmentDate));
 
         return $lineItem;
     }
 
     /**
-     * @param int       $productId
+     * @param int $dishId
      * @param \DateTime $shipmentDate
-     *
-     * @return Product|null
-     *
+     * @return Dish|null
      * @throws LineItemException
      */
-    private function getProduct($productId, \DateTime $shipmentDate)
+    private function getDish($dishId, \DateTime $shipmentDate)
     {
-        $product = $this->productRepo->get($productId);
+        $product = $this->dishRepository->get($dishId);
 
         // TODO runs for each LineItem, move outside
         $menus = $this->getMenus($shipmentDate);
         foreach ($menus as $menu) {
-            if ($menu->hasProduct($product)) {
+            if ($menu->hasDish($product)) {
                 return $product;
             }
         }

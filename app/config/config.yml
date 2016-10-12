@@ -63,6 +63,12 @@ doctrine:
                         dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Timestampable"
                         is_bundle: false
 
+                    value_object:
+                        type: annotation
+                        prefix: AppBundle\ValueObject
+                        dir: "%kernel.root_dir%/../src/AppBundle/ValueObject"
+                        is_bundle: false
+
 stof_doctrine_extensions:
     default_locale: en_US
     orm:
@@ -98,10 +104,16 @@ fos_rest:
             'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
             'Doctrine\ORM\ORMException': 400
             'DomainException': 400
+            'AppBundle\Exception\OrderException': 400
+            'AppBundle\Exception\LineItemException': 400
+            'AppBundle\Exception\ValidationException': 400
         messages:
             'DomainException': true
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
             'FOS\RestBundle\Exception\InvalidParameterException': true
+            'AppBundle\Exception\OrderException': true
+            'AppBundle\Exception\LineItemException': true
+            'AppBundle\Exception\ValidationException': true
     body_converter:
         enabled: true
 

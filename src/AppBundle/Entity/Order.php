@@ -1,26 +1,25 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
+use AppBundle\Exception\OrderException;
+use AppBundle\Exception\ValidationException;
+use AppBundle\ValueObject\CanceledOrder;
+use AppBundle\ValueObject\CreatedOrder;
+use AppBundle\ValueObject\DeliveredOrder;
+use AppBundle\ValueObject\OrderPayment;
+use AppBundle\ValueObject\RejectedOrder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Embedded;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
-use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Lunches\Exception\OrderException;
-use Lunches\Exception\ValidationException;
+use Swagger\Annotations as SWG;
 
 /**
- * @Entity(repositoryClass="Lunches\Model\OrderRepository")
- * @Table(name="`order`")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\OrderRepository")
+ * @ORM\Table(name="`order`")
+ * @SWG\Definition(required={"user","address","shipmentDate","lineItems"})
  */
-class Order
+class Order implements \JsonSerializable
 {
     const STATUS_CREATED = 'created';
     const STATUS_IN_PROGRESS = 'inProgress';
@@ -31,72 +30,80 @@ class Order
 
     /**
      * @var int
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     * @SWG\Property()
      */
     protected $id;
     /**
      * Number of order. Starts from 1000
      *
      * @var string
-     * @Column(type="string", name="order_number", nullable=false)
+     * @ORM\Column(type="string", name="order_number", nullable=false)
+     * @SWG\Property()
      */
     protected $orderNumber;
     /**
      * @var User
-     * @ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User")
+     * @SWG\Property(ref="#/definitions/User")
      */
     protected $user;
     /**
      * @var string
-     * @Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=false)
+     * @SWG\Property()
      */
     protected $address;
     /**
      * @var CreatedOrder
-     * @Embedded(class="CreatedOrder", columnPrefix="created_")
+     * @ORM\Embedded(class="AppBundle\ValueObject\CreatedOrder", columnPrefix="created_")
      */
     protected $createdOrder;
     /**
      * @var CanceledOrder
-     * @Embedded(class="CanceledOrder", columnPrefix="canceled_")
+     * @ORM\Embedded(class="AppBundle\ValueObject\CanceledOrder", columnPrefix="canceled_")
      */
     protected $canceledOrder;
     /**
      * @var RejectedOrder
-     * @Embedded(class="RejectedOrder", columnPrefix="rejected_")
+     * @ORM\Embedded(class="AppBundle\ValueObject\RejectedOrder", columnPrefix="rejected_")
      */
     protected $rejectedOrder;
     /**
      * @var DeliveredOrder
-     * @Embedded(class="DeliveredOrder", columnPrefix="delivered_")
+     * @ORM\Embedded(class="AppBundle\ValueObject\DeliveredOrder", columnPrefix="delivered_")
      */
     protected $deliveredOrder;
     /**
      * @var string
-     * @Column(type="string")
+     * @ORM\Column(type="string")
+     * @SWG\Property(enum={"created","inProgress","canceled","rejected","delivered","closed"})
      */
     protected $status;
     /**
      * @var \DateTime
-     * @Column(type="date", name="shipment_date")
+     * @ORM\Column(type="date", name="shipment_date")
+     * @SWG\Property()
      */
     protected $shipmentDate;
     /**
      * @var float $price
      *
-     * @Column(type="float")
+     * @ORM\Column(type="float")
+     * @SWG\Property()
      */
     private $price = 0;
     /**
      * @var OrderPayment
-     * @Embedded(class="OrderPayment", columnPrefix="payment_")
+     * @ORM\Embedded(class="AppBundle\ValueObject\OrderPayment", columnPrefix="payment_")
      */
     private $payment;
     /**
      * @var LineItem[]
-     * @OneToMany(targetEntity="LineItem", mappedBy="order", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="order", cascade={"persist"})
+     * @SWG\Property(ref="#/definitions/LineItem")
      */
     protected $lineItems = [];
 
@@ -120,21 +127,16 @@ class Order
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
-        $lineItems = [];
-        foreach ($this->getLineItems() as $lineItem) {
-             $lineItems[] = $lineItem->toArray();
-        }
-
         return [
             'id' => $this->id,
             'price' => $this->price,
             'orderNumber' => $this->orderNumber,
-            'user' => $this->user instanceof User ? $this->user->toArray() : null,
+            'user' => $this->user,
             'shipmentDate' => $this->shipmentDate instanceof \DateTime ? $this->shipmentDate->format('Y-m-d') : null,
             'address' => $this->address,
-            'items' => $lineItems,
+            'items' => $this->lineItems,
             'status' => $this->status,
             'paid' => $this->getPayment()->isPaid(),
             'created' => $this->createdOrder instanceof CreatedOrder ? $this->createdOrder->toArray() : null,
@@ -198,7 +200,7 @@ class Order
      * @param string $reason
      * @return Transaction|bool
      * @throws OrderException
-     * @throws \Lunches\Exception\ValidationException
+     * @throws \AppBundle\Exception\ValidationException
      */
     public function cancel($reason = '')
     {
@@ -246,7 +248,7 @@ class Order
     }
 
     /**
-     * @return ArrayCollection
+     * @return LineItem[]
      */
     public function getLineItems()
     {

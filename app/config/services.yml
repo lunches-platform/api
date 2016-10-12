@@ -11,6 +11,10 @@ services:
         class: AppBundle\Entity\PriceFactory
         arguments: ['@doctrine']
 
+    app_bundle.factory.order:
+        class: AppBundle\OrderFactory
+        arguments: ['@doctrine']
+
     app_bundle.controller.dishes_controller:
         class: AppBundle\Controller\DishesController
         arguments: ['@doctrine']
@@ -38,3 +42,7 @@ services:
     app_bundle.controller.transactions_controller:
         class: AppBundle\Controller\TransactionsController
         arguments: ['@doctrine', '%access_token%']
+
+    app_bundle.controller.orders_controller:
+        class: AppBundle\Controller\OrdersController
+        arguments: ['@doctrine', '@app_bundle.factory.order', '%access_token%']

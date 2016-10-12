@@ -1,11 +1,13 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\ValueObject;
 
+use AppBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
-use Lunches\Exception\ValidationException;
+use AppBundle\Exception\ValidationException;
+use Swagger\Annotations AS SWG;
 
 /** @Embeddable */
 class CanceledOrder
@@ -15,13 +17,19 @@ class CanceledOrder
      */
     protected $order;
     /**
+     * Date and time when order was canceled
+     *
      * @var \DateTime
      * @Column(type="datetime", nullable=true)
+     * @SWG\Property(property="canceled_at"),
      */
     protected $at;
     /**
+     * The reason why the order was canceled
+     *
      * @var string
      * @Column(type="string", nullable=true)
+     * @SWG\Property(property="canceled_reason"),
      */
     protected $reason;
 

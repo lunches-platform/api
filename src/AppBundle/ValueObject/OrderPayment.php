@@ -1,11 +1,15 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\ValueObject;
 
+use AppBundle\Entity\Order;
+use AppBundle\Entity\Transaction;
+use AppBundle\Entity\User;
+use AppBundle\Exception\UserException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
-use Lunches\Exception\UserException;
+use Swagger\Annotations AS SWG;
 
 /** @Embeddable */
 class OrderPayment
@@ -15,24 +19,37 @@ class OrderPayment
      */
     protected $order;
     /**
+     * Date and time when order payment process was started
+     *
      * @var \DateTime
      * @Column(type="datetime", nullable=false, name="started_at")
+     * @SWG\Property(property="payment_started_at"),
      */
     protected $startedAt;
     /**
+     * Date and time when order payment was proceed successfully
+     *
      * @var \DateTime
      * @Column(type="datetime", nullable=true, name="paid_at")
+     * @SWG\Property(property="payment_paid_at"),
      */
     protected $paidAt;
     /**
+     * Order payment status with boolean value
+     *
      * @var bool
      * @Column(type="boolean")
+     * @SWG\Property(property="payment_status"),
      */
     protected $status = false;
 
     /**
+     * Whether user credited to pay for an order or no
+     *
      * @var bool
      * @Column(type="boolean", nullable=true)
+     *
+     * @SWG\Property(property="payment_credited"),
      */
     protected $credited = false;
 

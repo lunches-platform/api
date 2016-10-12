@@ -21,3 +21,7 @@ prices:
 transactions:
     type: rest
     resource: "@AppBundle/Controller/TransactionsController.php"
+
+orders:
+    type: rest
+    resource: "@AppBundle/Controller/OrdersController.php"

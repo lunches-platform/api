@@ -24,7 +24,7 @@ class UsersController
     protected $doctrine;
 
     /**
-     * DishesController constructor.
+     * UsersController constructor.
      * @param Registry $doctrine
      */
     public function __construct(Registry $doctrine)

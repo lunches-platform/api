@@ -1,7 +1,8 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
+use AppBundle\Exception\ValidationException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -10,66 +11,73 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Lunches\Exception\ValidationException;
+use Swagger\Annotations as SWG;
 
 /**
- * @Entity(repositoryClass="Lunches\Model\LineItemRepository")
+ * @Entity(repositoryClass="AppBundle\Entity\LineItemRepository")
  * @Table(name="line_item")
+ * @SWG\Definition(required={"size","product"})
  */
-class LineItem
+class LineItem implements \JsonSerializable
 {
     /**
      * @var int
      * @Id
      * @GeneratedValue
      * @Column(type="integer")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
+     * Size of the dish portion
+     *
      * @var string
      * @Column(type="string")
+     * @SWG\Property(enum={"small", "medium","big"})
      */
     protected $size;
 
     /**
-     * @var Product
-     * @ManyToOne(targetEntity="Product")
+     * @var Dish
+     * @ManyToOne(targetEntity="Dish")
+     * @SWG\Property(ref="#/definitions/Dish")
      */
-    protected $product;
+    protected $dish;
 
     /**
      * @var Order
      * @ManyToOne(targetEntity="Order")
+     * @SWG\Property(ref="#/definitions/Order")
      */
     protected $order;
 
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             'id' => $this->id,
-            'product' => $this->product->toArray(),
+            'dish' => $this->dish,
             'size' => $this->size,
         ];
     }
 
     /**
-     * @return Product
+     * @return Dish
      */
-    public function getProduct()
+    public function getDish()
     {
-        return $this->product;
+        return $this->dish;
     }
 
     /**
-     * @param Product $product
+     * @param Dish $dish
      */
-    public function setProduct(Product $product)
+    public function setDish(Dish $dish)
     {
-        $this->product = $product;
+        $this->dish = $dish;
     }
 
     /**
@@ -94,7 +102,7 @@ class LineItem
      */
     public function setSize($size)
     {
-        if (!in_array($size, Product::$availableSizes, true)) {
+        if (!in_array($size, Dish::$availableSizes, true)) {
             throw ValidationException::invalidSize();
         }
         $this->size = $size;

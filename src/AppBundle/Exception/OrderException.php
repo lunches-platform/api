@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Exception;
+namespace AppBundle\Exception;
 
 
 class OrderException extends \Exception

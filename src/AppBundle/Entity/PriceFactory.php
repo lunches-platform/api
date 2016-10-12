@@ -35,9 +35,13 @@ class PriceFactory
     }
     public static function createPriceItemsFromOrder(Order $order, Price $price)
     {
+        /** @var ArrayCollection $lineItems */
+        $lineItems =$order->getLineItems();
+        $values = $lineItems->getValues();
+
         return new ArrayCollection(array_map(function (LineItem $lineItem) use ($price) {
-            return new PriceItem($price, $lineItem->getProduct(), $lineItem->getSize());
-        }, $order->getLineItems()->getValues()));
+            return new PriceItem($price, $lineItem->getDish(), $lineItem->getSize());
+        }, $values));
     }
 
 

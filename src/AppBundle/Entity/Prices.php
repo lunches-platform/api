@@ -56,13 +56,13 @@ class Prices extends ArrayCollection
     public function getLineItemPrice(LineItem $lineItem)
     {
         foreach ($this->getSingleItemPrices() as $price) {
-            $priceItem = new PriceItem($price, $lineItem->getProduct(), $lineItem->getSize());
+            $priceItem = new PriceItem($price, $lineItem->getDish(), $lineItem->getSize());
 
             if ($price->hasPriceItem($priceItem)) {
                 return $price;
             }
         }
-        throw RuntimeException::priceNotFound($lineItem->getProduct());
+        throw RuntimeException::priceNotFound($lineItem->getDish());
     }
     /**
      * Returns prices which has only one PriceItem
