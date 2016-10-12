@@ -25,3 +25,7 @@ transactions:
 orders:
     type: rest
     resource: "@AppBundle/Controller/OrdersController.php"
+
+default:
+    type: annotation
+    resource: "@AppBundle/Controller/DefaultController.php"
