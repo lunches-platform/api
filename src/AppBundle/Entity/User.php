@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Exception\UserException;
+use AppBundle\Exception\ValidationException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -9,8 +11,6 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Lunches\Exception\UserException;
-use Lunches\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
 use Swagger\Annotations as SWG;
 
