@@ -1,7 +1,8 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\DateRange;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -15,7 +16,7 @@ class TransactionRepository extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['t'])
-            ->from('Lunches\Model\Transaction', 't')
+            ->from('APpBundle\Entity\Transaction', 't')
             ->where('t.user = :user')
             ->orderBy('t.created', 'DESC')
         ;

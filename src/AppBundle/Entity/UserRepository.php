@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Exception\RuntimeException;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -22,11 +23,31 @@ class UserRepository extends EntityRepository
         ]);
     }
 
+    public function getByUsername($fullname)
+    {
+        $user = $this->findByUsername($fullname);
+        if (!$user instanceof User) {
+            throw RuntimeException::notFound('User');
+        }
+        return $user;
+    }
+
     public function findByClientId($clientId)
     {
         return $this->findOneBy([
             'clientId' => $clientId,
         ]);
+    }
+
+    public function getByClientId($clientId)
+    {
+        $user = $this->findOneBy([
+            'clientId' => $clientId,
+        ]);
+        if (!$user instanceof User) {
+            throw RuntimeException::notFound('User');
+        }
+        return $user;
     }
 
     public function findByLikePattern($like)

@@ -34,3 +34,7 @@ services:
     app_bundle.controller.prices_controller:
         class: AppBundle\Controller\PricesController
         arguments: ['@doctrine', '@app_bundle.factory.price']
+
+    app_bundle.controller.transactions_controller:
+        class: AppBundle\Controller\TransactionsController
+        arguments: ['@doctrine', '%access_token%']

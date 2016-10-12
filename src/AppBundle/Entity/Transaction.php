@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
@@ -10,16 +10,18 @@ use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Lunches\Exception\ValidationException;
+use AppBundle\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
+use Swagger\Annotations as SWG;
 
 /**
- * @Entity(repositoryClass="Lunches\Model\TransactionRepository")
+ * @Entity(repositoryClass="TransactionRepository")
  * @Table(name="transaction", indexes={
  *     @Index(name="created", columns={"created"})
  * })
+ * @SWG\Definition(required={"type","amount","user"})
  */
-class Transaction
+class Transaction implements \JsonSerializable
 {
     const TYPE_INCOME = 'income';
     const TYPE_OUTCOME = 'outcome';
@@ -28,16 +30,19 @@ class Transaction
      * @var string
      * @Id
      * @Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
     /**
      * @var float
      * @Column(type="float", nullable=false)
+     * @SWG\Property()
      */
     protected $amount;
     /**
      * @var User
      * @ManyToOne(targetEntity="User")
+     * @SWG\Property(ref="#/definitions/User")
      */
     protected $user;
     /**
@@ -45,6 +50,9 @@ class Transaction
      *
      * @var string
      * @Column(type="string", nullable=false)
+     * @SWG\Property(
+     *     enum={"income","outcome","refund"},
+     * )
      */
     protected $type;
 
@@ -53,12 +61,14 @@ class Transaction
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
+     * @SWG\Property()
      */
     protected $created;
 
     /**
      * @var \DateTime
      * @Column(type="datetime", name="payment_date")
+     * @SWG\Property()
      */
     protected $paymentDate;
 
@@ -100,7 +110,7 @@ class Transaction
     /**
      * @return array
      */
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             'id' => $this->id,

@@ -17,3 +17,7 @@ menus:
 prices:
     type: rest
     resource: "@AppBundle/Controller/PricesController.php"
+
+transactions:
+    type: rest
+    resource: "@AppBundle/Controller/TransactionsController.php"
