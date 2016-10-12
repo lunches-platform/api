@@ -33,6 +33,10 @@ class OrderFactory
     /** @var UserRepository  */
     protected $userRepo;
 
+    /**
+     * OrderFactory constructor.
+     * @param Registry $doctrine
+     */
     public function __construct(Registry $doctrine)
     {
         $this->orderRepo = $doctrine->getRepository('AppBundle:Order');
@@ -136,15 +140,15 @@ class OrderFactory
         /** @var array $items */
         $items = $data['items'];
 
-        $lineItems = $orderedProductIds = [];
+        $lineItems = $orderedDishIds = [];
         foreach ($items as $line) {
             $lineItem = $this->createLineItem($line, $shipmentDate);
 
-            // order only unique products
-            if (in_array($productId = $lineItem->getDish()->getId(), $orderedProductIds, true)) {
+            // order only unique dishes
+            if (in_array($dishId = $lineItem->getDish()->getId(), $orderedDishIds, true)) {
                 continue;
             }
-            $orderedProductIds[] = $productId;
+            $orderedDishIds[] = $dishId;
             $lineItems[] = $lineItem;
         }
 
@@ -165,7 +169,7 @@ class OrderFactory
 
         $lineItem = new LineItem();
         $lineItem->setSize($line['size']);
-        $lineItem->setDish($this->getDish($line['productId'], $shipmentDate));
+        $lineItem->setDish($this->getDish($line['dishId'], $shipmentDate));
 
         return $lineItem;
     }
@@ -178,21 +182,21 @@ class OrderFactory
      */
     private function getDish($dishId, \DateTime $shipmentDate)
     {
-        $product = $this->dishRepository->get($dishId);
+        $dish = $this->dishRepository->get($dishId);
 
         // TODO runs for each LineItem, move outside
         $menus = $this->getMenus($shipmentDate);
         foreach ($menus as $menu) {
-            if ($menu->hasDish($product)) {
-                return $product;
+            if ($menu->hasDish($dish)) {
+                return $dish;
             }
         }
-        throw LineItemException::notCookingToday($product, $shipmentDate);
+        throw LineItemException::notCookingToday($dish, $shipmentDate);
     }
 
     private function assertRequiredExists($line)
     {
-        $required = ['productId', 'size'];
+        $required = ['dishId', 'size'];
 
         $emptyRequired = array_diff($required, array_keys($line));
         if (count($emptyRequired) !== 0) {
@@ -217,7 +221,7 @@ class OrderFactory
 
         $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
         if ($date <= $currentDate) {
-            throw ValidationException::invalidDate('Can not order product for today or in the past');
+            throw ValidationException::invalidDate('Can not order dish for today or in the past');
         }
 
         return $date;

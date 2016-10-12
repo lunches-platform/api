@@ -25,7 +25,7 @@ class PriceFactory
         }
         $price = new Price(
             $array['price'],
-            $array['date']
+            $this->createDate($array['date'])
         );
         $price->setItems(
             $this->createItems($price, $array['items'])
@@ -42,6 +42,14 @@ class PriceFactory
         return new ArrayCollection(array_map(function (LineItem $lineItem) use ($price) {
             return new PriceItem($price, $lineItem->getDish(), $lineItem->getSize());
         }, $values));
+    }
+
+    private function createDate($date)
+    {
+        if (!$date instanceof \DateTime) {
+            throw ValidationException::invalidDate();
+        }
+        return $date;
     }
 
 
