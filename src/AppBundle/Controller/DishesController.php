@@ -37,7 +37,7 @@ class DishesController
      *     ),
      * )
      * @param Dish $dish
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Dish
      * @View
      */
     public function getDishAction(Dish $dish)

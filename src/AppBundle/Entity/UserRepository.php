@@ -18,9 +18,12 @@ class UserRepository extends EntityRepository
     {
         $fullname = (string) $fullname;
 
-        return $this->findOneBy([
+        /** @var User $user */
+        $user = $this->findOneBy([
             'fullname' => $fullname,
         ]);
+
+        return $user;
     }
 
     public function getByUsername($fullname)

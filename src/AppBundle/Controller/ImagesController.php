@@ -43,7 +43,7 @@ class ImagesController
      *     ),
      * )
      * @param Image $image
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Image
      * @View
      */
     public function getImageAction(Image $image)
