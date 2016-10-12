@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
 
-use Lunches\Exception\UserException;
-use Lunches\Exception\ValidationException;
-use Lunches\Model\User;
+use AppBundle\Entity\User;
+use AppBundle\Exception\UserException;
+use AppBundle\Exception\ValidationException;
 
 class UserTest extends \PHPUnit_Framework_TestCase
 {
@@ -93,10 +93,10 @@ class UserTest extends \PHPUnit_Framework_TestCase
         self::assertEquals($newAddress, $user->getAddress());
     }
 
-    public function testToArray()
+    public function testJsonSerialize()
     {
         $user = $this->getUser();
-        $userArr = $user->toArray();
+        $userArr = json_decode(json_encode($user), true);
         self::assertTrue(is_array($userArr));
 
         self::assertArrayHasKey('id', $userArr);

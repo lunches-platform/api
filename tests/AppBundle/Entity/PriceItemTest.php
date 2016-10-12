@@ -1,36 +1,26 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
-
-use Lunches\Exception\ValidationException;
-use Lunches\Model\Price;
-use Lunches\Model\PriceItem;
-use Lunches\Model\Product;
+use AppBundle\Entity\Dish;
+use AppBundle\Entity\Price;
+use AppBundle\Entity\PriceItem;
+use AppBundle\Exception\ValidationException;
 
 class PriceItemTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
         $price = new Price(100, new \DateTime());
-        $product = new Product(1);
+        $product = new Dish(1);
         $size = 'big';
 
         $priceItem = new PriceItem($price, $product, $size);
 
         self::assertEquals($price, $priceItem->getPrice());
-        self::assertEquals($product, $priceItem->getProduct());
+        self::assertEquals($product, $priceItem->getDish());
         self::assertEquals($size, $priceItem->getSize());
-    }
-    public function testToArray()
-    {
-        $priceItem = $this->getPriceItem();
-        $array = $priceItem->toArray();
-
-        self::assertTrue(is_array($array));
-        self::assertArrayHasKey('size', $array);
-        self::assertArrayHasKey('productId', $array);
     }
 
     public function testInvalidSize()
@@ -41,7 +31,7 @@ class PriceItemTest extends \PHPUnit_Framework_TestCase
 
         new PriceItem(
             new Price(100, new \DateTime()),
-            new Product(1),
+            new Dish(1),
             $size
         );
     }
@@ -60,24 +50,24 @@ class PriceItemTest extends \PHPUnit_Framework_TestCase
 
         self::assertFalse($priceItem1->equalsTo($priceItem2));
     }
-    public function testProductNotEqual()
+    public function testDishNotEqual()
     {
-        $priceItem1 = $this->getPriceItem(null, new Product(1));
-        $priceItem2 = $this->getPriceItem(null, new Product(2));
+        $priceItem1 = $this->getPriceItem(null, new Dish(1));
+        $priceItem2 = $this->getPriceItem(null, new Dish(2));
 
         self::assertFalse($priceItem1->equalsTo($priceItem2));
     }
 
     /**
      * @param Price|null $price
-     * @param Product|null $product
+     * @param Dish|null $product
      * @param string $size
      * @return PriceItem
      */
     private function getPriceItem($price = null, $product = null, $size = 'big')
     {
         $price = $price ?: new Price(100, new \DateTime());
-        $product = $product?: new Product(1);
+        $product = $product?: new Dish(1);
         $size = $size?:'big';
 
         return new PriceItem($price, $product, $size);

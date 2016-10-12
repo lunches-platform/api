@@ -1,14 +1,14 @@
 <?php
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
+use AppBundle\Entity\LineItem;
+use AppBundle\Entity\Order;
+use AppBundle\Entity\Transaction;
+use AppBundle\Entity\User;
+use AppBundle\Exception\OrderException;
+use AppBundle\Exception\ValidationException;
 use Doctrine\Common\Collections\ArrayCollection;
-use Lunches\Exception\OrderException;
-use Lunches\Exception\ValidationException;
-use Lunches\Model\LineItem;
-use Lunches\Model\Order;
-use Lunches\Model\Transaction;
-use Lunches\Model\User;
 
 class OrderTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,12 +17,6 @@ class OrderTest extends \PHPUnit_Framework_TestCase
         ini_set('error_reporting', E_ALL);
         ini_set('display_errors', '1');
         ini_set('display_startup_errors', '1');
-    }
-    public function testOrderToArray()
-    {
-        $order = new Order();
-
-        self::assertTrue(is_array($order->toArray()));
     }
 
     public function testAddLineItem()
@@ -78,7 +72,6 @@ class OrderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group integration
-     * @throws \Lunches\Exception\OrderException
      */
     public function testPayWithoutPrice()
     {
@@ -127,7 +120,6 @@ class OrderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @throws OrderException
-     * @throws \Lunches\Exception\ValidationException
      */
     public function testTwoTimesFailedPay()
     {

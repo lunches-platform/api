@@ -1,17 +1,18 @@
 <?php
 
 
-namespace Lunches\Tests\Model;
+namespace Tests\AppBundle\Entity;
 
 
+use AppBundle\Entity\Dish;
+use AppBundle\Entity\DishRepository;
+use AppBundle\Entity\LineItem;
+use AppBundle\Entity\Order;
+use AppBundle\Entity\Price;
+use AppBundle\Entity\PriceFactory;
+use AppBundle\Exception\ValidationException;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\ArrayCollection;
-use Lunches\Exception\ValidationException;
-use Lunches\Model\LineItem;
-use Lunches\Model\Order;
-use Lunches\Model\Price;
-use Lunches\Model\PriceFactory;
-use Lunches\Model\Product;
-use Lunches\Model\ProductRepository;
 
 class PriceFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +20,12 @@ class PriceFactoryTest extends \PHPUnit_Framework_TestCase
     protected $factory;
     public function setUp()
     {
-        $this->factory = new PriceFactory($this->getProductRepo());
+        $doctrine = $this->getMockBuilder(Registry::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $doctrine->method('getRepository')->willReturn($this->getDishRepo());
+        $this->factory = new PriceFactory($doctrine);
     }
     public function testCreateFromArray()
     {
@@ -63,29 +69,29 @@ class PriceFactoryTest extends \PHPUnit_Framework_TestCase
     }
     public function testCreateItemNoSize()
     {
-        $this->setExpectedException(ValidationException::class, 'Price item must have "size" of product specified');
+        $this->setExpectedException(ValidationException::class, 'Price item must have "size" of dish specified');
         $this->factory->createFromArray($this->getPriceData(['items' => [
             [
-                'productId' => $this->existProductId(),
+                'dishId' => $this->existDishId(),
             ],
         ]]));
     }
-    public function testCreateItemNoProductId()
+    public function testCreateItemNoDishId()
     {
-        $this->setExpectedException(ValidationException::class, 'Price item must contain valid product');
+        $this->setExpectedException(ValidationException::class, 'Price item must contain valid dish');
         $this->factory->createFromArray($this->getPriceData(['items' => [
             [
                 'size' => 'big',
             ],
         ]]));
     }
-    public function testCreateItemProductNotFound()
+    public function testCreateItemDishNotFound()
     {
-        $this->setExpectedException(ValidationException::class, 'Price item must contain valid product');
+        $this->setExpectedException(ValidationException::class, 'Price item must contain valid dish');
         $this->factory->createFromArray($this->getPriceData(['items' => [
             [
                 'size' => 'big',
-                'productId' => $this->notExistProductId(),
+                'dishId' => $this->notExistDishId(),
             ],
         ]]));
     }
@@ -96,10 +102,10 @@ class PriceFactoryTest extends \PHPUnit_Framework_TestCase
 
         $lineItem = new LineItem();
         $lineItem->setSize($request['items'][0]['size']);
-        $lineItem->setProduct($price->getItems()->first()->getProduct());
+        $lineItem->setDish($price->getItems()->first()->getDish());
 
         $order = new Order();
-        $order->setShipmentDate(new \DateTime($request['date']));
+        $order->setShipmentDate($request['date']);
         $order->setPrice($request['price']);
         $order->setLineItems([ $lineItem ]);
 
@@ -108,37 +114,37 @@ class PriceFactoryTest extends \PHPUnit_Framework_TestCase
         self::assertEquals($order->getLineItems()->count(), $priceItems->count());
     }
 
-    private function existProductId()
+    private function existDishId()
     {
         return 'exist';
     }
-    private function notExistProductId()
+    private function notExistDishId()
     {
         return 'notExist';
     }
 
     /**
-     * @return ProductRepository
+     * @return DishRepository
      */
-    private function getProductRepo()
+    private function getDishRepo()
     {
-        $productRepo = $this->getMockBuilder(ProductRepository::class)->disableOriginalConstructor()->getMock();
-        $productRepo->method('find')->will(self::returnValueMap([
-            [ $this->existProductId(),    null, null, new Product(1) ],
-            [ $this->notExistProductId(), null, null, null ],
+        $dishRepo = $this->getMockBuilder(DishRepository::class)->disableOriginalConstructor()->getMock();
+        $dishRepo->method('find')->will(self::returnValueMap([
+            [ $this->existDishId(),    null, null, new Dish(1) ],
+            [ $this->notExistDishId(), null, null, null ],
         ]));
 
-        return $productRepo;
+        return $dishRepo;
     }
 
     private function getPriceData(array $override = [])
     {
         return array_replace([
-            'date' => (new \DateTime('tomorrow'))->format('Y-m-d'),
+            'date' => new \DateTime('tomorrow'),
             'price' => 45,
             'items' => [
                 [
-                    'productId' => $this->existProductId(),
+                    'dishId' => $this->existDishId(),
                     'size' => 'big',
                 ]
             ],
