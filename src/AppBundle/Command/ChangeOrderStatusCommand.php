@@ -1,21 +1,20 @@
 <?php
 
-namespace Lunches\Command;
+namespace AppBundle\Command;
 
+use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderRepository;
+use AppBundle\Exception\OrderException;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Console\Command\Command;
-use Lunches\Exception\OrderException;
-use Lunches\Model\Order;
-use Lunches\Model\OrderRepository;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ChangeOrderStatusCommand.
  */
-class ChangeOrderStatusCommand extends Command
+class ChangeOrderStatusCommand extends ContainerAwareCommand
 {
     /** @var  OutputInterface */
     protected $output;
@@ -35,10 +34,13 @@ class ChangeOrderStatusCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int|null|void
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -107,17 +109,24 @@ class ChangeOrderStatusCommand extends Command
 
     /**
      * @return OrderRepository
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \LogicException
      */
     private function getOrderRepository()
     {
-        return $this->getEm()->getRepository('\Lunches\Model\Order');
+        return $this->getContainer()->get('doctrine')->getRepository('AppBundle:Order');
     }
 
     /**
      * @return EntityManager
+     * @throws \LogicException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \InvalidArgumentException
      */
     private function getEm()
     {
-        return $this->getSilexApplication()['doctrine.em'];
+        return $this->getContainer()->get('doctrine')->getManager();
     }
 }
