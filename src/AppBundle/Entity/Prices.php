@@ -1,9 +1,9 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Lunches\Exception\RuntimeException;
+use AppBundle\Exception\RuntimeException;
 use Underscore\Types\Arrays;
 
 /**
@@ -67,7 +67,7 @@ class Prices extends ArrayCollection
     /**
      * Returns prices which has only one PriceItem
      *
-     * It is useful to get independent Product price, non in combination of Products
+     * It is useful to get independent Dish price, non in combination of Dishes
      *
      * @return \Doctrine\Common\Collections\Collection|static
      */

@@ -42,12 +42,14 @@ class MenusController
      *     @SWG\Parameter(
      *         description="Get menus which greater than start date",
      *         type="string",
+     *         format="date-time",
      *         in="query",
      *         name="startDate",
      *     ),
      *     @SWG\Parameter(
      *         description="Get menus which less than end date",
      *         type="string",
+     *         format="date-time",
      *         in="query",
      *         name="endDate",
      *     ),
@@ -68,9 +70,9 @@ class MenusController
         } catch (ValidationException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-//        if ($range->getStart() < new \DateTime('-2 week')) {
-//            throw new BadRequestHttpException('Can not access menu older than two weeks ago');
-//        }
+        if ($range->getStart() < new \DateTime('-2 week')) {
+            throw new BadRequestHttpException('Can not access menu older than two weeks ago');
+        }
 
         return $this->getByDateRange($range->getStart(), $range->getEnd());
     }

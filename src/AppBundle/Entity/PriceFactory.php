@@ -1,18 +1,19 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\ArrayCollection;
-use Lunches\Exception\ValidationException;
+use AppBundle\Exception\ValidationException;
 
 class PriceFactory
 {
-    /** @var ProductRepository  */
-    protected $productRepo;
+    /** @var DishRepository  */
+    protected $dishRepository;
 
-    public function __construct(ProductRepository $productRepo)
+    public function __construct(Registry $doctrine)
     {
-        $this->productRepo = $productRepo;
+        $this->dishRepository = $doctrine->getRepository('AppBundle:Dish');
     }
 
     public function createFromArray($array)
@@ -24,7 +25,7 @@ class PriceFactory
         }
         $price = new Price(
             $array['price'],
-            $this->createDate($array['date'])
+            $array['date']
         );
         $price->setItems(
             $this->createItems($price, $array['items'])
@@ -39,14 +40,6 @@ class PriceFactory
         }, $order->getLineItems()->getValues()));
     }
 
-    private function createDate($date)
-    {
-        try {
-            return new \DateTime($date);
-        } catch (\Exception $e) {
-            throw ValidationException::invalidDate();
-        }
-    }
 
     private function createItems(Price $price, array $items)
     {
@@ -64,14 +57,14 @@ class PriceFactory
     private function createItem(Price $price, array $item)
     {
         if (!array_key_exists('size', $item)) {
-            throw ValidationException::invalidPrice('Price item must have "size" of product specified');
+            throw ValidationException::invalidPrice('Price item must have "size" of dish specified');
         }
 
-        // TODO use ProductRepository::get() instead of find() and remove check for product existence as it is not responsibility of this method
-        if (!array_key_exists('productId', $item) || !$product = $this->productRepo->find($item['productId'])) {
-            throw ValidationException::invalidPrice('Price item must contain valid product');
+        // TODO use DishRepository::get() instead of find() and remove check for dish existence as it is not responsibility of this method
+        if (!array_key_exists('dishId', $item) || !$dish = $this->dishRepository->find($item['dishId'])) {
+            throw ValidationException::invalidPrice('Price item must contain valid dish');
         }
 
-        return new PriceItem($price, $product, $item['size']);
+        return new PriceItem($price, $dish, $item['size']);
     }
 }

@@ -7,6 +7,10 @@ services:
         tags:
             - { name: serializer.normalizer }
 
+    app_bundle.factory.price:
+        class: AppBundle\Entity\PriceFactory
+        arguments: ['@doctrine']
+
     app_bundle.controller.dishes_controller:
         class: AppBundle\Controller\DishesController
         arguments: ['@doctrine']
@@ -26,3 +30,7 @@ services:
     app_bundle.controller.menus_controller:
         class: AppBundle\Controller\MenusController
         arguments: ['@doctrine']
+
+    app_bundle.controller.prices_controller:
+        class: AppBundle\Controller\PricesController
+        arguments: ['@doctrine', '@app_bundle.factory.price']

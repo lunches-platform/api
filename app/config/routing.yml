@@ -13,3 +13,7 @@ users:
 menus:
     type: rest
     resource: "@AppBundle/Controller/MenusController.php"
+
+prices:
+    type: rest
+    resource: "@AppBundle/Controller/PricesController.php"

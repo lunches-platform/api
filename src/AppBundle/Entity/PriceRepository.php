@@ -1,7 +1,8 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\DateRange;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -21,7 +22,7 @@ class PriceRepository extends EntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['p'])
-            ->from('Lunches\Model\Price', 'p')
+            ->from('AppBundle\Entity\Price', 'p')
             ->where('p.date >= :start')
             ->andWhere('p.date <= :end')
             ->orderBy('p.date', 'ASC')

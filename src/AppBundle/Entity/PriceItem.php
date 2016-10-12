@@ -1,46 +1,52 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use Lunches\Exception\ValidationException;
+use AppBundle\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
+use Swagger\Annotations as SWG;
 
 
 /**
  * Class PriceItem
  * @Entity
  * @Table(name="price_item")
+ * @SWG\Definition(required={"price","dish","size"})
  */
-class PriceItem
+class PriceItem implements \JsonSerializable
 {
     /**
      * @var Uuid
      *
      * @Id
      * @Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var Price
      * @ManyToOne(targetEntity="Price", inversedBy="items")
+     * @SWG\Property(ref="#/definitions/Price")
      */
     protected $price;
 
     /**
-     * @var Product
-     * @ManyToOne(targetEntity="Product")
+     * @var Dish
+     * @ManyToOne(targetEntity="Dish")
+     * @SWG\Property(ref="#/definitions/Dish")
      */
-    protected $product;
+    protected $dish;
 
     /**
      * @var string
      * @Column(type="string")
+     * @SWG\Property()
      */
     protected $size;
 
@@ -51,22 +57,22 @@ class PriceItem
             return false;
         }
 
-        return $this->product->getId() === $priceItem->getProduct()->getId();
+        return $this->dish->getId() === $priceItem->getDish()->getId();
     }
 
-    public function __construct(Price $price, Product $product, $size)
+    public function __construct(Price $price, Dish $dish, $size)
     {
         $this->id = Uuid::uuid4();
         $this->price = $price;
-        $this->product = $product;
+        $this->dish = $dish;
         $this->setSize($size);
     }
 
-    public function toArray()
+    public function jsonSerialize()
     {
         return [
             'size' => $this->size,
-            'productId' => $this->getProduct()->getId(),
+            'dishId' => $this->getDish()->getId(),
         ];
     }
 
@@ -80,11 +86,11 @@ class PriceItem
 
     /**
      * TODO rename getters
-     * @return Product
+     * @return Dish
      */
-    public function getProduct()
+    public function getDish()
     {
-        return $this->product;
+        return $this->dish;
     }
 
     /**
@@ -97,7 +103,7 @@ class PriceItem
 
     private function setSize($size)
     {
-        if (!in_array($size, Product::$availableSizes, true)) {
+        if (!in_array($size, Dish::$availableSizes, true)) {
             throw ValidationException::invalidSize();
         }
         $this->size = $size;

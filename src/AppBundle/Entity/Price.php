@@ -1,6 +1,6 @@
 <?php
 
-namespace Lunches\Model;
+namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
@@ -8,37 +8,43 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
-use Lunches\Exception\ValidationException;
+use AppBundle\Exception\ValidationException;
 use Ramsey\Uuid\Uuid;
+use Swagger\Annotations as SWG;
 
 
 /**
  * Class Price
- * @Entity(repositoryClass="PriceRepository")
+ * @Entity(repositoryClass="AppBundle\Entity\PriceRepository")
  * @Table(name="price")
+ * @SWG\Definition(required={"value","date","items"})
  */
-class Price
+class Price implements \JsonSerializable
 {
     /**
      * @var Uuid
      *
      * @Id
      * @Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
     /**
      * @var float
      * @Column(type="float")
+     * @SWG\Property()
      */
     protected $value;
     /**
      * @var ArrayCollection
      * @OneToMany(targetEntity="PriceItem", mappedBy="price", cascade={"persist"})
+     * @SWG\Property(ref="#/definitions/PriceItem")
      */
     protected $items;
     /**
      * @var \DateTime
      * @Column(type="date")
+     * @SWG\Property()
      */
     protected $date;
 
@@ -132,18 +138,17 @@ class Price
     /**
      * @return array
      */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
     public function toArray()
     {
-        $items = [];
-        foreach ($this->items as $item) {
-            /** @var $image PriceItem */
-            $items[] = $item->toArray();
-        }
-
         return [
             'date' => $this->date->format('Y-m-d'),
             'price' => $this->value,
-            'items' => $items,
+            'items' => $this->items,
         ];
     }
 
