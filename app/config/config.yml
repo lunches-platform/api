@@ -107,6 +107,7 @@ fos_rest:
             'AppBundle\Exception\OrderException': 400
             'AppBundle\Exception\LineItemException': 400
             'AppBundle\Exception\ValidationException': 400
+            'AppBundle\Exception\UserException': 400
         messages:
             'DomainException': true
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
@@ -114,6 +115,7 @@ fos_rest:
             'AppBundle\Exception\OrderException': true
             'AppBundle\Exception\LineItemException': true
             'AppBundle\Exception\ValidationException': true
+            'AppBundle\Exception\UserException': true
     body_converter:
         enabled: true
 

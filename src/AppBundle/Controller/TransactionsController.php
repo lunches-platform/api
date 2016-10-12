@@ -202,7 +202,7 @@ class TransactionsController
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @View(statusCode=201);
      */
-    public function create(ParamFetcher $params)
+    public function postTransactionsAction(ParamFetcher $params)
     {
         $this->assertAccessGranted($params);
         $user = $this->doctrine->getRepository('AppBundle:User')->getByUsername($params->get('username'));
