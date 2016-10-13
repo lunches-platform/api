@@ -111,5 +111,19 @@ class AppBundle extends Bundle
      *     type="string",
      *     format="date",
      * ),
+     * @SWG\Parameter(
+     *     name="orderId",
+     *     in="path",
+     *     description="ID of Order",
+     *     type="integer",
+     *     required=true,
+     * ),
+     * @SWG\Parameter(
+     *     name="username",
+     *     in="path",
+     *     type="string",
+     *     description="User name",
+     *     required=true,
+     * ),
      */
 }

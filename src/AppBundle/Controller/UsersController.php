@@ -69,9 +69,7 @@ class UsersController
      *     path="/users/{username}",
      *     description="Get user by username",
      *     operationId="getUserAction",
-     *     @SWG\Parameter(
-     *         description="Username", type="string", in="path", name="username", required=true,
-     *     ),
+     *     @SWG\Parameter(ref="#parameters/username"),
      *     @SWG\Response(
      *         response=200, description="User",
      *         @SWG\Schema(ref="#/definitions/User")
@@ -134,14 +132,7 @@ class UsersController
      *     path="/users/{username}",
      *     operationId="putUserAction",
      *     description="Updates specified User",
-     *     @SWG\Parameter(
-     *         name="username",
-     *         in="path",
-     *         type="string",
-     *         description="User name",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
-     *     ),
+     *     @SWG\Parameter(ref="#parameters/username"),
      *     @SWG\Parameter(
      *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
      *         description="",
