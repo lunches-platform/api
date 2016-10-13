@@ -65,5 +65,19 @@ class AppBundle extends Bundle
      *     required=true,
      *     type="string",
      * ),
+     * @SWG\Parameter(
+     *     name="startDate",
+     *     in="query",
+     *     description="Filter data which _date_ value greater than **startDate**",
+     *     type="string",
+     *     format="date",
+     * ),
+     * @SWG\Parameter(
+     *     name="endDate",
+     *     in="query",
+     *     description="Filter data which _date_ value less than **endDate**",
+     *     type="string",
+     *     format="date",
+     * ),
      */
 }
