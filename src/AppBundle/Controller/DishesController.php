@@ -25,6 +25,7 @@ class DishesController
 
     /**
      * @SWG\Get(
+     *     tags={"dish"},
      *     path="/dishes/{dish}",
      *     description="Get Dish by ID",
      *     operationId="getDishAction",
@@ -47,6 +48,7 @@ class DishesController
 
     /**
      * @SWG\Get(
+     *     tags={"dish"},
      *     path="/dishes",
      *     description="Return list of dishes using filters",
      *     operationId="getDishesAction",

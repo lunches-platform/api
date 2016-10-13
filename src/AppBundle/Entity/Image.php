@@ -16,7 +16,7 @@ use Swagger\Annotations AS SWG;
  * @Table(name="image", indexes={
  *     @Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"id","url","format","width","height"})
+ * @SWG\Definition(required={"id","url","format","width","height"}, type="object")
  */
 class Image implements \JsonSerializable
 {

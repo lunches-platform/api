@@ -31,6 +31,7 @@ class ImagesController
     }
     /**
      * @SWG\Get(
+     *     tags={"image"},
      *     path="/images/{imageId}",
      *     description="Get Image by ID",
      *     operationId="getImageAction",
@@ -53,6 +54,7 @@ class ImagesController
 
     /**
      * @SWG\Post(
+     *     tags={"image"},
      *     path="/images",
      *     operationId="postImages",
      *     description="Uploads new image",

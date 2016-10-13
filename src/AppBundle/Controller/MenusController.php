@@ -36,6 +36,7 @@ class MenusController
 
     /**
      * @SWG\Get(
+     *     tags={"menu"},
      *     path="/menus",
      *     description="Get list of menus by filters",
      *     operationId="getMenusAction",
@@ -79,11 +80,12 @@ class MenusController
 
     /**
      * @SWG\Get(
+     *     tags={"menu"},
      *     path="/menus/{concrete}",
      *     description="Get menu for date",
      *     operationId="getMenuAction",
      *     @SWG\Parameter(
-     *         description="Menu date", type="date", in="path", name="date", required=true,
+     *         description="Menu date", type="string", format="date", in="path", name="date", required=true,
      *     ),
      *     @SWG\Response(
      *         response=200, description="Menu",
@@ -121,6 +123,7 @@ class MenusController
 
     /**
      * @SWG\Get(
+     *     tags={"menu"},
      *     path="/menus/today",
      *     description="Get menu for today",
      *     operationId="getTodayMenuAction",
@@ -137,6 +140,7 @@ class MenusController
     }
     /**
      * @SWG\Get(
+     *     tags={"menu"},
      *     path="/menus/tomorrow",
      *     description="Get menu for tomorrow",
      *     operationId="getTomorrowMenuAction",
@@ -153,6 +157,7 @@ class MenusController
     }
     /**
      * @SWG\Get(
+     *     tags={"menu"},
      *     path="/menus/week/current",
      *     description="Get menu on current week",
      *     operationId="getCurrentWeekMenuAction",
@@ -172,6 +177,7 @@ class MenusController
     }
     /**
      * @SWG\Get(
+     *     tags={"menu"},
      *     path="/menus/week/next",
      *     description="Get next week menu",
      *     operationId="getNextWeekMenuAction",

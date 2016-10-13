@@ -17,7 +17,7 @@ use Swagger\Annotations as SWG;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Entity\OrderRepository")
  * @ORM\Table(name="`order`")
- * @SWG\Definition(required={"user","address","shipmentDate","lineItems"})
+ * @SWG\Definition(required={"user","address","shipmentDate","lineItems"}, type="object")
  */
 class Order implements \JsonSerializable
 {
@@ -103,7 +103,7 @@ class Order implements \JsonSerializable
     /**
      * @var LineItem[]
      * @ORM\OneToMany(targetEntity="LineItem", mappedBy="order", cascade={"persist"})
-     * @SWG\Property(ref="#/definitions/LineItem")
+     * @SWG\Property
      */
     protected $lineItems = [];
 

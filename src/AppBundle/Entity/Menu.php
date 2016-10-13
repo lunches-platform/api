@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @Entity(repositoryClass="AppBundle\Entity\MenuRepository")
  * @Table(name="menu")
- * @SWG\Definition(required={"id","dishes","type", "date"})
+ * @SWG\Definition(required={"id","dishes","type", "date"}, type="object")
  */
 class Menu implements \JsonSerializable
 {
@@ -28,7 +28,7 @@ class Menu implements \JsonSerializable
     /**
      * @var MenuDish[]
      * @OneToMany(targetEntity="MenuDish", mappedBy="menu")
-     * @SWG\Property(ref="#/definitions/MenuDish")
+     * @SWG\Property
      */
     protected $menuDishes;
 

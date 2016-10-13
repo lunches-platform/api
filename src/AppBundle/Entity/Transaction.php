@@ -19,7 +19,7 @@ use Swagger\Annotations as SWG;
  * @Table(name="transaction", indexes={
  *     @Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"type","amount","user"})
+ * @SWG\Definition(required={"type","amount","user"}, type="object")
  */
 class Transaction implements \JsonSerializable
 {
@@ -42,7 +42,7 @@ class Transaction implements \JsonSerializable
     /**
      * @var User
      * @ManyToOne(targetEntity="User")
-     * @SWG\Property(ref="#/definitions/User")
+     * @SWG\Property
      */
     protected $user;
     /**

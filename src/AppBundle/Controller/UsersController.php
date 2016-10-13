@@ -34,6 +34,7 @@ class UsersController
 
     /**
      * @SWG\Get(
+     *     tags={"user"},
      *     path="/users",
      *     description="Get list of users by filters",
      *     operationId="getUsersAction",
@@ -64,6 +65,7 @@ class UsersController
 
     /**
      * @SWG\Get(
+     *     tags={"user"},
      *     path="/users/{username}",
      *     description="Get user by username",
      *     operationId="getUserAction",
@@ -88,23 +90,13 @@ class UsersController
 
     /**
      * @SWG\Post(
+     *     tags={"user"},
      *     path="/users",
      *     operationId="postUsersAction",
      *     description="Registers new User",
      *     @SWG\Parameter(
-     *         name="username",
-     *         in="body",
-     *         description="User name",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="address",
-     *         in="body",
-     *         type="string",
-     *         description="User address",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
+     *         description="Provide here payload in User representation",
      *     ),
      *     @SWG\Response(response=201, description="Newly registered User", @SWG\Schema(ref="#/definitions/User") ),
      * )
@@ -138,23 +130,21 @@ class UsersController
 
     /**
      * @SWG\Put(
+     *     tags={"user"},
      *     path="/users/{username}",
      *     operationId="putUserAction",
      *     description="Updates specified User",
      *     @SWG\Parameter(
      *         name="username",
      *         in="path",
+     *         type="string",
      *         description="User name",
      *         required=true,
      *         @SWG\Schema(ref="#/definitions/User"),
      *     ),
      *     @SWG\Parameter(
-     *         name="address",
-     *         in="body",
-     *         type="string",
-     *         description="User address",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
+     *         description="",
      *     ),
      *     @SWG\Response(response=200, description="User with updated fields", @SWG\Schema(ref="#/definitions/User") ),
      * )

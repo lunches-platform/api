@@ -53,6 +53,7 @@ class OrdersController
 
     /**
      * @SWG\Get(
+     *     tags={"order"},
      *     path="/orders",
      *     description="Get list of orders by filters",
      *     operationId="getOrdersAction",
@@ -109,6 +110,7 @@ class OrdersController
 
     /**
      * @SWG\Get(
+     *     tags={"order"},
      *     path="/orders/{id}",
      *     description="Get order by ID",
      *     operationId="getOrderAction",
@@ -132,6 +134,7 @@ class OrdersController
 
     /**
      * @SWG\Get(
+     *     tags={"order"},
      *     path="/users/{user}/orders",
      *     description="Get list of user orders using filters if needed",
      *     operationId="getUserOrdersAction",
@@ -194,37 +197,13 @@ class OrdersController
 
     /**
      * @SWG\Post(
+     *     tags={"order"},
      *     path="/orders",
      *     operationId="postOrdersAction",
      *     description="Place an order",
      *     @SWG\Parameter(
-     *         name="userId",
-     *         in="body",
-     *         description="ID of User on which the order is issued",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/Order"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="address",
-     *         in="body",
-     *         description="Address on which the order will be delivered",
-     *         required=false,
-     *         @SWG\Schema(ref="#/definitions/Order"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="shipmentDate",
-     *         description="Shipment date at which the order will be delivered",
-     *         in="body",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/Order"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="items",
-     *         in="body",
-     *         type="array",
-     *         description="Order LineItems list",
-     *         required=true,
-     *         @SWG\Items(ref="#/definitions/LineItem")
+     *         name="body", in="body", required=true,  @SWG\Schema(ref="#/definitions/Order"),
+     *         description="Include here payload in Order representation",
      *     ),
      *     @SWG\Response(response=201, description="Newly placed Order", @SWG\Schema(ref="#/definitions/Order") ),
      * )
@@ -258,6 +237,7 @@ class OrdersController
 
     /**
      * @SWG\Post(
+     *     tags={"order"},
      *     path="/orders/{id}/cancel",
      *     operationId="postOrdersCancelAction",
      *     description="Cancel an order",
@@ -290,12 +270,14 @@ class OrdersController
 
     /**
      * @SWG\Post(
+     *     tags={"order"},
      *     path="/orders/{id}/reject",
      *     operationId="postOrdersRejectAction",
      *     description="Reject an order",
      *     @SWG\Parameter(
      *         description="ID of Order", type="integer", in="path", name="id", required=true,
      *     ),
+     *     @SWG\Parameter(ref="#/parameters/accessToken"),
      *     @SWG\Response(response=201, description="Rejected Order", @SWG\Schema(ref="#/definitions/Order") ),
      * )
      * @Post("/orders/{id}/reject")
@@ -322,16 +304,10 @@ class OrdersController
     }
     /**
      * @SWG\Put(
-     *     path="/orders/{id}",
-     *     operationId="putOrderAction",
+     *     tags={"order"}, path="/orders/{id}", operationId="putOrderAction",
      *     description="Updates specified Order",
      *     @SWG\Parameter(
-     *         name="address",
-     *         in="body",
-     *         type="string",
-     *         description="Order shipment address",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/Order"),
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/Order"),
      *     ),
      *     @SWG\Response(response=200, description="Updated order", @SWG\Schema(ref="#/definitions/Order") ),
      * )

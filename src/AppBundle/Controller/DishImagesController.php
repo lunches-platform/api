@@ -36,6 +36,7 @@ class DishImagesController
 
     /**
      * @SWG\Get(
+     *     tags={"dish image"},
      *     path="/dishes/{dishId}/images/{imageId}",
      *     description="Get dish image ID and dish ID",
      *     operationId="getDishImageAction",
@@ -66,6 +67,7 @@ class DishImagesController
 
     /**
      * @SWG\Get(
+     *     tags={"dish image"},
      *     path="/dishes/{dishId}/images",
      *     description="Fetches all dish images",
      *     operationId="getDishImages",
@@ -84,24 +86,20 @@ class DishImagesController
 
     /**
      * @SWG\Put(
+     *     tags={"dish image"},
      *     path="/dishes/{dishId}/images/{imageId}",
      *     operationId="putDishImageAction",
      *     description="Adds image to dish",
+     *     @SWG\Parameter(ref="#/parameters/dishId"),
+     *     @SWG\Parameter(ref="#/parameters/imageId"),
      *     @SWG\Parameter(
-     *         description="ID of dish", type="string", in="path", name="dishId", required=true,
-     *     ),
-     *     @SWG\Parameter(
-     *         description="ID of image", type="string", in="path", name="imageId", required=true,
-     *     ),
-     *     @SWG\Parameter(
-     *         name="name",
+     *         name="body",
      *         in="body",
-     *         description="Category name",
+     *         description="Include here payload in DishImage representation excluding **dish** and **image** properties (as it has been already defined in _path_ parameters)",
      *         required=true,
-     *         @SWG\Schema(ref="#/definitions/Category"),
+     *         @SWG\Schema(ref="#/definitions/DishImage"),
      *     ),
-     *     @SWG\Parameter(name="description", in="body", @SWG\Schema(ref="#/definitions/Category")),
-     *     @SWG\Response(response=201, description="Newly created Category", @SWG\Schema(ref="#/definitions/Category") ),
+     *     @SWG\Response(response=201, description="Added DishImage", @SWG\Schema(ref="#/definitions/DishImage") ),
      * )
      *
      * @RequestParam(name="isCover", requirements=@Type("bool"), default=false)
@@ -135,6 +133,7 @@ class DishImagesController
 
     /**
      * @SWG\Put(
+     *     tags={"dish image"},
      *     path="/dishes/{dishId}/images/{imageId}/cover",
      *     operationId="putDishCoverImage",
      *     description="Assigns cover image for the dish. Resets any previously assigned cover",

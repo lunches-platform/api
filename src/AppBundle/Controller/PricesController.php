@@ -43,11 +43,12 @@ class PricesController
 
     /**
      * @SWG\Get(
+     *     tags={"price"},
      *     path="/prices/{date}",
      *     description="Get dish price for a date",
      *     operationId="getPriceAction",
      *     @SWG\Parameter(
-     *         description="Price date", type="date", in="path", name="date", required=true,
+     *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
      *     @SWG\Response(
      *         response=200, description="Price",
@@ -71,6 +72,7 @@ class PricesController
 
     /**
      * @SWG\Get(
+     *     tags={"price"},
      *     path="/prices",
      *     description="Get list of dish prices by filters",
      *     operationId="getPricesAction",
@@ -112,26 +114,16 @@ class PricesController
 
     /**
      * @SWG\Put(
+     *     tags={"price"},
      *     path="/prices/{date}",
      *     operationId="putPriceAction",
      *     description="Adds new price for specified date",
      *     @SWG\Parameter(
-     *         description="Price date", type="date", in="path", name="date", required=true,
+     *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
      *     @SWG\Parameter(
-     *         name="items",
-     *         in="body",
-     *         type="array",
-     *         description="Price items list",
-     *         required=true,
-     *         @SWG\Items(ref="#/definitions/PriceItem")
-     *     ),
-     *     @SWG\Parameter(
-     *         name="price",
-     *         in="body",
-     *         description="Price value",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/Price"),
+     *         name="body", in="body", required=true, @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Price"))
+     *         description="Include here payload in Price representation",
      *     ),
      *     @SWG\Response(response=200, description="Recently added price", @SWG\Schema(ref="#/definitions/Price") ),
      * )

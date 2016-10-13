@@ -19,7 +19,7 @@ use Swagger\Annotations as SWG;
  * @Table(name="user", indexes={
  *     @Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"clientId","name","address"})
+ * @SWG\Definition(required={"clientId","name","address"}, type="object")
  */
 class User implements \JsonSerializable
 {

@@ -45,12 +45,14 @@ class TransactionsController
 
     /**
      * @SWG\Get(
+     *     tags={"transaction"},
      *     path="/transactions/{id}",
      *     description="Get Transaction by ID",
      *     operationId="getTransactionAction",
      *     @SWG\Parameter(
      *         description="id", type="string", in="path", name="id", required=true,
      *     ),
+     *     @SWG\Parameter(ref="#/parameters/accessToken"),
      *     @SWG\Response(
      *         response=200, description="Transaction",
      *         @SWG\Schema(ref="#/definitions/Transaction")
@@ -70,12 +72,14 @@ class TransactionsController
 
     /**
      * @SWG\Delete(
+     *     tags={"transaction"},
      *     path="/transactions/{id}",
      *     description="Delete Transaction by ID",
      *     operationId="deleteTransactionAction",
      *     @SWG\Parameter(
      *         description="id", type="string", in="path", name="id", required=true,
      *     ),
+     *     @SWG\Parameter(ref="#/parameters/accessToken"),
      *     @SWG\Response(response=204, description="No response"),
      * )
      * @QueryParam(name="accessToken", description="Access token")
@@ -97,6 +101,7 @@ class TransactionsController
 
     /**
      * @SWG\Get(
+     *     tags={"transaction"},
      *     path="/transactions",
      *     description="Get list of client transactions",
      *     operationId="getTransactionsAction",
@@ -158,37 +163,15 @@ class TransactionsController
     }
     /**
      * @SWG\Post(
+     *     tags={"transaction"},
      *     path="/transactions",
      *     operationId="postTransactionsAction",
      *     description="Registers new Transaction",
      *     @SWG\Parameter(
-     *         name="username",
-     *         in="body",
-     *         required=true,
-     *         description="User name",
-     *         @SWG\Schema(ref="#/definitions/Transaction"),
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/Transaction"),
+     *         description="Include here payload in Transaction representation",
      *     ),
-     *     @SWG\Parameter(
-     *         name="type",
-     *         required=true,
-     *         in="body",
-     *         description="Transaction type. One of 'income', 'outcome' or 'refund' allowed",
-     *         @SWG\Schema(ref="#/definitions/Transaction"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="amount",
-     *         required=true,
-     *         in="body",
-     *         description="Transaction amount in smallest unit of currency",
-     *         @SWG\Schema(ref="#/definitions/Transaction"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="paymentDate",
-     *         required=false,
-     *         in="body",
-     *         description="Payment date when transaction was actually committed",
-     *         @SWG\Schema(ref="#/definitions/Transaction"),
-     *     ),
+     *     @SWG\Parameter(ref="#/parameters/accessToken"),
      *     @SWG\Response(response=201, description="Newly registered transaction", @SWG\Schema(ref="#/definitions/Transaction") ),
      * )
      * @RequestParam(name="username", description="User name")

@@ -14,7 +14,7 @@ use Swagger\Annotations as SWG;
  * Class MenuDish.
  * @Entity(repositoryClass="AppBundle\Entity\MenuDishRepository")
  * @Table(name="menu_dish")
- * @SWG\Definition(required={"menu","dish"})
+ * @SWG\Definition(required={"menu","dish"}, type="object")
  */
 class MenuDish
 {
@@ -30,21 +30,21 @@ class MenuDish
     /**
      * @var Menu
      * @ManyToOne(targetEntity="Menu", inversedBy="menuDishes")
-     * @SWG\Property(ref="#/definitions/Menu")
+     * @SWG\Property
      */
     protected $menu;
 
     /**
      * @var Dish
      * @ManyToOne(targetEntity="Dish")
-     * @SWG\Property(ref="#/definitions/Dish")
+     * @SWG\Property
      */
     protected $dish;
 
     /**
      * @var integer
      * @Column(type="integer", name="position")
-     * @SWG\Property()
+     * @SWG\Property
      */
     protected $position;
 

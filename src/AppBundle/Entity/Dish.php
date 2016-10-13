@@ -12,7 +12,7 @@ use Swagger\Annotations as SWG;
  * @ORM\Table(name="dish", indexes={
  *     @ORM\Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"name","type"})
+ * @SWG\Definition(required={"name","type"}, type="object")
  */
 class Dish implements \JsonSerializable
 {
@@ -62,14 +62,14 @@ class Dish implements \JsonSerializable
     /**
      * @var DishImage[]
      * @ORM\OneToMany(targetEntity="DishImage", mappedBy="dish", cascade={"persist"})
-     * @SWG\Property(ref="#/definitions/DishImage")
+     * @SWG\Property()
      */
     protected $images;
 
     /**
      * @var Ingredient[]
      * @ORM\OneToMany(targetEntity="Ingredient", mappedBy="dish", cascade={"persist"})
-     * @SWG\Property(ref="#/definitions/Ingredient")
+     * @SWG\Property()
      */
     protected $ingredients;
 

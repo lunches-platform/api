@@ -16,7 +16,7 @@ use Swagger\Annotations as SWG;
 /**
  * @Entity(repositoryClass="AppBundle\Entity\LineItemRepository")
  * @Table(name="line_item")
- * @SWG\Definition(required={"size","product"})
+ * @SWG\Definition(required={"size","product"}, type="object")
  */
 class LineItem implements \JsonSerializable
 {
@@ -41,14 +41,14 @@ class LineItem implements \JsonSerializable
     /**
      * @var Dish
      * @ManyToOne(targetEntity="Dish")
-     * @SWG\Property(ref="#/definitions/Dish")
+     * @SWG\Property
      */
     protected $dish;
 
     /**
      * @var Order
      * @ManyToOne(targetEntity="Order")
-     * @SWG\Property(ref="#/definitions/Order")
+     * @SWG\Property
      */
     protected $order;
 
