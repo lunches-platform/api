@@ -65,7 +65,7 @@ class UsersController
      * @SWG\Get(
      *     path="/users/{username}", tags={"Users"}, operationId="getUserAction",
      *     summary="Retrieve user", description="Retrieves user by username",
-     *     @SWG\Parameter(ref="#parameters/username"),
+     *     @SWG\Parameter(ref="#/parameters/username"),
      *     @SWG\Response(
      *         response=200, description="User",
      *         @SWG\Schema(ref="#/definitions/User")
@@ -124,7 +124,7 @@ class UsersController
      * @SWG\Put(
      *     path="/users/{username}", tags={"Users"}, operationId="putUserAction",
      *     summary="Update user details", description="Updates specified User. It is allowed to update user address currently",
-     *     @SWG\Parameter(ref="#parameters/username"),
+     *     @SWG\Parameter(ref="#/parameters/username"),
      *     @SWG\Parameter(
      *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
      *         description="",

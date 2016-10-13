@@ -115,7 +115,7 @@ class OrdersController
      * @SWG\Get(
      *     path="/users/{username}/orders", tags={"Orders"}, operationId="getUserOrdersAction",
      *     summary="Retrieve user orders", description="Get list of user orders using filters if needed",
-     *     @SWG\Parameter(ref="#parameters/username"),
+     *     @SWG\Parameter(ref="#/parameters/username"),
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
      *     @SWG\Parameter(
@@ -198,7 +198,7 @@ class OrdersController
 
     /**
      * @SWG\Post(
-     *     path="/orders/{id}/cancel", tags={"Orders"}, operationId="postOrdersCancelAction",
+     *     path="/orders/{orderId}/cancel", tags={"Orders"}, operationId="postOrdersCancelAction",
      *     summary="Cancel an order", description="Cancels an order",
      *     @SWG\Parameter(ref="#/parameters/orderId"),
      *     @SWG\Response(response=201, description="Canceled Order", @SWG\Schema(ref="#/definitions/Order") ),

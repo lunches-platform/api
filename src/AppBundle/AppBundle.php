@@ -125,5 +125,13 @@ class AppBundle extends Bundle
      *     description="User name",
      *     required=true,
      * ),
+     * @SWG\Parameter(
+     *     name="transactionId",
+
+     *     in="path",
+     *     description="Transaction ID",
+     *     type="string",
+     *     required=true,
+     * ),
      */
 }
