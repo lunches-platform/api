@@ -36,7 +36,7 @@ class DishImagesController
 
     /**
      * @SWG\Get(
-     *     path="/dishes/{dishId}/images/{imageId}", tags={"dish image"}, operationId="getDishImageAction",
+     *     path="/dishes/{dishId}/images/{imageId}", tags={"Dish Images"}, operationId="getDishImageAction",
      *     summary="Retrieve dish image", description="Retrieves DishImage by dish ID and image ID",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Parameter(ref="#/parameters/imageId"),
@@ -61,7 +61,7 @@ class DishImagesController
 
     /**
      * @SWG\Get(
-     *     path="/dishes/{dishId}/images", tags={"dish image"}, operationId="getDishImages",
+     *     path="/dishes/{dishId}/images", tags={"Dish Images"}, operationId="getDishImages",
      *     summary="List all dish images", description="Returns all assigned dish images",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Response(response=200, description="List of DishImages", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/DishImage"))),
@@ -79,7 +79,7 @@ class DishImagesController
 
     /**
      * @SWG\Put(
-     *     path="/dishes/{dishId}/images/{imageId}", tags={"dish image"}, operationId="putDishImageAction",
+     *     path="/dishes/{dishId}/images/{imageId}", tags={"Dish Images"}, operationId="putDishImageAction",
      *     summary="Assign an image to dish", description="Assigns new image for the dish. Operation is idempotent",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Parameter(ref="#/parameters/imageId"),
@@ -124,7 +124,7 @@ class DishImagesController
 
     /**
      * @SWG\Put(
-     *     path="/dishes/{dishId}/images/{imageId}/cover", tags={"dish image"}, operationId="putDishCoverImage",
+     *     path="/dishes/{dishId}/images/{imageId}/cover", tags={"Dish Images"}, operationId="putDishCoverImage",
      *     summary="Updates cover image for the dish", description="Assigns cover image for the dish. Resets any previously assigned cover",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Parameter(ref="#/parameters/imageId"),

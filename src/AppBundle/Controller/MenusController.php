@@ -36,7 +36,7 @@ class MenusController
 
     /**
      * @SWG\Get(
-     *     path="/menus", tags={"menu"}, operationId="getMenusAction",
+     *     path="/menus", tags={"Menus"}, operationId="getMenusAction",
      *     summary="List available menus", description="Retrieves list of menus by filters (query params)",
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
@@ -66,7 +66,7 @@ class MenusController
 
     /**
      * @SWG\Get(
-     *     path="/menus/{concrete}", tags={"menu"}, operationId="getMenuAction",
+     *     path="/menus/{concrete}", tags={"Menus"}, operationId="getMenuAction",
      *     summary="Retrieve menus for concrete day", description="Retrieves menus which are available for specified date",
      *     @SWG\Parameter(
      *         description="Menu date", type="string", format="date", in="path", name="date", required=true,
@@ -107,7 +107,7 @@ class MenusController
 
     /**
      * @SWG\Get(
-     *     path="/menus/today", tags={"menu"}, operationId="getTodayMenuAction",
+     *     path="/menus/today", tags={"Menus"}, operationId="getTodayMenuAction",
      *     summary="Retrieve today menus", description="Handy shortcut to list all available dish menus for today",
      *     @SWG\Response(response=200, description="Menu", @SWG\Schema(ref="#/definitions/Menu")),
      * )
@@ -122,7 +122,7 @@ class MenusController
     }
     /**
      * @SWG\Get(
-     *     path="/menus/tomorrow", tags={"menu"}, operationId="getTomorrowMenuAction",
+     *     path="/menus/tomorrow", tags={"Menus"}, operationId="getTomorrowMenuAction",
      *     summary="Retrieve tomorrow menus ", description="Handy shortcut to list all dish menus which will be available to ship tomorrow",
      *     @SWG\Response(response=200, description="Menu", @SWG\Schema(ref="#/definitions/Menu")),
      * )
@@ -137,7 +137,7 @@ class MenusController
     }
     /**
      * @SWG\Get(
-     *     path="/menus/week/current", tags={"menu"}, operationId="getCurrentWeekMenuAction",
+     *     path="/menus/week/current", tags={"Menus"}, operationId="getCurrentWeekMenuAction",
      *     summary="Retrieve current week menus", description="Handy shortcut to retrieve all menus which are available this week",
      *     @SWG\Response(response=200, description="Menu", @SWG\Schema(ref="#/definitions/Menu")),
      * )
@@ -155,7 +155,7 @@ class MenusController
     }
     /**
      * @SWG\Get(
-     *     path="/menus/week/next", tags={"menu"}, operationId="getNextWeekMenuAction",
+     *     path="/menus/week/next", tags={"Menus"}, operationId="getNextWeekMenuAction",
      *     summary="Retrieve next week menus", description="Handy shortcut to retrieve all menus which will be available next week",
      *     @SWG\Response(response=200, description="Menu", @SWG\Schema(ref="#/definitions/Menu")),
      * )

@@ -53,7 +53,7 @@ class OrdersController
 
     /**
      * @SWG\Get(
-     *     tags={"order"},
+     *     tags={"Orders"},
      *     path="/orders",
      *     description="Get list of orders by filters",
      *     operationId="getOrdersAction",
@@ -110,7 +110,7 @@ class OrdersController
 
     /**
      * @SWG\Get(
-     *     tags={"order"},
+     *     tags={"Orders"},
      *     path="/orders/{id}",
      *     description="Get order by ID",
      *     operationId="getOrderAction",
@@ -134,7 +134,7 @@ class OrdersController
 
     /**
      * @SWG\Get(
-     *     tags={"order"},
+     *     tags={"Orders"},
      *     path="/users/{user}/orders",
      *     description="Get list of user orders using filters if needed",
      *     operationId="getUserOrdersAction",
@@ -197,7 +197,7 @@ class OrdersController
 
     /**
      * @SWG\Post(
-     *     tags={"order"},
+     *     tags={"Orders"},
      *     path="/orders",
      *     operationId="postOrdersAction",
      *     description="Place an order",
@@ -237,7 +237,7 @@ class OrdersController
 
     /**
      * @SWG\Post(
-     *     tags={"order"},
+     *     tags={"Orders"},
      *     path="/orders/{id}/cancel",
      *     operationId="postOrdersCancelAction",
      *     description="Cancel an order",
@@ -270,7 +270,7 @@ class OrdersController
 
     /**
      * @SWG\Post(
-     *     tags={"order"},
+     *     tags={"Orders"},
      *     path="/orders/{id}/reject",
      *     operationId="postOrdersRejectAction",
      *     description="Reject an order",
@@ -304,7 +304,7 @@ class OrdersController
     }
     /**
      * @SWG\Put(
-     *     tags={"order"}, path="/orders/{id}", operationId="putOrderAction",
+     *      path="/orders/{id}", tags={"Orders"}, operationId="putOrderAction",
      *     description="Updates specified Order",
      *     @SWG\Parameter(
      *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/Order"),

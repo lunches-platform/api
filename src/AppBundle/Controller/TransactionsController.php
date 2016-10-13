@@ -45,7 +45,7 @@ class TransactionsController
 
     /**
      * @SWG\Get(
-     *     tags={"transaction"},
+     *     tags={"Transactions"},
      *     path="/transactions/{id}",
      *     description="Get Transaction by ID",
      *     operationId="getTransactionAction",
@@ -72,7 +72,7 @@ class TransactionsController
 
     /**
      * @SWG\Delete(
-     *     tags={"transaction"},
+     *     tags={"Transactions"},
      *     path="/transactions/{id}",
      *     description="Delete Transaction by ID",
      *     operationId="deleteTransactionAction",
@@ -101,7 +101,7 @@ class TransactionsController
 
     /**
      * @SWG\Get(
-     *     tags={"transaction"},
+     *     tags={"Transactions"},
      *     path="/transactions",
      *     description="Get list of client transactions",
      *     operationId="getTransactionsAction",
@@ -163,7 +163,7 @@ class TransactionsController
     }
     /**
      * @SWG\Post(
-     *     tags={"transaction"},
+     *     tags={"Transactions"},
      *     path="/transactions",
      *     operationId="postTransactionsAction",
      *     description="Registers new Transaction",

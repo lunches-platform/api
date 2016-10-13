@@ -43,7 +43,7 @@ class PricesController
 
     /**
      * @SWG\Get(
-     *     path="/prices/{date}", tags={"price"}, operationId="getPriceAction",
+     *     path="/prices/{date}", tags={"Prices"}, operationId="getPriceAction",
      *     summary="Retrieve dish prices for a date", description="Retrieves dish prices for a date",
      *     @SWG\Parameter(
      *         description="Price date", type="string", format="date", in="path", name="date", required=true,
@@ -70,7 +70,7 @@ class PricesController
 
     /**
      * @SWG\Get(
-     *     path="/prices", tags={"price"}, operationId="getPricesAction",
+     *     path="/prices", tags={"Prices"}, operationId="getPricesAction",
      *     summary="List dish prices", description="Retrieves list of dish prices by filters",
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
@@ -98,7 +98,7 @@ class PricesController
 
     /**
      * @SWG\Put(
-     *     path="/prices/{date}", tags={"price"}, operationId="putPriceAction",
+     *     path="/prices/{date}", tags={"Prices"}, operationId="putPriceAction",
      *     summary="Add new price", description="Adds new price for specified date",
      *     @SWG\Parameter(
      *         description="Price date", type="string", format="date", in="path", name="date", required=true,

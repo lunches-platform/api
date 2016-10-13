@@ -28,6 +28,38 @@ class AppBundle extends Bundle
      *     consumes={"application/json"},
      *     swagger="2.0",
      * )
+     * @SWG\Tag(
+     *     name="Menus",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Orders",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Users",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Transactions",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Prices",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Dishes",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Dish Images",
+     *     description="",
+     * ),
+     * @SWG\Tag(
+     *     name="Images",
+     *     description="",
+     * ),
      * @SWG\Definition(
      *     definition="Error",
      *     required={"code", "message"},

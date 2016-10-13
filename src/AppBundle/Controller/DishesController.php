@@ -25,7 +25,7 @@ class DishesController
 
     /**
      * @SWG\Get(
-     *     path="/dishes/{dish}", tags={"dish"}, operationId="getDishAction",
+     *     path="/dishes/{dish}", tags={"Dishes"}, operationId="getDishAction",
      *     summary="Retrieve dish details", description="Retrieves the details of an existing dish",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Response(response=200, description="Dish", @SWG\Schema(ref="#/definitions/Dish")),
@@ -41,7 +41,7 @@ class DishesController
 
     /**
      * @SWG\Get(
-     *     path="/dishes", tags={"dish"}, operationId="getDishesAction",
+     *     path="/dishes", tags={"Dishes"}, operationId="getDishesAction",
      *     summary="Retrieve the list of dishes", description="Return list of dishes using filters",
      *     @SWG\Response(response=200, description="Array of Dish objects", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Dish"))),
      * )

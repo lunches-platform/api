@@ -34,7 +34,7 @@ class UsersController
 
     /**
      * @SWG\Get(
-     *     tags={"user"},
+     *     tags={"Users"},
      *     path="/users",
      *     description="Get list of users by filters",
      *     operationId="getUsersAction",
@@ -65,7 +65,7 @@ class UsersController
 
     /**
      * @SWG\Get(
-     *     tags={"user"},
+     *     tags={"Users"},
      *     path="/users/{username}",
      *     description="Get user by username",
      *     operationId="getUserAction",
@@ -90,7 +90,7 @@ class UsersController
 
     /**
      * @SWG\Post(
-     *     tags={"user"},
+     *     tags={"Users"},
      *     path="/users",
      *     operationId="postUsersAction",
      *     description="Registers new User",
@@ -130,7 +130,7 @@ class UsersController
 
     /**
      * @SWG\Put(
-     *     tags={"user"},
+     *     tags={"Users"},
      *     path="/users/{username}",
      *     operationId="putUserAction",
      *     description="Updates specified User",
