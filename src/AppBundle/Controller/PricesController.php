@@ -43,10 +43,8 @@ class PricesController
 
     /**
      * @SWG\Get(
-     *     tags={"price"},
-     *     path="/prices/{date}",
-     *     description="Get dish price for a date",
-     *     operationId="getPriceAction",
+     *     path="/prices/{date}", tags={"price"}, operationId="getPriceAction",
+     *     summary="Retrieve dish prices for a date", description="Retrieves dish prices for a date",
      *     @SWG\Parameter(
      *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
@@ -72,24 +70,10 @@ class PricesController
 
     /**
      * @SWG\Get(
-     *     tags={"price"},
-     *     path="/prices",
-     *     description="Get list of dish prices by filters",
-     *     operationId="getPricesAction",
-     *     @SWG\Parameter(
-     *         description="Get dish prices which greater than start date",
-     *         type="string",
-     *         format="date-time",
-     *         in="query",
-     *         name="startDate",
-     *     ),
-     *     @SWG\Parameter(
-     *         description="Get dish prices which less than end date",
-     *         type="string",
-     *         format="date-time",
-     *         in="query",
-     *         name="endDate",
-     *     ),
+     *     path="/prices", tags={"price"}, operationId="getPricesAction",
+     *     summary="List dish prices", description="Retrieves list of dish prices by filters",
+     *     @SWG\Parameter(ref="#/parameters/startDate"),
+     *     @SWG\Parameter(ref="#/parameters/endDate"),
      *     @SWG\Response(response=200, description="List of Prices", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Price"))),
      * )
      * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=true)
@@ -114,10 +98,8 @@ class PricesController
 
     /**
      * @SWG\Put(
-     *     tags={"price"},
-     *     path="/prices/{date}",
-     *     operationId="putPriceAction",
-     *     description="Adds new price for specified date",
+     *     path="/prices/{date}", tags={"price"}, operationId="putPriceAction",
+     *     summary="Add new price", description="Adds new price for specified date",
      *     @SWG\Parameter(
      *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
