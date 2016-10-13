@@ -18,7 +18,7 @@ use Swagger\Annotations as SWG;
  * @Table(name="dish_image", indexes={
  *     @Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"image","dish"})
+ * @SWG\Definition(required={"image","dish"}, type="object")
  */
 class DishImage implements \JsonSerializable
 {
@@ -27,14 +27,14 @@ class DishImage implements \JsonSerializable
      * @Id
      * @GeneratedValue
      * @Column(type="integer")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
 
     /**
      * @var Image
      * @ManyToOne(targetEntity="Image")
-     * @SWG\Property(ref="#/definitions/Image")
+     * @SWG\Property
      */
     protected $image;
     /**
@@ -47,7 +47,7 @@ class DishImage implements \JsonSerializable
     /**
      * @var Dish
      * @ManyToOne(targetEntity="AppBundle\Entity\Dish", inversedBy="images")
-     * @SWG\Property(ref="#/definitions/Dish")
+     * @SWG\Property
      */
     protected $dish;
     /**
@@ -55,7 +55,7 @@ class DishImage implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     private $created;
     /**
@@ -63,7 +63,7 @@ class DishImage implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="update")
      * @Column(type="datetime")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     private $updated;
 

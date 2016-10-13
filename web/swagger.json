@@ -1,0 +1,1493 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Lunches API",
+        "description": "REST API of Lunches platform e-commerce solution",
+        "contact": {
+            "name": "Lunches API Team",
+            "url": "https://lunches.com.ua",
+            "email": "support@lunches.com.ua"
+        },
+        "version": "1.0.0"
+    },
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/dishes/{dishId}/images/{imageId}": {
+            "get": {
+                "tags": [
+                    "Dish Images"
+                ],
+                "summary": "Retrieve dish image",
+                "description": "Retrieves DishImage by dish ID and image ID",
+                "operationId": "getDishImageAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/dishId"
+                    },
+                    {
+                        "$ref": "#/parameters/imageId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DishImage object",
+                        "schema": {
+                            "$ref": "#/definitions/DishImage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Dish Images"
+                ],
+                "summary": "Assign an image to dish",
+                "description": "Assigns new image for the dish. Operation is idempotent",
+                "operationId": "putDishImageAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/dishId"
+                    },
+                    {
+                        "$ref": "#/parameters/imageId"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Include here payload in DishImage representation excluding **dish** and **image** properties (as it has been already defined in _path_ parameters)",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DishImage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Added DishImage",
+                        "schema": {
+                            "$ref": "#/definitions/DishImage"
+                        }
+                    }
+                }
+            }
+        },
+        "/dishes/{dishId}/images": {
+            "get": {
+                "tags": [
+                    "Dish Images"
+                ],
+                "summary": "List all dish images",
+                "description": "Returns all assigned dish images",
+                "operationId": "getDishImages",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/dishId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of DishImages",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DishImage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dishes/{dishId}/images/{imageId}/cover": {
+            "put": {
+                "tags": [
+                    "Dish Images"
+                ],
+                "summary": "Updates cover image for the dish",
+                "description": "Assigns cover image for the dish. Resets any previously assigned cover",
+                "operationId": "putDishCoverImage",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/dishId"
+                    },
+                    {
+                        "$ref": "#/parameters/imageId"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response"
+                    }
+                }
+            }
+        },
+        "/dishes/{dish}": {
+            "get": {
+                "tags": [
+                    "Dishes"
+                ],
+                "summary": "Retrieve dish details",
+                "description": "Retrieves the details of an existing dish",
+                "operationId": "getDishAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/dishId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dish",
+                        "schema": {
+                            "$ref": "#/definitions/Dish"
+                        }
+                    }
+                }
+            }
+        },
+        "/dishes": {
+            "get": {
+                "tags": [
+                    "Dishes"
+                ],
+                "summary": "Retrieve the list of dishes",
+                "description": "Return list of dishes using filters",
+                "operationId": "getDishesAction",
+                "responses": {
+                    "200": {
+                        "description": "Array of Dish objects",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Dish"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/images/{imageId}": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Retrieve single image",
+                "description": "Retrieves image by ID",
+                "operationId": "getImageAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/imageId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image",
+                        "schema": {
+                            "$ref": "#/definitions/Image"
+                        }
+                    }
+                }
+            }
+        },
+        "/images": {
+            "post": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Upload an image",
+                "description": "Uploads new image to plain entity-independent list. ID of an image from response can be used to assign it to any entity which requires image as its data item",
+                "operationId": "postImages",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "description": "File to upload",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Uploaded Image",
+                        "schema": {
+                            "$ref": "#/definitions/Image"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "List available menus",
+                "description": "Retrieves list of menus by filters (query params)",
+                "operationId": "getMenusAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/startDate"
+                    },
+                    {
+                        "$ref": "#/parameters/endDate"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of Menu objects",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Menu"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/{concrete}": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Retrieve menus for concrete day",
+                "description": "Retrieves menus which are available for specified date",
+                "operationId": "getMenuAction",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Menu date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Menu",
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/today": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Retrieve today menus",
+                "description": "Handy shortcut to list all available dish menus for today",
+                "operationId": "getTodayMenuAction",
+                "responses": {
+                    "200": {
+                        "description": "Menu",
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/tomorrow": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Retrieve tomorrow menus ",
+                "description": "Handy shortcut to list all dish menus which will be available to ship tomorrow",
+                "operationId": "getTomorrowMenuAction",
+                "responses": {
+                    "200": {
+                        "description": "Menu",
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/week/current": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Retrieve current week menus",
+                "description": "Handy shortcut to retrieve all menus which are available this week",
+                "operationId": "getCurrentWeekMenuAction",
+                "responses": {
+                    "200": {
+                        "description": "Menu",
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/week/next": {
+            "get": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Retrieve next week menus",
+                "description": "Handy shortcut to retrieve all menus which will be available next week",
+                "operationId": "getNextWeekMenuAction",
+                "responses": {
+                    "200": {
+                        "description": "Menu",
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List all orders",
+                "description": "Retrieves the list of orders by filters",
+                "operationId": "getOrdersAction",
+                "parameters": [
+                    {
+                        "name": "shipmentDate",
+                        "in": "query",
+                        "description": "Filter orders which will be shipped on specified date",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "$ref": "#/parameters/startDate"
+                    },
+                    {
+                        "$ref": "#/parameters/endDate"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Orders",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Order"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Place an order",
+                "description": "Creates new order",
+                "operationId": "postOrdersAction",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Include here payload in Order representation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly placed Order",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{orderId}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve single order",
+                "description": "Retrieves the details of an order by ID",
+                "operationId": "getOrderAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/orderId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update an order",
+                "description": "Updates specified Order",
+                "operationId": "putOrderAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/orderId"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated order",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{username}/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve user orders",
+                "description": "Get list of user orders using filters if needed",
+                "operationId": "getUserOrdersAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/username"
+                    },
+                    {
+                        "$ref": "#/parameters/startDate"
+                    },
+                    {
+                        "$ref": "#/parameters/endDate"
+                    },
+                    {
+                        "name": "paid",
+                        "in": "query",
+                        "description": "Whether filter out non paid orders or no",
+                        "type": "boolean",
+                        "default": false,
+                        "enum": [
+                            "0",
+                            "1",
+                            false,
+                            true
+                        ]
+                    },
+                    {
+                        "name": "withCanceled",
+                        "in": "query",
+                        "description": "Whether include canceled orders or no",
+                        "type": "boolean",
+                        "default": false,
+                        "enum": [
+                            "0",
+                            "1",
+                            false,
+                            true
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Orders",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Order"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{orderId}/cancel": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Cancel an order",
+                "description": "Cancels an order",
+                "operationId": "postOrdersCancelAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/orderId"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Canceled Order",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{orderId}/reject": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Reject an order",
+                "description": "Reject an order",
+                "operationId": "postOrdersRejectAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/orderId"
+                    },
+                    {
+                        "$ref": "#/parameters/accessToken"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Rejected Order",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/prices/{date}": {
+            "get": {
+                "tags": [
+                    "Prices"
+                ],
+                "summary": "Retrieve dish prices for a date",
+                "description": "Retrieves dish prices for a date",
+                "operationId": "getPriceAction",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Price date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Price",
+                        "schema": {
+                            "$ref": "#/definitions/Price"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Prices"
+                ],
+                "summary": "Add new price",
+                "description": "Adds new price for specified date",
+                "operationId": "putPriceAction",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Price date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Include here payload in Price representation",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Price"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recently added price",
+                        "schema": {
+                            "$ref": "#/definitions/Price"
+                        }
+                    }
+                }
+            }
+        },
+        "/prices": {
+            "get": {
+                "tags": [
+                    "Prices"
+                ],
+                "summary": "List dish prices",
+                "description": "Retrieves list of dish prices by filters",
+                "operationId": "getPricesAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/startDate"
+                    },
+                    {
+                        "$ref": "#/parameters/endDate"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Prices",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Price"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/{id}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Retrieve transaction",
+                "description": "Retrieves Transaction by ID",
+                "operationId": "getTransactionAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/transactionId"
+                    },
+                    {
+                        "$ref": "#/parameters/accessToken"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction",
+                        "schema": {
+                            "$ref": "#/definitions/Transaction"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Delete transaction",
+                "description": "Delete Transaction by ID. Action can not be undone",
+                "operationId": "deleteTransactionAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/transactionId"
+                    },
+                    {
+                        "$ref": "#/parameters/accessToken"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response"
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "List all transactions for client",
+                "description": "Get list of client transactions",
+                "operationId": "getTransactionsAction",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "query",
+                        "description": "User clientId number",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/startDate"
+                    },
+                    {
+                        "$ref": "#/parameters/endDate"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Transaction type",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "income",
+                            "outcome",
+                            "refund"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Transactions",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Transaction"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Register new Transaction",
+                "description": "Registers new Transaction",
+                "operationId": "postTransactionsAction",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Include here payload in Transaction representation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Transaction"
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/accessToken"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly registered transaction",
+                        "schema": {
+                            "$ref": "#/definitions/Transaction"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "List all users",
+                "description": "Get list of users by filters",
+                "operationId": "getUsersAction",
+                "parameters": [
+                    {
+                        "name": "like",
+                        "in": "query",
+                        "description": "Filter users by LIKE pattern",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register user",
+                "description": "Registers new User",
+                "operationId": "postUsersAction",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Provide here payload in User representation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly registered User",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{username}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Retrieve user",
+                "description": "Retrieves user by username",
+                "operationId": "getUserAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/username"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user details",
+                "description": "Updates specified User. It is allowed to update user address currently",
+                "operationId": "putUserAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/username"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User with updated fields",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "array"
+                }
+            }
+        },
+        "Dish": {
+            "required": [
+                "name",
+                "type"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Allowed three values: meat, garnish, salad",
+                    "type": "string",
+                    "enum": [
+                        "meat",
+                        "garnish",
+                        "salad"
+                    ]
+                },
+                "created": {
+                    "description": "$created",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated": {
+                    "description": "$updated",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DishImage"
+                    }
+                },
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Ingredient"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "DishImage": {
+            "required": [
+                "image",
+                "dish"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "image": {
+                    "$ref": "#/definitions/Image"
+                },
+                "isCover": {
+                    "type": "boolean"
+                },
+                "dish": {
+                    "$ref": "#/definitions/Dish"
+                },
+                "created": {
+                    "description": "$created",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated": {
+                    "description": "$updated",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            },
+            "type": "object"
+        },
+        "Image": {
+            "required": [
+                "id",
+                "url",
+                "format",
+                "width",
+                "height"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "integer"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "created": {
+                    "description": "$created",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated": {
+                    "description": "$updated",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "type": "object"
+        },
+        "Ingredient": {
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "created": {
+                    "description": "$created",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated": {
+                    "description": "$updated",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "dish": {
+                    "$ref": "#/definitions/Dish"
+                }
+            },
+            "type": "object"
+        },
+        "LineItem": {
+            "required": [
+                "size",
+                "product"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "size": {
+                    "description": "Size of the dish portion",
+                    "type": "string",
+                    "enum": [
+                        "small",
+                        "medium",
+                        "big"
+                    ]
+                },
+                "dish": {
+                    "$ref": "#/definitions/Dish"
+                },
+                "order": {
+                    "$ref": "#/definitions/Order"
+                }
+            },
+            "type": "object"
+        },
+        "Menu": {
+            "required": [
+                "id",
+                "dishes",
+                "type",
+                "date"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "menuDishes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MenuDish"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                },
+                "date": {
+                    "description": "$created",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "type": "object"
+        },
+        "MenuDish": {
+            "required": [
+                "menu",
+                "dish"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "menu": {
+                    "$ref": "#/definitions/Menu"
+                },
+                "dish": {
+                    "$ref": "#/definitions/Dish"
+                },
+                "position": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "Order": {
+            "required": [
+                "user",
+                "address",
+                "shipmentDate",
+                "lineItems"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "orderNumber": {
+                    "description": "Number of order. Starts from 1000. Generated automatically, no need to specify custom order number as it will be ignored",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "user": {
+                    "description": "User who creates an Order. When you create an order, specify only **userId**",
+                    "$ref": "#/definitions/User"
+                },
+                "address": {
+                    "description": "The shipping address for the order. Can be omitted, in this case user default address will be used",
+                    "type": "string"
+                },
+                "created": {
+                    "description": "Date and time when order was created",
+                    "readOnly": true,
+                    "$ref": "#/definitions/CreatedOrder"
+                },
+                "canceled": {
+                    "readOnly": true,
+                    "$ref": "#/definitions/CanceledOrder"
+                },
+                "rejected": {
+                    "readOnly": true,
+                    "$ref": "#/definitions/RejectedOrder"
+                },
+                "delivered": {
+                    "readOnly": true,
+                    "$ref": "#/definitions/DeliveredOrder"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "created",
+                        "inProgress",
+                        "canceled",
+                        "rejected",
+                        "delivered",
+                        "closed"
+                    ],
+                    "readOnly": true
+                },
+                "shipmentDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "price": {
+                    "description": "Order price. Read only. Calculates automatically and based on order line items cost sum, delivery cost and taxes.\nIf user orders all dishes of menu, orders costs lower then ordering of dishes separately",
+                    "type": "number",
+                    "format": "float",
+                    "readOnly": true
+                },
+                "paid": {
+                    "description": "Order payment status with boolean value",
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "lineItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LineItem"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "Price": {
+            "required": [
+                "value",
+                "date",
+                "items"
+            ],
+            "properties": {
+                "id": {
+                    "readOnly": true
+                },
+                "value": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PriceItem"
+                    }
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "type": "object"
+        },
+        "PriceItem": {
+            "required": [
+                "price",
+                "dish",
+                "size"
+            ],
+            "properties": {
+                "id": {},
+                "price": {
+                    "$ref": "#/definitions/Price"
+                },
+                "dish": {
+                    "$ref": "#/definitions/Dish"
+                },
+                "size": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Transaction": {
+            "required": [
+                "type",
+                "amount",
+                "user"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "amount": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "user": {
+                    "$ref": "#/definitions/User"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "income",
+                        "outcome",
+                        "refund"
+                    ]
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "paymentDate": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "type": "object"
+        },
+        "User": {
+            "required": [
+                "username",
+                "address"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "username": {
+                    "type": "string"
+                },
+                "balance": {
+                    "description": "Current user balance. It updates automatically with every completed transaction",
+                    "type": "number",
+                    "format": "float",
+                    "readOnly": true
+                },
+                "credit": {
+                    "description": "User can have credit money. It increases when user have insufficient funds to pay for an order, and decreases when order is paid successfully",
+                    "type": "number",
+                    "format": "float",
+                    "readOnly": true
+                },
+                "clientId": {
+                    "description": "Auto generated human readable user ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "address": {
+                    "description": "Default user address. It will be used, when there were no address specified for an Order",
+                    "type": "string"
+                },
+                "created": {
+                    "description": "$created",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            },
+            "type": "object"
+        },
+        "CanceledOrder": {
+            "properties": {
+                "at": {
+                    "description": "Date and time when order was canceled",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "reason": {
+                    "description": "The reason why the order was canceled",
+                    "type": "string"
+                }
+            }
+        },
+        "CreatedOrder": {
+            "properties": {
+                "at": {
+                    "description": "Date and time when order was created",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "DeliveredOrder": {
+            "properties": {
+                "at": {
+                    "description": "Date and time when order was delivered",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "carrier": {
+                    "description": "Delivery service which carried out the order",
+                    "type": "string"
+                }
+            }
+        },
+        "RejectedOrder": {
+            "properties": {
+                "at": {
+                    "description": "Date and time when order was rejected",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "reason": {
+                    "description": "The reason why the order was rejected",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "parameters": {
+        "accessToken": {
+            "name": "accessToken",
+            "in": "query",
+            "description": "Authentication token to access restricted resources",
+            "required": true,
+            "type": "string"
+        },
+        "dishId": {
+            "name": "dishId",
+            "in": "path",
+            "description": "ID of dish",
+            "required": true,
+            "type": "integer"
+        },
+        "imageId": {
+            "name": "imageId",
+            "in": "path",
+            "description": "ID of image",
+            "required": true,
+            "type": "string"
+        },
+        "startDate": {
+            "name": "startDate",
+            "in": "query",
+            "description": "Filter data which _date_ value greater than **startDate**",
+            "type": "string",
+            "format": "date"
+        },
+        "endDate": {
+            "name": "endDate",
+            "in": "query",
+            "description": "Filter data which _date_ value less than **endDate**",
+            "type": "string",
+            "format": "date"
+        },
+        "orderId": {
+            "name": "orderId",
+            "in": "path",
+            "description": "ID of Order",
+            "required": true,
+            "type": "integer"
+        },
+        "username": {
+            "name": "username",
+            "in": "path",
+            "description": "User name",
+            "required": true,
+            "type": "string"
+        },
+        "transactionId": {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction ID",
+            "required": true,
+            "type": "string"
+        }
+    },
+    "tags": [
+        {
+            "name": "Menus",
+            "description": ""
+        },
+        {
+            "name": "Orders",
+            "description": ""
+        },
+        {
+            "name": "Users",
+            "description": ""
+        },
+        {
+            "name": "Transactions",
+            "description": ""
+        },
+        {
+            "name": "Prices",
+            "description": ""
+        },
+        {
+            "name": "Dishes",
+            "description": ""
+        },
+        {
+            "name": "Dish Images",
+            "description": ""
+        },
+        {
+            "name": "Images",
+            "description": ""
+        }
+    ]
+}

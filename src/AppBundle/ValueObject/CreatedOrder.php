@@ -7,7 +7,10 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
 use Swagger\Annotations AS SWG;
 
-/** @Embeddable */
+/**
+ * @Embeddable
+ * @SWG\Definition
+ */
 class CreatedOrder
 {
     /**
@@ -19,7 +22,7 @@ class CreatedOrder
      *
      * @var \DateTime
      * @Column(type="datetime")
-     * @SWG\Property(property="created_at"),
+     * @SWG\Property
      */
     protected $at;
 

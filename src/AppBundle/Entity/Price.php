@@ -17,7 +17,7 @@ use Swagger\Annotations as SWG;
  * Class Price
  * @Entity(repositoryClass="AppBundle\Entity\PriceRepository")
  * @Table(name="price")
- * @SWG\Definition(required={"value","date","items"})
+ * @SWG\Definition(required={"value","date","items"}, type="object")
  */
 class Price implements \JsonSerializable
 {
@@ -26,7 +26,7 @@ class Price implements \JsonSerializable
      *
      * @Id
      * @Column(type="guid")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
     /**
@@ -36,9 +36,9 @@ class Price implements \JsonSerializable
      */
     protected $value;
     /**
-     * @var ArrayCollection
+     * @var PriceItem[]
      * @OneToMany(targetEntity="PriceItem", mappedBy="price", cascade={"persist"})
-     * @SWG\Property(ref="#/definitions/PriceItem")
+     * @SWG\Property
      */
     protected $items;
     /**

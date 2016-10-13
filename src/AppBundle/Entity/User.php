@@ -19,7 +19,7 @@ use Swagger\Annotations as SWG;
  * @Table(name="user", indexes={
  *     @Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"clientId","name","address"})
+ * @SWG\Definition(required={"username","address"}, type="object")
  */
 class User implements \JsonSerializable
 {
@@ -27,35 +27,41 @@ class User implements \JsonSerializable
      * @var string
      * @Id
      * @Column(type="guid")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
 
     /**
      * @var string
      * @Column(type="string", name="full_name", length=255, nullable=false)
-     * @SWG\Property()
+     * @SWG\Property(property="username")
      */
     protected $fullname;
     /**
+     * Current user balance. It updates automatically with every completed transaction
+     *
      * @var float
      * @Column(type="float", nullable=false)
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $balance;
     /**
+     * User can have credit money. It increases when user have insufficient funds to pay for an order, and decreases when order is paid successfully
+     *
      * @var float
      * @Column(type="float", nullable=true)
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $credit = 0;
     /**
+     * Auto generated human readable user ID
      * @var int
      * @Column(type="integer", name="client_id", nullable=false)
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $clientId;
     /**
+     * Default user address. It will be used, when there were no address specified for an Order
      * @var string
      * @Column(type="string", nullable=false)
      * @SWG\Property()
@@ -67,7 +73,7 @@ class User implements \JsonSerializable
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $created;
 

@@ -34,9 +34,8 @@ class UsersController
 
     /**
      * @SWG\Get(
-     *     path="/users",
-     *     description="Get list of users by filters",
-     *     operationId="getUsersAction",
+     *     path="/users", tags={"Users"}, operationId="getUsersAction",
+     *     summary="List all users", description="Get list of users by filters",
      *     @SWG\Parameter(
      *         description="Filter users by LIKE pattern",
      *         type="string",
@@ -64,12 +63,9 @@ class UsersController
 
     /**
      * @SWG\Get(
-     *     path="/users/{username}",
-     *     description="Get user by username",
-     *     operationId="getUserAction",
-     *     @SWG\Parameter(
-     *         description="Username", type="string", in="path", name="username", required=true,
-     *     ),
+     *     path="/users/{username}", tags={"Users"}, operationId="getUserAction",
+     *     summary="Retrieve user", description="Retrieves user by username",
+     *     @SWG\Parameter(ref="#/parameters/username"),
      *     @SWG\Response(
      *         response=200, description="User",
      *         @SWG\Schema(ref="#/definitions/User")
@@ -88,23 +84,11 @@ class UsersController
 
     /**
      * @SWG\Post(
-     *     path="/users",
-     *     operationId="postUsersAction",
-     *     description="Registers new User",
+     *     path="/users", tags={"Users"}, operationId="postUsersAction",
+     *     summary="Register user", description="Registers new User",
      *     @SWG\Parameter(
-     *         name="username",
-     *         in="body",
-     *         description="User name",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="address",
-     *         in="body",
-     *         type="string",
-     *         description="User address",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
+     *         description="Provide here payload in User representation",
      *     ),
      *     @SWG\Response(response=201, description="Newly registered User", @SWG\Schema(ref="#/definitions/User") ),
      * )
@@ -138,23 +122,12 @@ class UsersController
 
     /**
      * @SWG\Put(
-     *     path="/users/{username}",
-     *     operationId="putUserAction",
-     *     description="Updates specified User",
+     *     path="/users/{username}", tags={"Users"}, operationId="putUserAction",
+     *     summary="Update user details", description="Updates specified User. It is allowed to update user address currently",
+     *     @SWG\Parameter(ref="#/parameters/username"),
      *     @SWG\Parameter(
-     *         name="username",
-     *         in="path",
-     *         description="User name",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
-     *     ),
-     *     @SWG\Parameter(
-     *         name="address",
-     *         in="body",
-     *         type="string",
-     *         description="User address",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/User"),
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
+     *         description="",
      *     ),
      *     @SWG\Response(response=200, description="User with updated fields", @SWG\Schema(ref="#/definitions/User") ),
      * )

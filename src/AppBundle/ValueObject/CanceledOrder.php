@@ -9,7 +9,10 @@ use Doctrine\ORM\Mapping\Embeddable;
 use AppBundle\Exception\ValidationException;
 use Swagger\Annotations AS SWG;
 
-/** @Embeddable */
+/**
+ * @Embeddable
+ * @SWG\Definition
+ */
 class CanceledOrder
 {
     /**
@@ -21,7 +24,7 @@ class CanceledOrder
      *
      * @var \DateTime
      * @Column(type="datetime", nullable=true)
-     * @SWG\Property(property="canceled_at"),
+     * @SWG\Property
      */
     protected $at;
     /**
@@ -29,7 +32,7 @@ class CanceledOrder
      *
      * @var string
      * @Column(type="string", nullable=true)
-     * @SWG\Property(property="canceled_reason"),
+     * @SWG\Property
      */
     protected $reason;
 

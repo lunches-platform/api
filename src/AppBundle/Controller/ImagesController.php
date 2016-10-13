@@ -31,15 +31,10 @@ class ImagesController
     }
     /**
      * @SWG\Get(
-     *     path="/images/{imageId}",
-     *     description="Get Image by ID",
-     *     operationId="getImageAction",
-     *     @SWG\Parameter(
-     *         description="ID of image", type="string", in="path", name="imageId", required=true,
-     *     ),
-     *     @SWG\Response(
-     *         response=200, description="Image",
-     *         @SWG\Schema(ref="#/definitions/Image")
+     *     path="/images/{imageId}", tags={"Images"}, operationId="getImageAction",
+     *     summary="Retrieve single image", description="Retrieves image by ID",
+     *     @SWG\Parameter(ref="#/parameters/imageId"),
+     *     @SWG\Response(response=200, description="Image", @SWG\Schema(ref="#/definitions/Image")
      *     ),
      * )
      * @param Image $image
@@ -53,9 +48,8 @@ class ImagesController
 
     /**
      * @SWG\Post(
-     *     path="/images",
-     *     operationId="postImages",
-     *     description="Uploads new image",
+     *     path="/images", tags={"Images"}, operationId="postImages",
+     *     summary="Upload an image", description="Uploads new image to plain entity-independent list. ID of an image from response can be used to assign it to any entity which requires image as its data item",
      *     @SWG\Parameter(
      *         name="file",
      *         type="file",

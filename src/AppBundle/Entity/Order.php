@@ -17,7 +17,7 @@ use Swagger\Annotations as SWG;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Entity\OrderRepository")
  * @ORM\Table(name="`order`")
- * @SWG\Definition(required={"user","address","shipmentDate","lineItems"})
+ * @SWG\Definition(required={"user","address","shipmentDate","lineItems"}, type="object")
  */
 class Order implements \JsonSerializable
 {
@@ -33,53 +33,63 @@ class Order implements \JsonSerializable
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
     /**
-     * Number of order. Starts from 1000
+     * Number of order. Starts from 1000. Generated automatically, no need to specify custom order number as it will be ignored
      *
      * @var string
      * @ORM\Column(type="string", name="order_number", nullable=false)
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $orderNumber;
     /**
+     * User who creates an Order. When you create an order, specify only **userId**
+     *
      * @var User
      * @ORM\ManyToOne(targetEntity="User")
      * @SWG\Property(ref="#/definitions/User")
      */
     protected $user;
     /**
+     * The shipping address for the order. Can be omitted, in this case user default address will be used
+     *
      * @var string
      * @ORM\Column(type="string", nullable=false)
      * @SWG\Property()
      */
     protected $address;
     /**
+     * Date and time when order was created
+     *
      * @var CreatedOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\CreatedOrder", columnPrefix="created_")
+     * @SWG\Property(property="created", ref="#/definitions/CreatedOrder", readOnly=true),
      */
     protected $createdOrder;
     /**
      * @var CanceledOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\CanceledOrder", columnPrefix="canceled_")
+     * @SWG\Property(property="canceled", ref="#/definitions/CanceledOrder", readOnly=true)
      */
     protected $canceledOrder;
     /**
      * @var RejectedOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\RejectedOrder", columnPrefix="rejected_")
+     * @SWG\Property(property="rejected", ref="#/definitions/RejectedOrder", readOnly=true)
      */
     protected $rejectedOrder;
     /**
      * @var DeliveredOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\DeliveredOrder", columnPrefix="delivered_")
+     * @SWG\Property(property="delivered", ref="#/definitions/DeliveredOrder", readOnly=true)
      */
     protected $deliveredOrder;
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @SWG\Property(enum={"created","inProgress","canceled","rejected","delivered","closed"})
+     * @SWG\Property(enum={"created","inProgress","canceled","rejected","delivered","closed"}, readOnly=true)
      */
     protected $status;
     /**
@@ -89,21 +99,27 @@ class Order implements \JsonSerializable
      */
     protected $shipmentDate;
     /**
-     * @var float $price
+     * Order price. Read only. Calculates automatically and based on order line items cost sum, delivery cost and taxes.
+     * If user orders all dishes of menu, orders costs lower then ordering of dishes separately
+     *
+     * @var float
      *
      * @ORM\Column(type="float")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     private $price = 0;
     /**
+     * Order payment status with boolean value
+     *
      * @var OrderPayment
      * @ORM\Embedded(class="AppBundle\ValueObject\OrderPayment", columnPrefix="payment_")
+     * @SWG\Property(property="paid", type="boolean", readOnly=true),
      */
     private $payment;
     /**
      * @var LineItem[]
      * @ORM\OneToMany(targetEntity="LineItem", mappedBy="order", cascade={"persist"})
-     * @SWG\Property(ref="#/definitions/LineItem")
+     * @SWG\Property
      */
     protected $lineItems = [];
 

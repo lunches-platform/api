@@ -43,11 +43,10 @@ class PricesController
 
     /**
      * @SWG\Get(
-     *     path="/prices/{date}",
-     *     description="Get dish price for a date",
-     *     operationId="getPriceAction",
+     *     path="/prices/{date}", tags={"Prices"}, operationId="getPriceAction",
+     *     summary="Retrieve dish prices for a date", description="Retrieves dish prices for a date",
      *     @SWG\Parameter(
-     *         description="Price date", type="date", in="path", name="date", required=true,
+     *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
      *     @SWG\Response(
      *         response=200, description="Price",
@@ -71,23 +70,10 @@ class PricesController
 
     /**
      * @SWG\Get(
-     *     path="/prices",
-     *     description="Get list of dish prices by filters",
-     *     operationId="getPricesAction",
-     *     @SWG\Parameter(
-     *         description="Get dish prices which greater than start date",
-     *         type="string",
-     *         format="date-time",
-     *         in="query",
-     *         name="startDate",
-     *     ),
-     *     @SWG\Parameter(
-     *         description="Get dish prices which less than end date",
-     *         type="string",
-     *         format="date-time",
-     *         in="query",
-     *         name="endDate",
-     *     ),
+     *     path="/prices", tags={"Prices"}, operationId="getPricesAction",
+     *     summary="List dish prices", description="Retrieves list of dish prices by filters",
+     *     @SWG\Parameter(ref="#/parameters/startDate"),
+     *     @SWG\Parameter(ref="#/parameters/endDate"),
      *     @SWG\Response(response=200, description="List of Prices", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Price"))),
      * )
      * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=true)
@@ -112,26 +98,14 @@ class PricesController
 
     /**
      * @SWG\Put(
-     *     path="/prices/{date}",
-     *     operationId="putPriceAction",
-     *     description="Adds new price for specified date",
+     *     path="/prices/{date}", tags={"Prices"}, operationId="putPriceAction",
+     *     summary="Add new price", description="Adds new price for specified date",
      *     @SWG\Parameter(
-     *         description="Price date", type="date", in="path", name="date", required=true,
+     *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
      *     @SWG\Parameter(
-     *         name="items",
-     *         in="body",
-     *         type="array",
-     *         description="Price items list",
-     *         required=true,
-     *         @SWG\Items(ref="#/definitions/PriceItem")
-     *     ),
-     *     @SWG\Parameter(
-     *         name="price",
-     *         in="body",
-     *         description="Price value",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/Price"),
+     *         name="body", in="body", required=true, @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Price")),
+     *         description="Include here payload in Price representation",
      *     ),
      *     @SWG\Response(response=200, description="Recently added price", @SWG\Schema(ref="#/definitions/Price") ),
      * )

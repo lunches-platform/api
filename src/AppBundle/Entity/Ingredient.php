@@ -17,7 +17,7 @@ use Swagger\Annotations AS SWG;
  * @Table(name="ingredient", indexes={
  *     @Index(name="created", columns={"created"})
  * })
- * @SWG\Definition(required={"name"})
+ * @SWG\Definition(required={"name"}, type="object")
  */
 class Ingredient implements \JsonSerializable
 {
@@ -58,7 +58,7 @@ class Ingredient implements \JsonSerializable
     /**
      * @var Dish
      * @ManyToOne(targetEntity="AppBundle\Entity\Dish")
-     * @SWG\Property(ref="#/definitions/Dish")
+     * @SWG\Property
      */
     protected $dish;
 
