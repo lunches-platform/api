@@ -37,15 +37,12 @@ class DishImagesController
     /**
      * @SWG\Get(
      *     tags={"dish image"},
+     *     summary="Retrieve dish image",
+     *     description="Retrieves DishImage by dish ID and image ID",
      *     path="/dishes/{dishId}/images/{imageId}",
-     *     description="Get dish image ID and dish ID",
      *     operationId="getDishImageAction",
-     *     @SWG\Parameter(
-     *         description="ID of dish", type="string", in="path", name="dishId", required=true,
-     *     ),
-     *     @SWG\Parameter(
-     *         description="ID of image", type="string", in="path", name="imageId", required=true,
-     *     ),
+     *     @SWG\Parameter(ref="#/parameters/dishId"),
+     *     @SWG\Parameter(ref="#/parameters/imageId"),
      *     @SWG\Response(
      *         response=200, description="DishImage object",
      *         @SWG\Schema(ref="#/definitions/DishImage")
@@ -71,6 +68,7 @@ class DishImagesController
      *     path="/dishes/{dishId}/images",
      *     description="Fetches all dish images",
      *     operationId="getDishImages",
+     *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Response(response=200, description="List of DishImages", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/DishImage"))),
      * )
      * @param int $dishId
@@ -137,12 +135,8 @@ class DishImagesController
      *     path="/dishes/{dishId}/images/{imageId}/cover",
      *     operationId="putDishCoverImage",
      *     description="Assigns cover image for the dish. Resets any previously assigned cover",
-     *     @SWG\Parameter(
-     *         description="ID of dish", type="string", in="path", name="dishId", required=true,
-     *     ),
-     *     @SWG\Parameter(
-     *         description="ID of image", type="string", in="path", name="imageId", required=true,
-     *     ),
+     *     @SWG\Parameter(ref="#/parameters/dishId"),
+     *     @SWG\Parameter(ref="#/parameters/imageId"),
      *     @SWG\Response(response=204, description="No response"),
      * )
      * @Put("/dishes/{dishId}/images/{imageId}/cover")

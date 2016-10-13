@@ -25,17 +25,10 @@ class DishesController
 
     /**
      * @SWG\Get(
-     *     tags={"dish"},
-     *     path="/dishes/{dish}",
-     *     description="Get Dish by ID",
-     *     operationId="getDishAction",
-     *     @SWG\Parameter(
-     *         description="ID of dish", type="string", in="path", name="dishId", required=true,
-     *     ),
-     *     @SWG\Response(
-     *         response=200, description="Dish",
-     *         @SWG\Schema(ref="#/definitions/Dish")
-     *     ),
+     *     path="/dishes/{dish}", tags={"dish"}, operationId="getDishAction",
+     *     summary="Retrieve dish details", description="Retrieves the details of an existing dish",
+     *     @SWG\Parameter(ref="#/parameters/dishId"),
+     *     @SWG\Response(response=200, description="Dish", @SWG\Schema(ref="#/definitions/Dish")),
      * )
      * @param Dish $dish
      * @return Dish
@@ -48,11 +41,9 @@ class DishesController
 
     /**
      * @SWG\Get(
-     *     tags={"dish"},
-     *     path="/dishes",
-     *     description="Return list of dishes using filters",
-     *     operationId="getDishesAction",
-     *     @SWG\Response(response=200, description="List of Dishes", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Dish"))),
+     *     path="/dishes", tags={"dish"}, operationId="getDishesAction",
+     *     summary="Retrieve the list of dishes", description="Return list of dishes using filters",
+     *     @SWG\Response(response=200, description="Array of Dish objects", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Dish"))),
      * )
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
