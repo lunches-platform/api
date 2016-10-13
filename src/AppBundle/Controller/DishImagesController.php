@@ -36,11 +36,8 @@ class DishImagesController
 
     /**
      * @SWG\Get(
-     *     tags={"dish image"},
-     *     summary="Retrieve dish image",
-     *     description="Retrieves DishImage by dish ID and image ID",
-     *     path="/dishes/{dishId}/images/{imageId}",
-     *     operationId="getDishImageAction",
+     *     path="/dishes/{dishId}/images/{imageId}", tags={"dish image"}, operationId="getDishImageAction",
+     *     summary="Retrieve dish image", description="Retrieves DishImage by dish ID and image ID",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Parameter(ref="#/parameters/imageId"),
      *     @SWG\Response(
@@ -64,10 +61,8 @@ class DishImagesController
 
     /**
      * @SWG\Get(
-     *     tags={"dish image"},
-     *     path="/dishes/{dishId}/images",
-     *     description="Fetches all dish images",
-     *     operationId="getDishImages",
+     *     path="/dishes/{dishId}/images", tags={"dish image"}, operationId="getDishImages",
+     *     summary="List all dish images", description="Returns all assigned dish images",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Response(response=200, description="List of DishImages", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/DishImage"))),
      * )
@@ -84,10 +79,8 @@ class DishImagesController
 
     /**
      * @SWG\Put(
-     *     tags={"dish image"},
-     *     path="/dishes/{dishId}/images/{imageId}",
-     *     operationId="putDishImageAction",
-     *     description="Adds image to dish",
+     *     path="/dishes/{dishId}/images/{imageId}", tags={"dish image"}, operationId="putDishImageAction",
+     *     summary="Assign an image to dish", description="Assigns new image for the dish. Operation is idempotent",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Parameter(ref="#/parameters/imageId"),
      *     @SWG\Parameter(
@@ -131,10 +124,8 @@ class DishImagesController
 
     /**
      * @SWG\Put(
-     *     tags={"dish image"},
-     *     path="/dishes/{dishId}/images/{imageId}/cover",
-     *     operationId="putDishCoverImage",
-     *     description="Assigns cover image for the dish. Resets any previously assigned cover",
+     *     path="/dishes/{dishId}/images/{imageId}/cover", tags={"dish image"}, operationId="putDishCoverImage",
+     *     summary="Updates cover image for the dish", description="Assigns cover image for the dish. Resets any previously assigned cover",
      *     @SWG\Parameter(ref="#/parameters/dishId"),
      *     @SWG\Parameter(ref="#/parameters/imageId"),
      *     @SWG\Response(response=204, description="No response"),
