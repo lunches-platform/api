@@ -33,24 +33,28 @@ class Order implements \JsonSerializable
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
     /**
-     * Number of order. Starts from 1000
+     * Number of order. Starts from 1000. Generated automatically, no need to specify custom order number as it will be ignored
      *
      * @var string
      * @ORM\Column(type="string", name="order_number", nullable=false)
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $orderNumber;
     /**
+     * User who creates an Order. When you create an order, specify only **userId**
+     *
      * @var User
      * @ORM\ManyToOne(targetEntity="User")
      * @SWG\Property(ref="#/definitions/User")
      */
     protected $user;
     /**
+     * The shipping address for the order. Can be omitted, in this case user default address will be used
+     *
      * @var string
      * @ORM\Column(type="string", nullable=false)
      * @SWG\Property()
@@ -79,7 +83,7 @@ class Order implements \JsonSerializable
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @SWG\Property(enum={"created","inProgress","canceled","rejected","delivered","closed"})
+     * @SWG\Property(enum={"created","inProgress","canceled","rejected","delivered","closed"}, readOnly=true)
      */
     protected $status;
     /**
@@ -89,10 +93,13 @@ class Order implements \JsonSerializable
      */
     protected $shipmentDate;
     /**
-     * @var float $price
+     * Order price. Read only. Calculates automatically and based on order line items cost sum, delivery cost and taxes.
+     * If user orders all dishes of menu, orders costs lower then ordering of dishes separately
+     *
+     * @var float
      *
      * @ORM\Column(type="float")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     private $price = 0;
     /**

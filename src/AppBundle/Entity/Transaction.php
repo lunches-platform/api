@@ -30,7 +30,7 @@ class Transaction implements \JsonSerializable
      * @var string
      * @Id
      * @Column(type="guid")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
     /**
@@ -46,8 +46,6 @@ class Transaction implements \JsonSerializable
      */
     protected $user;
     /**
-     * One of income or outcome
-     *
      * @var string
      * @Column(type="string", nullable=false)
      * @SWG\Property(
@@ -57,11 +55,11 @@ class Transaction implements \JsonSerializable
     protected $type;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $created;
 

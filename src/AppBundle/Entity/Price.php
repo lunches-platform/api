@@ -26,7 +26,7 @@ class Price implements \JsonSerializable
      *
      * @Id
      * @Column(type="guid")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
     /**
