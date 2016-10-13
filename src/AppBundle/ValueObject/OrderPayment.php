@@ -9,7 +9,6 @@ use AppBundle\Exception\UserException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embeddable;
-use Swagger\Annotations AS SWG;
 
 /** @Embeddable */
 class OrderPayment
@@ -23,7 +22,6 @@ class OrderPayment
      *
      * @var \DateTime
      * @Column(type="datetime", nullable=false, name="started_at")
-     * @SWG\Property(property="payment_started_at"),
      */
     protected $startedAt;
     /**
@@ -31,7 +29,6 @@ class OrderPayment
      *
      * @var \DateTime
      * @Column(type="datetime", nullable=true, name="paid_at")
-     * @SWG\Property(property="payment_paid_at"),
      */
     protected $paidAt;
     /**
@@ -39,7 +36,6 @@ class OrderPayment
      *
      * @var bool
      * @Column(type="boolean")
-     * @SWG\Property(property="payment_status"),
      */
     protected $status = false;
 
@@ -48,8 +44,6 @@ class OrderPayment
      *
      * @var bool
      * @Column(type="boolean", nullable=true)
-     *
-     * @SWG\Property(property="payment_credited"),
      */
     protected $credited = false;
 

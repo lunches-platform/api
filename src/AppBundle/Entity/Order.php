@@ -61,23 +61,29 @@ class Order implements \JsonSerializable
      */
     protected $address;
     /**
+     * Date and time when order was created
+     *
      * @var CreatedOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\CreatedOrder", columnPrefix="created_")
+     * @SWG\Property(property="created", ref="#/definitions/CreatedOrder", readOnly=true),
      */
     protected $createdOrder;
     /**
      * @var CanceledOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\CanceledOrder", columnPrefix="canceled_")
+     * @SWG\Property(property="canceled", ref="#/definitions/CanceledOrder", readOnly=true)
      */
     protected $canceledOrder;
     /**
      * @var RejectedOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\RejectedOrder", columnPrefix="rejected_")
+     * @SWG\Property(property="rejected", ref="#/definitions/RejectedOrder", readOnly=true)
      */
     protected $rejectedOrder;
     /**
      * @var DeliveredOrder
      * @ORM\Embedded(class="AppBundle\ValueObject\DeliveredOrder", columnPrefix="delivered_")
+     * @SWG\Property(property="delivered", ref="#/definitions/DeliveredOrder", readOnly=true)
      */
     protected $deliveredOrder;
     /**
@@ -103,8 +109,11 @@ class Order implements \JsonSerializable
      */
     private $price = 0;
     /**
+     * Order payment status with boolean value
+     *
      * @var OrderPayment
      * @ORM\Embedded(class="AppBundle\ValueObject\OrderPayment", columnPrefix="payment_")
+     * @SWG\Property(property="paid", type="boolean", readOnly=true),
      */
     private $payment;
     /**
