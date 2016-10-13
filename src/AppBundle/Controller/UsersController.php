@@ -34,10 +34,8 @@ class UsersController
 
     /**
      * @SWG\Get(
-     *     tags={"Users"},
-     *     path="/users",
-     *     description="Get list of users by filters",
-     *     operationId="getUsersAction",
+     *     path="/users", tags={"Users"}, operationId="getUsersAction",
+     *     summary="List all users", description="Get list of users by filters",
      *     @SWG\Parameter(
      *         description="Filter users by LIKE pattern",
      *         type="string",
@@ -65,10 +63,8 @@ class UsersController
 
     /**
      * @SWG\Get(
-     *     tags={"Users"},
-     *     path="/users/{username}",
-     *     description="Get user by username",
-     *     operationId="getUserAction",
+     *     path="/users/{username}", tags={"Users"}, operationId="getUserAction",
+     *     summary="Retrieve user", description="Retrieves user by username",
      *     @SWG\Parameter(ref="#parameters/username"),
      *     @SWG\Response(
      *         response=200, description="User",
@@ -88,10 +84,8 @@ class UsersController
 
     /**
      * @SWG\Post(
-     *     tags={"Users"},
-     *     path="/users",
-     *     operationId="postUsersAction",
-     *     description="Registers new User",
+     *     path="/users", tags={"Users"}, operationId="postUsersAction",
+     *     summary="Register user", description="Registers new User",
      *     @SWG\Parameter(
      *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
      *         description="Provide here payload in User representation",
@@ -128,10 +122,8 @@ class UsersController
 
     /**
      * @SWG\Put(
-     *     tags={"Users"},
-     *     path="/users/{username}",
-     *     operationId="putUserAction",
-     *     description="Updates specified User",
+     *     path="/users/{username}", tags={"Users"}, operationId="putUserAction",
+     *     summary="Update user details", description="Updates specified User. It is allowed to update user address currently",
      *     @SWG\Parameter(ref="#parameters/username"),
      *     @SWG\Parameter(
      *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/User"),
