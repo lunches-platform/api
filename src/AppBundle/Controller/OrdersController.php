@@ -136,8 +136,8 @@ class OrdersController
      *     ),
      *     @SWG\Response(response=200, description="List of Orders", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Order"))),
      * )
-     * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=true)
-     * @QueryParam(name="endDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=true)
+     * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
+     * @QueryParam(name="endDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="paid", requirements="(0|1|true|false)", default=false)
      * @QueryParam(name="withCanceled", requirements="(0|1|true|false)", default=false)
      * @ParamConverter("user", options={"id":"user", "repository_method":"findByUsername"})
