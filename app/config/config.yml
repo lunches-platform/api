@@ -126,6 +126,7 @@ nelmio_cors:
         '^/':
             allow_origin: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            allow_headers: ['Content-Type']
             max_age: 3600
 
 speicher210_cloudinary:
