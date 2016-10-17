@@ -73,7 +73,7 @@ class Menu implements \JsonSerializable
             'date' => $this->date->format('Y-m-d'),
             'type' => $this->type,
 //            'created' => $this->created->format('Y-m-d H:i:s'),
-            'dishes' => $this->getMenuDishes()->sort(),
+            'products' => $this->getMenuDishes()->sort(),
         ];
     }
 

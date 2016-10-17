@@ -59,7 +59,7 @@ class LineItem implements \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'dish' => $this->dish,
+            'product' => $this->dish,
             'size' => $this->size,
         ];
     }
