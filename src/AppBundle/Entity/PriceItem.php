@@ -72,7 +72,7 @@ class PriceItem implements \JsonSerializable
     {
         return [
             'size' => $this->size,
-            'dishId' => $this->getDish()->getId(),
+            'productId' => $this->getDish()->getId(),
         ];
     }
 
