@@ -4,8 +4,14 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Dish;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Request\ParamFetcher;
+use Ramsey\Uuid\Uuid;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class DishesController
 {
@@ -13,14 +19,20 @@ class DishesController
      * @var Registry
      */
     protected $doctrine;
+    /**
+     * @var string
+     */
+    private $accessToken;
 
     /**
      * DishesController constructor.
      * @param Registry $doctrine
+     * @param string $accessToken
      */
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, $accessToken)
     {
         $this->doctrine = $doctrine;
+        $this->accessToken =$accessToken;
     }
 
     /**
@@ -54,5 +66,50 @@ class DishesController
         $repo = $this->doctrine->getRepository('AppBundle:Dish');
 
         return $repo->findList();
+    }
+    /**
+     * @SWG\Post(
+     *     path="/dishes", tags={"Dishes"}, operationId="postDishesAction",
+     *     summary="Creates new Dish", description="Creates new Dish",
+     *     @SWG\Parameter(
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/Dish"),
+     *         description="Include here payload in Dish representation",
+     *     ),
+     *     @SWG\Parameter(ref="#/parameters/accessToken"),
+     *     @SWG\Response(response=201, description="Newly created dish", @SWG\Schema(ref="#/definitions/Dish") ),
+     * )
+     * @RequestParam(name="name")
+     * @RequestParam(name="type", requirements="(meat|fish|garnish|salad)")
+     * @QueryParam(name="accessToken", description="Access token")
+     * @param ParamFetcher $params
+     * @return Dish
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @View(statusCode=201);
+     */
+    public function postDishesAction(ParamFetcher $params)
+    {
+        $this->assertAccessGranted($params);
+        $repo = $this->doctrine->getRepository('AppBundle:Dish');
+
+        $existentDish = $repo->findOneBy(['name' => $params->get('name')]);
+        if ($existentDish instanceof Dish) {
+            throw new BadRequestHttpException('Such dish is already exists');
+        }
+        $dish = new Dish(Uuid::uuid4());
+        $dish->setName($params->get('name'));
+        $dish->setType($params->get('type'));
+
+        $em = $this->doctrine->getManager();
+        $em->persist($dish);
+        $em->flush();
+
+        return $dish;
+    }
+    private function assertAccessGranted(ParamFetcher $params)
+    {
+        if ($params->get('accessToken') !== $this->accessToken) {
+            throw new AccessDeniedHttpException('Access token is not valid');
+        }
     }
 }

@@ -37,7 +37,7 @@ class Dish implements \JsonSerializable
      *
      * @var string
      * @ORM\Column(type="string", length=10, nullable=false)
-     * @SWG\Property(enum={"meat","garnish","salad"})
+     * @SWG\Property(enum={"meat","garnish","salad","fish"})
      */
     protected $type;
 
@@ -208,5 +208,21 @@ class Dish implements \JsonSerializable
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

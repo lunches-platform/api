@@ -172,6 +172,36 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Dishes"
+                ],
+                "summary": "Creates new Dish",
+                "description": "Creates new Dish",
+                "operationId": "postDishesAction",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Include here payload in Dish representation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Dish"
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/accessToken"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created dish",
+                        "schema": {
+                            "$ref": "#/definitions/Dish"
+                        }
+                    }
+                }
             }
         },
         "/images/{imageId}": {
@@ -941,7 +971,8 @@
                     "enum": [
                         "meat",
                         "garnish",
-                        "salad"
+                        "salad",
+                        "fish"
                     ]
                 },
                 "created": {
