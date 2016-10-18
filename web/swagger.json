@@ -835,10 +835,7 @@
                 "operationId": "getUsersAction",
                 "parameters": [
                     {
-                        "name": "like",
-                        "in": "query",
-                        "description": "Filter users by LIKE pattern",
-                        "type": "string"
+                        "$ref": "#/parameters/like"
                     }
                 ],
                 "responses": {
@@ -1484,6 +1481,12 @@
             "in": "path",
             "description": "Transaction ID",
             "required": true,
+            "type": "string"
+        },
+        "like": {
+            "name": "like",
+            "in": "query",
+            "description": "Filter items by LIKE pattern",
             "type": "string"
         }
     },

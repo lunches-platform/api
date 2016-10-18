@@ -36,15 +36,10 @@ class UsersController
      * @SWG\Get(
      *     path="/users", tags={"Users"}, operationId="getUsersAction",
      *     summary="List all users", description="Get list of users by filters",
-     *     @SWG\Parameter(
-     *         description="Filter users by LIKE pattern",
-     *         type="string",
-     *         in="query",
-     *         name="like",
-     *     ),
+     *     @SWG\Parameter(ref="#/parameters/like"),
      *     @SWG\Response(response=200, description="List of Users", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/User"))),
      * )
-     * @QueryParam(name="like", description="Filter foods by LIKE pattern")
+     * @QueryParam(name="like")
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
      * @View

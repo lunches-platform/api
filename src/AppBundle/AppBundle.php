@@ -127,11 +127,16 @@ class AppBundle extends Bundle
      * ),
      * @SWG\Parameter(
      *     name="transactionId",
-
      *     in="path",
      *     description="Transaction ID",
      *     type="string",
      *     required=true,
+     * ),
+     * @SWG\Parameter(
+     *     description="Filter items by LIKE pattern",
+     *     type="string",
+     *     in="query",
+     *     name="like",
      * ),
      */
 }
