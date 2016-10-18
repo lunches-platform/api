@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Swagger\Annotations as SWG;
+use Webmozart\Assert\Assert;
 
 /**
  * Class MenuDish.
@@ -48,10 +49,13 @@ class MenuDish
      */
     protected $position;
 
-    public function __construct(Menu $menu, Dish $dish)
+    public function __construct(Menu $menu, Dish $dish, $position)
     {
         $this->menu = $menu;
         $this->dish = $dish;
+
+        Assert::greaterThanEq($position, 0);
+        $this->position = (int) $position;
     }
 
     public function sameDish(Dish $dish)

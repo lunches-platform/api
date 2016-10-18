@@ -8,11 +8,12 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Swagger\Annotations as SWG;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Webmozart\Assert\Assert;
 
 /**
  * @Entity(repositoryClass="AppBundle\Entity\MenuRepository")
  * @Table(name="menu")
- * @SWG\Definition(required={"id","dishes","type", "date"}, type="object")
+ * @SWG\Definition(required={"products","type", "date"}, type="object")
  */
 class Menu implements \JsonSerializable
 {
@@ -21,13 +22,13 @@ class Menu implements \JsonSerializable
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
 
     /**
      * @var MenuDish[]
-     * @OneToMany(targetEntity="MenuDish", mappedBy="menu")
+     * @OneToMany(targetEntity="MenuDish", mappedBy="menu", cascade={"persist"})
      * @SWG\Property
      */
     protected $menuDishes;
@@ -35,7 +36,7 @@ class Menu implements \JsonSerializable
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @SWG\Property()
+     * @SWG\Property(enum={"diet","regular"})
      */
     protected $type;
 
@@ -50,10 +51,16 @@ class Menu implements \JsonSerializable
 
     /**
      * Menu constructor.
+     *
+     * @param \DateTime $date
+     * @param string $type
      */
-    public function __construct()
+    public function __construct(\DateTime $date, $type)
     {
         $this->menuDishes = new MenuDishes();
+        $this->date = $date;
+        Assert::oneOf($type, ['diet', 'regular']);
+        $this->type = $type;
     }
 
     /**
@@ -61,7 +68,9 @@ class Menu implements \JsonSerializable
      */
     public function addDish(MenuDish $menuDish)
     {
-        $this->menuDishes[] = $menuDish;
+        if (!$this->hasDish($menuDish->getDish())) {
+            $this->menuDishes[] = $menuDish;
+        }
     }
     /**
      * @return array
@@ -80,11 +89,10 @@ class Menu implements \JsonSerializable
     /**
      * @return int
      */
-    public function getId()
+    public function id()
     {
         return $this->id;
     }
-
 
     /**
      * @return MenuDishes
@@ -92,30 +100,6 @@ class Menu implements \JsonSerializable
     public function getMenuDishes()
     {
         return $this->menuDishes instanceof MenuDishes ? $this->menuDishes : new MenuDishes($this->menuDishes->getValues());
-    }
-
-    /**
-     * @param MenuDish[] $menuDishes
-     */
-    public function setMenuDishes($menuDishes)
-    {
-        $this->menuDishes = $menuDishes;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param \DateTime $date
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
     }
 
     public function hasDish(Dish $dish)
