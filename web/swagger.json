@@ -161,6 +161,11 @@
                 "summary": "Retrieve the list of dishes",
                 "description": "Return list of dishes using filters",
                 "operationId": "getDishesAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/like"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Array of Dish objects",

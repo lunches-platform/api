@@ -32,4 +32,10 @@ class DishRepository extends EntityRepository
         }
         return $dish;
     }
+    public function findByLikePattern($like)
+    {
+        $dql = 'SELECT d FROM AppBundle\Entity\Dish d WHERE d.name LIKE :like';
+
+        return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
+    }
 }
