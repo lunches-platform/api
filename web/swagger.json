@@ -161,6 +161,11 @@
                 "summary": "Retrieve the list of dishes",
                 "description": "Return list of dishes using filters",
                 "operationId": "getDishesAction",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/like"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Array of Dish objects",
@@ -835,10 +840,7 @@
                 "operationId": "getUsersAction",
                 "parameters": [
                     {
-                        "name": "like",
-                        "in": "query",
-                        "description": "Filter users by LIKE pattern",
-                        "type": "string"
+                        "$ref": "#/parameters/like"
                     }
                 ],
                 "responses": {
@@ -1484,6 +1486,12 @@
             "in": "path",
             "description": "Transaction ID",
             "required": true,
+            "type": "string"
+        },
+        "like": {
+            "name": "like",
+            "in": "query",
+            "description": "Filter items by LIKE pattern",
             "type": "string"
         }
     },

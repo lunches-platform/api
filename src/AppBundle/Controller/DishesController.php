@@ -55,17 +55,25 @@ class DishesController
      * @SWG\Get(
      *     path="/dishes", tags={"Dishes"}, operationId="getDishesAction",
      *     summary="Retrieve the list of dishes", description="Return list of dishes using filters",
+     *     @SWG\Parameter(ref="#/parameters/like"),
      *     @SWG\Response(response=200, description="Array of Dish objects", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Dish"))),
      * )
+     * @QueryParam(name="like")
+     * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \LogicException
      * @View
      */
-    public function getDishesAction()
+    public function getDishesAction(ParamFetcher  $params)
     {
         $repo = $this->doctrine->getRepository('AppBundle:Dish');
 
-        return $repo->findList();
+        $like = $params->get('like');
+        if ($like) {
+            $dishes = $repo->findByLikePattern($like);
+        } else {
+            $dishes = $repo->findList();
+        }
+        return $dishes;
     }
     /**
      * @SWG\Post(
