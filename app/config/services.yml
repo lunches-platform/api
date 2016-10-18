@@ -17,7 +17,7 @@ services:
 
     app_bundle.controller.dishes_controller:
         class: AppBundle\Controller\DishesController
-        arguments: ['@doctrine']
+        arguments: ['@doctrine', '%access_token%']
 
     app_bundle.controller.images_controller:
         class: AppBundle\Controller\ImagesController
