@@ -15,6 +15,10 @@ services:
         class: AppBundle\OrderFactory
         arguments: ['@doctrine']
 
+    app_bundle.factory.menu:
+        class: AppBundle\MenuFactory
+        arguments: ['@doctrine']
+
     app_bundle.controller.dishes_controller:
         class: AppBundle\Controller\DishesController
         arguments: ['@doctrine', '%access_token%']
@@ -33,7 +37,7 @@ services:
 
     app_bundle.controller.menus_controller:
         class: AppBundle\Controller\MenusController
-        arguments: ['@doctrine']
+        arguments: ['@doctrine', '@app_bundle.factory.menu', '%access_token%']
 
     app_bundle.controller.prices_controller:
         class: AppBundle\Controller\PricesController

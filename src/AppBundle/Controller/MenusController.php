@@ -2,14 +2,17 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\MenuFactory;
 use AppBundle\Exception\ValidationException;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use AppBundle\Entity\Menu;
 use AppBundle\ValueObject\DateRange;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,14 +27,27 @@ class MenusController
      * @var Registry
      */
     protected $doctrine;
+    /**
+     * @var string
+     */
+    private $accessToken;
+    /**
+     * @var MenuFactory
+     */
+    private $menuFactory;
 
     /**
-     * DishesController constructor.
+     * MenusController constructor.
+     *
      * @param Registry $doctrine
+     * @param MenuFactory $menuFactory
+     * @param string $accessToken
      */
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, MenuFactory $menuFactory, $accessToken)
     {
         $this->doctrine = $doctrine;
+        $this->accessToken  =$accessToken;
+        $this->menuFactory = $menuFactory;
     }
 
     /**
@@ -171,5 +187,48 @@ class MenusController
 
 
         return $this->getByDateRange($startDay, $endDay);
+    }
+    /**
+     * @SWG\Put(
+     *     path="/menus/{date}", tags={"Menus"}, operationId="putMenuAction",
+     *     summary="Add new menu", description="Adds new menu for specified date",
+     *     @SWG\Parameter(
+     *         description="Day at which the Menu is available", type="string", format="date", in="path", name="date", required=true,
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body", in="body", required=true, @SWG\Schema(ref="#/definitions/Menu"),
+     *         description="Include here payload in Menu representation",
+     *     ),
+     *     @SWG\Response(response=200, description="Recently added menu", @SWG\Schema(ref="#/definitions/Menu") ),
+     * )
+     * @RequestParam(name="products")
+     * @RequestParam(name="type", requirements="(diet|regular)")
+     * @QueryParam(name="accessToken", description="Access token")
+     * @param \DateTime $date
+     * @param ParamFetcher $params
+     * @return Menu
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @View(statusCode=201);
+     */
+    public function putMenuAction(\DateTime $date, ParamFetcher $params)
+    {
+        $this->assertAccessGranted($params);
+        try {
+            $menu = $this->menuFactory->create($date, (array) $params->get('products'), $params->get('type'));
+        } catch (ValidationException $e) {
+            throw new BadRequestHttpException('Can not create menu:'.$e->getMessage());
+        }
+        $em = $this->doctrine->getManager();
+        $em->persist($menu);
+        $em->flush();
+
+        return $menu;
+    }
+    private function assertAccessGranted(ParamFetcher $params)
+    {
+        if ($params->get('accessToken') !== $this->accessToken) {
+            throw new AccessDeniedHttpException('Access token is not valid');
+        }
     }
 }

@@ -105,7 +105,7 @@ class PricesController
      *     ),
      *     @SWG\Parameter(
      *         name="body", in="body", required=true, @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Price")),
-     *         description="Include here payload in Price representation",
+     *         description="Include here payload in array of Price representation",
      *     ),
      *     @SWG\Response(response=200, description="Recently added price", @SWG\Schema(ref="#/definitions/Price") ),
      * )

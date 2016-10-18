@@ -52,4 +52,12 @@ class MenuRepository extends EntityRepository
             'date' => $date,
         ]);
     }
+
+    public function exists(\DateTime $date, $type)
+    {
+        return (bool) $this->findOneBy([
+            'date' => $date,
+            'type' => $type,
+        ]);
+    }
 }
