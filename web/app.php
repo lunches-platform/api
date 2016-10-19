@@ -10,7 +10,7 @@ include_once __DIR__.'/../var/bootstrap.php.cache';
 
 //Request::enableHttpMethodParameterOverride();
 $request = Request::createFromGlobals();
-$kernel = new AppKernel('prod', $request->query->has('debug_s'));
+$kernel = new AppKernel('prod', $request->query->has('debug_s') || $request->cookies->has('debug_s'));
 $kernel->loadClassCache();
 //$kernel = new AppCache($kernel);
 

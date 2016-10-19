@@ -295,8 +295,8 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
                 /** @var DishRepository $dishRepo */
                 $dishRepo = $this->getDishRepo();
                 $dish = $dishRepo->get($this->existId());
-                $menu = new Menu();
-                $menu->addDish(new MenuDish($menu, $dish));
+                $menu = new Menu($date, 'regular');
+                $menu->addDish(new MenuDish($menu, $dish, 0));
 
                 return [$menu];
             }

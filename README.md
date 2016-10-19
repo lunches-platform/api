@@ -12,5 +12,12 @@
 
 ## Installation
 
-- use symfony standard installation process
+- clone git repo
+- `$ cd lunches-api`
+- `$ mkdir var`
+- `$ chmod 777 var`
+- `$ cp app/config/parameters.yml.dist app/config/paramters.yml`
+- edit `app/config/parameters.yml`
+- composer install
+- create your web server's virtual host, document root needs to be pointed to `/web` directory
 
