@@ -100,6 +100,7 @@ fos_rest:
         codes:
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
             'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': 400
             'InvalidArgumentException': 400
             'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
             'Doctrine\ORM\ORMException': 400
@@ -112,6 +113,7 @@ fos_rest:
         messages:
             'DomainException': true
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
+            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': true
             'FOS\RestBundle\Exception\InvalidParameterException': true
             'AppBundle\Exception\OrderException': true
             'AppBundle\Exception\LineItemException': true
