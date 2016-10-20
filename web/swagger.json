@@ -388,6 +388,43 @@
                 }
             }
         },
+        "/menus/{date}": {
+            "put": {
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Add new menu",
+                "description": "Adds new menu for specified date",
+                "operationId": "putMenuAction",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Day at which the Menu is available",
+                        "required": true,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Include here payload in Menu representation",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recently added menu",
+                        "schema": {
+                            "$ref": "#/definitions/Menu"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "tags": [
@@ -642,7 +679,7 @@
                     "Prices"
                 ],
                 "summary": "Add new price",
-                "description": "Adds new price for specified date",
+                "description": "Adds new price for specified date. It has unique mechanism which allows to assign price for each dish independently as well as assign single price for a group of dishes",
                 "operationId": "putPriceAction",
                 "parameters": [
                     {
@@ -656,7 +693,7 @@
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "Include here payload in Price representation",
+                        "description": "Include here payload in array of Price representation",
                         "required": true,
                         "schema": {
                             "type": "array",
@@ -1129,14 +1166,14 @@
         },
         "Menu": {
             "required": [
-                "id",
-                "dishes",
+                "products",
                 "type",
                 "date"
             ],
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "readOnly": true
                 },
                 "menuDishes": {
                     "type": "array",
@@ -1145,7 +1182,11 @@
                     }
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "diet",
+                        "regular"
+                    ]
                 },
                 "date": {
                     "description": "$created",
@@ -1283,20 +1324,24 @@
         },
         "PriceItem": {
             "required": [
-                "price",
-                "dish",
+                "dishId",
                 "size"
             ],
             "properties": {
-                "id": {},
-                "price": {
-                    "$ref": "#/definitions/Price"
+                "id": {
+                    "readOnly": true
                 },
-                "dish": {
-                    "$ref": "#/definitions/Dish"
+                "dishId": {
+                    "description": "ID of the dish which is a part of price",
+                    "type": "string"
                 },
                 "size": {
-                    "type": "string"
+                    "description": "Size of portion of the dish",
+                    "type": "string",
+                    "enum": [
+                        "medium",
+                        "big"
+                    ]
                 }
             },
             "type": "object"

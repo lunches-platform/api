@@ -16,7 +16,7 @@ use Swagger\Annotations as SWG;
  * Class PriceItem
  * @Entity
  * @Table(name="price_item")
- * @SWG\Definition(required={"price","dish","size"}, type="object")
+ * @SWG\Definition(required={"dishId","size"}, type="object")
  */
 class PriceItem implements \JsonSerializable
 {
@@ -25,28 +25,29 @@ class PriceItem implements \JsonSerializable
      *
      * @Id
      * @Column(type="guid")
-     * @SWG\Property()
+     * @SWG\Property(readOnly=true)
      */
     protected $id;
 
     /**
      * @var Price
      * @ManyToOne(targetEntity="Price", inversedBy="items")
-     * @SWG\Property
      */
     protected $price;
 
     /**
      * @var Dish
      * @ManyToOne(targetEntity="Dish")
-     * @SWG\Property
+     * @SWG\Property(property="dishId", type="string", description="ID of the dish which is a part of price")
      */
     protected $dish;
 
     /**
+     * Size of portion of the dish
+     *
      * @var string
      * @Column(type="string")
-     * @SWG\Property()
+     * @SWG\Property(enum={"medium","big"})
      */
     protected $size;
 

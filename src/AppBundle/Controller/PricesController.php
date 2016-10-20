@@ -99,7 +99,8 @@ class PricesController
     /**
      * @SWG\Put(
      *     path="/prices/{date}", tags={"Prices"}, operationId="putPriceAction",
-     *     summary="Add new price", description="Adds new price for specified date",
+     *     summary="Add new price",
+     *     description="Adds new price for specified date. It has unique mechanism which allows to assign price for each dish independently as well as assign single price for a group of dishes",
      *     @SWG\Parameter(
      *         description="Price date", type="string", format="date", in="path", name="date", required=true,
      *     ),
@@ -124,7 +125,7 @@ class PricesController
             $price = $this->priceFactory->createFromArray([
                 'date' => $date,
                 'items' => $params->get('items'),
-                'price' => $params->get('price'),
+                'price' => $params->get('value'),
             ]);
         } catch (ValidationException $e) {
             throw new BadRequestHttpException('Can not create price:'.$e->getMessage());
