@@ -111,7 +111,7 @@ class PricesController
      *     @SWG\Response(response=200, description="Recently added price", @SWG\Schema(ref="#/definitions/Price") ),
      * )
      * @RequestParam(name="items")
-     * @RequestParam(name="price")
+     * @RequestParam(name="value")
      * @param \DateTime $date
      * @param ParamFetcher $params
      * @return Response
