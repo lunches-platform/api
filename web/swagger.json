@@ -446,6 +446,19 @@
                     },
                     {
                         "$ref": "#/parameters/endDate"
+                    },
+                    {
+                        "name": "paid",
+                        "in": "query",
+                        "description": "Whether filter out non paid orders or no",
+                        "type": "boolean",
+                        "default": false,
+                        "enum": [
+                            "0",
+                            "1",
+                            false,
+                            true
+                        ]
                     }
                 ],
                 "responses": {
