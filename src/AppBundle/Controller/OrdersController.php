@@ -64,11 +64,20 @@ class OrdersController
      *     ),
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
+     *     @SWG\Parameter(
+     *         name="paid",
+     *         default=false,
+     *         in="query",
+     *         type="boolean",
+     *         description="Whether filter out non paid orders or no",
+     *         enum={"0","1",false,true},
+     *     ),
      *     @SWG\Response(response=200, description="List of Orders", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Order"))),
      * )
      * @QueryParam(name="shipmentDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="endDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
+     * @QueryParam(name="paid", requirements="(0|1|true|false)", default=null)
      * @param ParamFetcher $params
      * @return Order[]
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
@@ -79,10 +88,15 @@ class OrdersController
         try {
             $shipmentDate = $params->get('shipmentDate') ? new \DateTime($params->get('shipmentDate')) : null;
             $dateRange = $this->createDateRange($params, false, false);
+
             $filters = array_filter([
                 'shipmentDate' => $shipmentDate,
                 'dateRange' => $dateRange,
             ]);
+            $filters = array_filter($filters);
+            if ($params->get('paid') !== null) {
+                $filters['paid'] = $params->get('paid');
+            }
         } catch (\Exception $e) {
             throw new BadRequestHttpException('Invalid filters: ' . $e->getMessage());
         }
