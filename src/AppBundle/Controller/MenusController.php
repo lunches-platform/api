@@ -73,9 +73,6 @@ class MenusController
         } catch (ValidationException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        if ($range->getStart() < new \DateTime('-2 week')) {
-            throw new BadRequestHttpException('Can not access menu older than two weeks ago');
-        }
 
         return $this->getByDateRange($range->getStart(), $range->getEnd());
     }

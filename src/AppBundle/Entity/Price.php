@@ -51,7 +51,7 @@ class Price implements \JsonSerializable
     public function __construct($value, \DateTime $date)
     {
         $this->id = Uuid::uuid4();
-        $this->setDate($date);
+        $this->date = $date;
         $this->setValue($value);
         $this->items = new ArrayCollection();
     }
@@ -111,17 +111,6 @@ class Price implements \JsonSerializable
     private function addItem(PriceItem $priceItem)
     {
         $this->items[] = $priceItem;
-    }
-
-
-    private function setDate(\DateTime $date)
-    {
-        $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
-        if ($date <= $currentDate) {
-            throw ValidationException::invalidDate('Price date can not be today or in the past');
-        }
-        
-        $this->date = $date;
     }
 
     public function equalsTo(Price $price)

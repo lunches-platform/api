@@ -20,7 +20,7 @@ class DishRepository extends EntityRepository
             ->from('AppBundle:Dish', 'd')
             ->leftJoin('d.ingredients', 'i')
             ->orderBy('d.created', 'DESC')
-            ->setMaxResults(100);
+            ->setMaxResults(200);
 
         return $qb->getQuery()->getResult();
     }
