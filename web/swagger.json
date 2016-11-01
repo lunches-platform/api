@@ -568,6 +568,9 @@
                         "$ref": "#/parameters/endDate"
                     },
                     {
+                        "$ref": "#/parameters/shipmentDate"
+                    },
+                    {
                         "name": "paid",
                         "in": "query",
                         "description": "Whether filter out non paid orders or no",
@@ -592,6 +595,15 @@
                             false,
                             true
                         ]
+                    },
+                    {
+                        "name": "items",
+                        "in": "query",
+                        "description": "Order line items to search by. Will be returned only orders where each line item will be equal to specified ones",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/LineItem"
+                        }
                     }
                 ],
                 "responses": {
