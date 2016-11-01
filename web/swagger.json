@@ -435,11 +435,7 @@
                 "operationId": "getOrdersAction",
                 "parameters": [
                     {
-                        "name": "shipmentDate",
-                        "in": "query",
-                        "description": "Filter orders which will be shipped on specified date",
-                        "type": "string",
-                        "format": "date"
+                        "$ref": "#/parameters/shipmentDate"
                     },
                     {
                         "$ref": "#/parameters/startDate"
@@ -1551,6 +1547,13 @@
             "in": "query",
             "description": "Filter items by LIKE pattern",
             "type": "string"
+        },
+        "shipmentDate": {
+            "name": "shipmentDate",
+            "in": "query",
+            "description": "Filter orders which will be shipped on specified date",
+            "type": "string",
+            "format": "date"
         }
     },
     "tags": [

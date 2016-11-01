@@ -138,5 +138,12 @@ class AppBundle extends Bundle
      *     in="query",
      *     name="like",
      * ),
+     * @SWG\Parameter(
+     *     name="shipmentDate",
+     *     description="Filter orders which will be shipped on specified date",
+     *     type="string",
+     *     format="date",
+     *     in="query",
+     * ),
      */
 }

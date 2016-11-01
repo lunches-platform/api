@@ -55,13 +55,7 @@ class OrdersController
      * @SWG\Get(
      *     path="/orders", tags={"Orders"}, operationId="getOrdersAction",
      *     summary="List all orders", description="Retrieves the list of orders by filters",
-     *     @SWG\Parameter(
-     *         name="shipmentDate",
-     *         description="Filter orders which will be shipped on specified date",
-     *         type="string",
-     *         format="date",
-     *         in="query",
-     *     ),
+     *     @SWG\Parameter(ref="#/parameters/shipmentDate"),
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
      *     @SWG\Parameter(
