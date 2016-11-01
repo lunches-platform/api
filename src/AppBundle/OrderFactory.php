@@ -132,7 +132,7 @@ class OrderFactory
      * @throws \AppBundle\Exception\LineItemException
      * @throws ValidationException
      */
-    private function createLineItems($data, $shipmentDate)
+    public function createLineItems($data, $shipmentDate)
     {
         if (!array_key_exists('items', $data) || !is_array($data['items'])) {
             throw ValidationException::invalidOrder('There are no valid LineItems provided');

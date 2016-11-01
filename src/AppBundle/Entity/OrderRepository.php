@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\ValueObject\DateRange;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -27,23 +28,43 @@ class OrderRepository extends EntityRepository
         $qb = $this->_em->createQueryBuilder();
 
         $qb->select(['o'])
-            ->from('AppBundle\Entity\Order', 'o');
+            ->from('AppBundle\Entity\Order', 'o')
+            ->orderBy('o.shipmentDate', 'DESC');
 
         if (array_key_exists('username', $filters)) {
             $qb->join('o.user', 'u')->andWhere('u.fullname = :username')->setParameter('username', $filters['username']);
         }
-        if (array_key_exists('dateRange', $filters)) {
-            $this->filterByDateRange($qb, $filters['dateRange']);
+        if (array_key_exists('user', $filters)) {
+            $qb->join('o.user', 'u')->andWhere('u.id = :userId')->setParameter('userId', $filters['user']);
         }
-        if (array_key_exists('shipmentDate', $filters)) {
-            $qb->andWhere('o.shipmentDate = :date')->setParameter('date', $filters['shipmentDate']);
+        $dateRangeExists = array_key_exists('dateRange', $filters);
+        $shipmentDateExists = array_key_exists('shipmentDate', $filters);
+
+        // dateRange and shipmentDate are exclusive parameters
+        if ($dateRangeExists || $shipmentDateExists) {
+            if ($shipmentDateExists) {
+                $qb->andWhere('o.shipmentDate = :date')->setParameter('date', $filters['shipmentDate']);
+            } else {
+                $this->filterByDateRange($qb, $filters['dateRange']);
+            }
         }
-        if (array_key_exists('paid', $filters)) {
-            $qb->andWhere('o.payment.status = :paid');
-            $qb->setParameter('paid', (int) $filters['paid']);
+        if (array_key_exists('paid', $filters) && $filters['paid'] !== null) {
+            $qb->andWhere('o.payment.status = :paid')->setParameter('paid', (int) $filters['paid']);
+        }
+        if (array_key_exists('withCanceled', $filters) && $filters['withCanceled'] !== null && (int) $filters['withCanceled'] === 0) {
+            $qb->andWhere("o.status != 'canceled'");
         }
 
-        return $qb->getQuery()->getResult();
+        $orders = $qb->getQuery()->getResult();
+
+        if (array_key_exists('items', $filters) && $filters['items'] instanceof ArrayCollection) {
+            $items = $filters['items'];
+            $orders = array_filter($orders, function (Order $order) use ($items) {
+                return $order->areItemsEquals($items);
+            });
+        }
+
+        return array_values($orders);
     }
 
     public function findByShipmentDate(\DateTime $shipmentDate)
@@ -58,28 +79,11 @@ class OrderRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByUser(User $user, $paid = null, $withCanceled = 0, DateRange $dateRange = null)
+    public function findByUser(User $user, array $filters = [])
     {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select(['o'])
-            ->from('AppBundle\Entity\Order', 'o')
-            ->join('o.user', 'u')
-            ->where('u.id = :userId')
-            ->orderBy('o.shipmentDate', 'DESC')
-        ;
-        if ((int) $withCanceled === 0) {
-            $qb->andWhere("o.status != 'canceled'");
-        }
-        $qb->setParameter('userId', $user);
+        $filters['user'] = $user;
 
-        if ($paid !== null) {
-            $qb->andWhere('o.payment.status = :paid');
-            $qb->setParameter('paid', (int) $paid);
-        }
-
-        $this->filterByDateRange($qb, $dateRange);
-
-        return $qb->getQuery()->getResult();
+        return $this->getList($filters);
     }
 
     /**

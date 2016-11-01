@@ -16,6 +16,6 @@ class LineItemException extends \Exception
     {
         $date = null !== $today ? $today->format('Y-m-d') : 'specified date';
 
-        return new static("Product #{$dish->getId()} is not cooking for {$date}");
+        return new static("Dish #{$dish->getId()} is not cooking for {$date}");
     }
 }

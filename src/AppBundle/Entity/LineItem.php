@@ -52,6 +52,15 @@ class LineItem implements \JsonSerializable
      */
     protected $order;
 
+    public function equalsTo(LineItem $lineItem)
+    {
+        if ($this->size !== $lineItem->getSize()) {
+            return false;
+        }
+
+        return $this->dish->getId() === $lineItem->getDish()->getId();
+    }
+
     /**
      * @return array
      */

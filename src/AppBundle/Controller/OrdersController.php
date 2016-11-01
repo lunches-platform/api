@@ -2,12 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\LineItem;
 use AppBundle\Entity\Order;
 use AppBundle\Entity\Transaction;
 use AppBundle\Entity\User;
 use AppBundle\OrderFactory;
 use AppBundle\ValueObject\DateRange;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
@@ -55,13 +57,7 @@ class OrdersController
      * @SWG\Get(
      *     path="/orders", tags={"Orders"}, operationId="getOrdersAction",
      *     summary="List all orders", description="Retrieves the list of orders by filters",
-     *     @SWG\Parameter(
-     *         name="shipmentDate",
-     *         description="Filter orders which will be shipped on specified date",
-     *         type="string",
-     *         format="date",
-     *         in="query",
-     *     ),
+     *     @SWG\Parameter(ref="#/parameters/shipmentDate"),
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
      *     @SWG\Parameter(
@@ -86,17 +82,14 @@ class OrdersController
     public function getOrdersAction(ParamFetcher $params)
     {
         try {
-            $shipmentDate = $params->get('shipmentDate') ? new \DateTime($params->get('shipmentDate')) : null;
+            $shipmentDate = $this->getShipmentDate($params);
             $dateRange = $this->createDateRange($params, false, false);
 
             $filters = array_filter([
                 'shipmentDate' => $shipmentDate,
                 'dateRange' => $dateRange,
+                'paid' => $params->get('paid'),
             ]);
-            $filters = array_filter($filters);
-            if ($params->get('paid') !== null) {
-                $filters['paid'] = $params->get('paid');
-            }
         } catch (\Exception $e) {
             throw new BadRequestHttpException('Invalid filters: ' . $e->getMessage());
         }
@@ -132,6 +125,7 @@ class OrdersController
      *     @SWG\Parameter(ref="#/parameters/username"),
      *     @SWG\Parameter(ref="#/parameters/startDate"),
      *     @SWG\Parameter(ref="#/parameters/endDate"),
+     *     @SWG\Parameter(ref="#/parameters/shipmentDate"),
      *     @SWG\Parameter(
      *         name="paid",
      *         default=false,
@@ -148,12 +142,21 @@ class OrdersController
      *         description="Whether include canceled orders or no",
      *         enum={"0","1",false,true},
      *     ),
+     *     @SWG\Parameter(
+     *         name="items",
+     *         in="query",
+     *         type="array",
+     *         @SWG\Items(ref="#/definitions/LineItem"),
+     *         description="Order line items to search by. Will be returned only orders where each line item will be equal to specified ones",
+     *     ),
      *     @SWG\Response(response=200, description="List of Orders", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Order"))),
      * )
      * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="endDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="paid", requirements="(0|1|true|false)", default=false)
      * @QueryParam(name="withCanceled", requirements="(0|1|true|false)", default=false)
+     * @QueryParam(name="shipmentDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
+     * @QueryParam(name="items")
      * @ParamConverter("user", options={"id":"user", "repository_method":"findByUsername"})
      * @param User $user
      * @param ParamFetcher $params
@@ -163,8 +166,14 @@ class OrdersController
      */
     public function getUserOrdersAction(User $user, ParamFetcher $params)
     {
-        $range = $this->createDateRange($params);
-        $orders = $this->doctrine->getRepository('AppBundle:Order')->findByUser($user, $params->get('paid', null), $params->get('withCanceled', 0), $range);
+        $filters = [
+            'dateRange' => $this->createDateRange($params),
+            'items' => $this->getItemsFilter($params),
+            'paid' => $params->get('paid'),
+            'withCanceled' => $params->get('withCanceled'),
+            'shipmentDate' => $this->getShipmentDate($params),
+        ];
+        $orders = $this->doctrine->getRepository('AppBundle:Order')->findByUser($user, $filters);
         if (!count($orders)) {
             throw new NotFoundHttpException('Orders not found');
         }
@@ -315,5 +324,28 @@ class OrdersController
         if ($params->get('accessToken') !== $this->accessToken) {
             throw new AccessDeniedHttpException('Access token is not valid');
         }
+    }
+
+    private function getShipmentDate(ParamFetcher $params)
+    {
+        return $params->get('shipmentDate') ? new \DateTime($params->get('shipmentDate')) : null;
+    }
+    private function getItemsFilter(ParamFetcher $params)
+    {
+        $shipmentDate = $this->getShipmentDate($params);
+        if (!$params->get('items')) {
+            return null;
+        }
+        if (!$shipmentDate) {
+            throw new BadRequestHttpException('The "shipmentDate" param must be specified to filter by items');
+        }
+        $items = $this->orderFactory->createLineItems($params->all(), $shipmentDate);
+
+        $lineItems = new ArrayCollection();
+        array_walk($items, function (LineItem $lineItem) use ($lineItems) {
+            $lineItems->add($lineItem);
+        });
+
+        return $lineItems;
     }
 }
