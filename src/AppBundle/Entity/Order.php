@@ -249,6 +249,21 @@ class Order implements \JsonSerializable
 
         return true;
     }
+    /**
+     * @param ArrayCollection $items
+     * @return bool
+     */
+    public function areItemsEquals($items)
+    {
+        if ($this->lineItems->count() !== $items->count()) {
+            return false;
+        }
+        $result = array_udiff($this->lineItems->getValues(), $items->getValues(), function(LineItem $lineItem1, LineItem $lineItem2) {
+            return $lineItem1->equalsTo($lineItem2) ? 0 : 1;
+        });
+
+        return empty($result);
+    }
 
     public function currentStatus()
     {
