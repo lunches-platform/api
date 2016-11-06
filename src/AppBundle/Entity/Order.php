@@ -150,7 +150,7 @@ class Order implements \JsonSerializable
             'price' => $this->price,
             'orderNumber' => $this->orderNumber,
             'user' => $this->user,
-            'shipmentDate' => $this->shipmentDate instanceof \DateTimeImmutable ? $this->shipmentDate->format('Y-m-d') : null,
+            'shipmentDate' => $this->shipmentDate instanceof \DateTimeInterface ? $this->shipmentDate->format('Y-m-d') : null,
             'address' => $this->address,
             'items' => $this->lineItems,
             'status' => $this->status,
