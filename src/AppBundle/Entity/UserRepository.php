@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Exception\RuntimeException;
 use Doctrine\ORM\EntityRepository;
+use Webmozart\Assert\Assert;
 
 /**
  * UserRepository
@@ -55,6 +56,7 @@ class UserRepository extends EntityRepository
 
     public function findByLikePattern($like)
     {
+        Assert::notEmpty($like, 'Expected non-empty value for "like" param');
         $dql = 'SELECT u FROM AppBundle\Entity\User u WHERE u.fullname LIKE :like';
 
         return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
