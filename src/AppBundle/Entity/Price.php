@@ -42,13 +42,13 @@ class Price implements \JsonSerializable
      */
     protected $items;
     /**
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="date")
      * @SWG\Property()
      */
     protected $date;
 
-    public function __construct($value, \DateTime $date)
+    public function __construct($value, \DateTimeImmutable $date)
     {
         $this->id = Uuid::uuid4();
         $this->date = $date;
@@ -68,7 +68,7 @@ class Price implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getDate()
     {

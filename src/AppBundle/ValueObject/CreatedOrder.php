@@ -20,13 +20,13 @@ class CreatedOrder
     /**
      * Date and time when order was created
      *
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime")
      * @SWG\Property
      */
     protected $at;
 
-    public function __construct(Order $order, \DateTime $at)
+    public function __construct(Order $order, \DateTimeImmutable $at)
     {
         $this->order = $order;
         $this->at = $at;

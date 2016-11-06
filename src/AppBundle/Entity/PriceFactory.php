@@ -46,7 +46,7 @@ class PriceFactory
 
     private function createDate($date)
     {
-        if (!$date instanceof \DateTime) {
+        if (!$date instanceof \DateTimeImmutable) {
             throw ValidationException::invalidDate();
         }
         return $date;

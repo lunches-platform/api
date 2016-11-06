@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class PriceRepository extends EntityRepository
 {
-    public function findByDate(\DateTime $date)
+    public function findByDate(\DateTimeImmutable $date)
     {
         $prices = $this->findBy([
             'date' => $date,

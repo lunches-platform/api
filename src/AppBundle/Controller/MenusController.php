@@ -89,23 +89,23 @@ class MenusController
      *         @SWG\Schema(ref="#/definitions/Menu")
      *     ),
      * )
-     * @param \DateTime $concrete
+     * @param \DateTimeImmutable $concrete
      * @View
      * @return Menu[]
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function getMenuAction(\DateTime $concrete)
+    public function getMenuAction(\DateTimeImmutable $concrete)
     {
         return $this->getByDateRange($concrete);
     }
 
     /**
-     * @param \DateTime|null $startDate
-     * @param \DateTime|null $endDate
+     * @param \DateTimeImmutable|null $startDate
+     * @param \DateTimeImmutable|null $endDate
      * @return \AppBundle\Entity\Menu[]
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function getByDateRange(\DateTime $startDate = null, \DateTime $endDate = null)
+    public function getByDateRange(\DateTimeImmutable $startDate = null, \DateTimeImmutable $endDate = null)
     {
         $repo = $this->doctrine->getRepository('AppBundle:Menu');
         $menus = $repo->getMenus($startDate, $endDate);
@@ -131,7 +131,7 @@ class MenusController
      */
     public function getTodayMenuAction()
     {
-        return $this->getByDateRange($today = new \DateTime());
+        return $this->getByDateRange($today = new \DateTimeImmutable());
     }
     /**
      * @SWG\Get(
@@ -146,7 +146,7 @@ class MenusController
      */
     public function getTomorrowMenuAction()
     {
-        return $this->getByDateRange(new \DateTime('tomorrow'));
+        return $this->getByDateRange(new \DateTimeImmutable('tomorrow'));
     }
     /**
      * @SWG\Get(
@@ -161,8 +161,8 @@ class MenusController
      */
     public function getCurrentWeekMenuAction()
     {
-        $startDay = new \DateTime('monday this week');
-        $endDay = new \DateTime('friday this week');
+        $startDay = new \DateTimeImmutable('monday this week');
+        $endDay = new \DateTimeImmutable('friday this week');
 
         return $this->getByDateRange($startDay, $endDay);
     }
@@ -179,8 +179,8 @@ class MenusController
      */
     public function getNextWeekMenuAction()
     {
-        $startDay = new \DateTime('monday next week');
-        $endDay = new \DateTime('friday next week');
+        $startDay = new \DateTimeImmutable('monday next week');
+        $endDay = new \DateTimeImmutable('friday next week');
 
 
         return $this->getByDateRange($startDay, $endDay);
@@ -201,14 +201,14 @@ class MenusController
      * @RequestParam(name="products")
      * @RequestParam(name="type", requirements="(diet|regular)")
      * @QueryParam(name="accessToken", description="Access token")
-     * @param \DateTime $date
+     * @param \DateTimeImmutable $date
      * @param ParamFetcher $params
      * @return Menu
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @View(statusCode=201);
      */
-    public function putMenuAction(\DateTime $date, ParamFetcher $params)
+    public function putMenuAction(\DateTimeImmutable $date, ParamFetcher $params)
     {
         $this->assertAccessGranted($params);
         try {

@@ -67,7 +67,7 @@ class OrderRepository extends EntityRepository
         return array_values($orders);
     }
 
-    public function findByShipmentDate(\DateTime $shipmentDate)
+    public function findByShipmentDate(\DateTimeImmutable $shipmentDate)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['o'])

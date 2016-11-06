@@ -42,7 +42,7 @@ class Dish implements \JsonSerializable
     protected $type;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTimeImmutable $created
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -51,7 +51,7 @@ class Dish implements \JsonSerializable
     private $created;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTimeImmutable $updated
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
@@ -138,7 +138,7 @@ class Dish implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getUpdated()
     {
@@ -146,7 +146,7 @@ class Dish implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $updated
+     * @param \DateTimeImmutable $updated
      */
     public function setUpdated($updated)
     {
@@ -154,7 +154,7 @@ class Dish implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getCreated()
     {
@@ -162,7 +162,7 @@ class Dish implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $created
+     * @param \DateTimeImmutable $created
      */
     public function setCreated($created)
     {

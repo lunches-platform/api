@@ -14,7 +14,7 @@ class PriceTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        $price = new Price($value = 100, $date = new \DateTime('tomorrow'));
+        $price = new Price($value = 100, $date = new \DateTimeImmutable('tomorrow'));
         $price->setItems($items = $this->createItems($price));
 
         self::assertEquals($value, $price->getValue());
@@ -24,7 +24,7 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     }
     public function testToArray()
     {
-        $price = new Price($value = 100, $date = new \DateTime('tomorrow'));
+        $price = new Price($value = 100, $date = new \DateTimeImmutable('tomorrow'));
         $array = $price->toArray();
         
         self::assertTrue(is_array($array));
@@ -35,26 +35,26 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     public function testGetValueWhenNoItemsAssigned()
     {
         $this->setExpectedException(ValidationException::class, 'Invalid price provided. Price must be assigned to one or more items but zero given. Probably some of items are invalid');
-        $price = new Price($value = 100, $date = new \DateTime());
+        $price = new Price($value = 100, $date = new \DateTimeImmutable());
         $price->getValue();
     }
     public function testSetItems()
     {
-        $price = new Price(100, new \DateTime());
+        $price = new Price(100, new \DateTimeImmutable());
         $price->setItems($this->createItems($price));
 
         self::assertCount(2, $price->getItems());
     }
     public function testValueShouldBeFloat()
     {
-        $price = new Price(100, new \DateTime());
+        $price = new Price(100, new \DateTimeImmutable());
         $price->setItems($this->createItems($price));
 
         self::assertTrue(is_float($price->getValue()));
     }
     public function testHasPriceItem()
     {
-        $price = new Price(100, new \DateTime());
+        $price = new Price(100, new \DateTimeImmutable());
 
         list($priceItem1, $priceItem2) = $this->createItems($price);
 
@@ -65,7 +65,7 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     }
     public function testHasPriceItemEmptyItems()
     {
-        $price = new Price(100, new \DateTime());
+        $price = new Price(100, new \DateTimeImmutable());
         $priceItem = new PriceItem($price, new Dish(1), 'big');
 
         self::assertFalse($price->hasPriceItem($priceItem));
@@ -74,20 +74,20 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     {
         $errMsg = 'Invalid date provided. Price date can not be today or in the past';
         try {
-            new Price(100, new \DateTime('today'));
+            new Price(100, new \DateTimeImmutable('today'));
         } catch (ValidationException $e) {
             self::assertEquals($errMsg, $e->getMessage());
         }
         try {
-            new Price(100, new \DateTime('yesterday'));
+            new Price(100, new \DateTimeImmutable('yesterday'));
         } catch (ValidationException $e) {
             self::assertEquals($errMsg, $e->getMessage());
         }
     }
     public function testEqualsTo()
     {
-        $price1 = new Price(100, new \DateTime('tomorrow'));
-        $price2 = new Price(100, new \DateTime('tomorrow'));
+        $price1 = new Price(100, new \DateTimeImmutable('tomorrow'));
+        $price2 = new Price(100, new \DateTimeImmutable('tomorrow'));
 
         $price1->setItems($this->createItems($price1));
         $price2->setItems($this->createItems($price2));
@@ -96,8 +96,8 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     }
     public function testValuesAreNotEqual()
     {
-        $price1 = new Price(100, new \DateTime('tomorrow'));
-        $price2 = new Price(200, new \DateTime('tomorrow'));
+        $price1 = new Price(100, new \DateTimeImmutable('tomorrow'));
+        $price2 = new Price(200, new \DateTimeImmutable('tomorrow'));
 
         $price1->setItems($this->createItems($price1));
         $price2->setItems($this->createItems($price2));
@@ -106,8 +106,8 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     }
     public function testDatesAreNotEqual()
     {
-        $price1 = new Price(100, new \DateTime('tomorrow'));
-        $price2 = new Price(100, new \DateTime('next week'));
+        $price1 = new Price(100, new \DateTimeImmutable('tomorrow'));
+        $price2 = new Price(100, new \DateTimeImmutable('next week'));
 
         $price1->setItems($this->createItems($price1));
         $price2->setItems($this->createItems($price2));
@@ -116,8 +116,8 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     }
     public function testItemsCountIsNotEqual()
     {
-        $price1 = new Price(100, new \DateTime('tomorrow'));
-        $price2 = new Price(100, new \DateTime('tomorrow'));
+        $price1 = new Price(100, new \DateTimeImmutable('tomorrow'));
+        $price2 = new Price(100, new \DateTimeImmutable('tomorrow'));
 
         $priceItem1 = new PriceItem($price1, new Dish(1), 'big');
         $priceItem2 = new PriceItem($price2, new Dish(2), 'small');
@@ -131,8 +131,8 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     }
     public function testItemsAreNotEqual()
     {
-        $price1 = new Price(100, new \DateTime('tomorrow'));
-        $price2 = new Price(100, new \DateTime('tomorrow'));
+        $price1 = new Price(100, new \DateTimeImmutable('tomorrow'));
+        $price2 = new Price(100, new \DateTimeImmutable('tomorrow'));
 
         $priceItem1 = new PriceItem($price1, new Dish(1), 'big');
         $priceItem2 = new PriceItem($price1, new Dish(2), 'small');

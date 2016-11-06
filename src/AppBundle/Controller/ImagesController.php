@@ -82,8 +82,8 @@ class ImagesController
         $image->setWidth($result['width']);
         $image->setHeight($result['height']);
         $image->setFormat($result['format']);
-        $image->setCreated(new \DateTime());
-        $image->setUpdated(new \DateTime());
+        $image->setCreated(new \DateTimeImmutable());
+        $image->setUpdated(new \DateTimeImmutable());
 
         $em = $this->doctrine->getManager();
         $em->persist($image);

@@ -12,7 +12,7 @@ class PriceItemTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        $price = new Price(100, new \DateTime());
+        $price = new Price(100, new \DateTimeImmutable());
         $product = new Dish(1);
         $size = 'big';
 
@@ -30,7 +30,7 @@ class PriceItemTest extends \PHPUnit_Framework_TestCase
         $size = 'invalid size';
 
         new PriceItem(
-            new Price(100, new \DateTime()),
+            new Price(100, new \DateTimeImmutable()),
             new Dish(1),
             $size
         );
@@ -66,7 +66,7 @@ class PriceItemTest extends \PHPUnit_Framework_TestCase
      */
     private function getPriceItem($price = null, $product = null, $size = 'big')
     {
-        $price = $price ?: new Price(100, new \DateTime());
+        $price = $price ?: new Price(100, new \DateTimeImmutable());
         $product = $product?: new Dish(1);
         $size = $size?:'big';
 

@@ -55,7 +55,7 @@ class Transaction implements \JsonSerializable
     protected $type;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeImmutable
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
@@ -64,7 +64,7 @@ class Transaction implements \JsonSerializable
     protected $created;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime", name="payment_date")
      * @SWG\Property()
      */
@@ -83,16 +83,16 @@ class Transaction implements \JsonSerializable
         $this->setType($type);
         $this->setAmount($amount);
         $this->user = $user;
-        $this->created = new \DateTime();
-        $this->paymentDate = new \DateTime();
+        $this->created = new \DateTimeImmutable();
+        $this->paymentDate = new \DateTimeImmutable();
         $this->updateUserBalance();
     }
 
     public function paidAt($paymentDate)
     {
-        if (!$paymentDate instanceof \DateTime) {
+        if (!$paymentDate instanceof \DateTimeImmutable) {
             try {
-                $paymentDate = new \DateTime($paymentDate);
+                $paymentDate = new \DateTimeImmutable($paymentDate);
             } catch (\Exception $e) {
                 throw ValidationException::invalidTransaction('Payment date has invalid format');
             }

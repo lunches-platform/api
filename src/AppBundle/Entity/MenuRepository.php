@@ -10,11 +10,11 @@ use Doctrine\ORM\EntityRepository;
 class MenuRepository extends EntityRepository
 {
     /**
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
+     * @param \DateTimeImmutable $startDate
+     * @param \DateTimeImmutable $endDate
      * @return Menu[]
      */
-    public function getMenus(\DateTime $startDate = null, \DateTime $endDate = null)
+    public function getMenus(\DateTimeImmutable $startDate = null, \DateTimeImmutable $endDate = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select(['m', 'md', 'd', 'i'])
@@ -43,7 +43,7 @@ class MenuRepository extends EntityRepository
     }
 
     /**
-     * @param \DateTime|string $date
+     * @param \DateTimeImmutable|string $date
      * @return Menu[]
      */
     public function findByDate($date)
@@ -53,7 +53,7 @@ class MenuRepository extends EntityRepository
         ]);
     }
 
-    public function exists(\DateTime $date, $type)
+    public function exists(\DateTimeImmutable $date, $type)
     {
         return (bool) $this->findOneBy([
             'date' => $date,

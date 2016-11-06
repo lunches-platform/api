@@ -51,7 +51,7 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
     public function testUpdatePaymentDate()
     {
         $transaction = new Transaction(Transaction::TYPE_INCOME, 100, $this->getValidUser());
-        $transaction->paidAt($date = new \DateTime());
+        $transaction->paidAt($date = new \DateTimeImmutable());
         self::assertEquals($date, $transaction->paymentDate());
     }
 

@@ -18,8 +18,8 @@ class DateRange
             throw ValidationException::invalidDate('Both startDate and endDate are required');
         }
         try {
-            $start = $start instanceof \DateTime ? $start : new \DateTime($start);
-            $end = $end instanceof \DateTime ? $end : new \DateTime($end);
+            $start = $start instanceof \DateTimeImmutable ? $start : new \DateTimeImmutable($start);
+            $end = $end instanceof \DateTimeImmutable ? $end : new \DateTimeImmutable($end);
         } catch (\Exception $e) {
             throw ValidationException::invalidDate('Invalid startDate or endDate provided');
         }

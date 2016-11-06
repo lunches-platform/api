@@ -40,8 +40,8 @@ class PricesTest extends \PHPUnit_Framework_TestCase
         $pricesArray = $prices->toArray(true);
 
         $format = 'Y-m-d';
-        $today = (new \DateTime())->format($format);
-        $tomorrow = (new \DateTime('tomorrow'))->format($format);
+        $today = (new \DateTimeImmutable())->format($format);
+        $tomorrow = (new \DateTimeImmutable('tomorrow'))->format($format);
         
         self::assertTrue(is_array($pricesArray));
         self::assertEquals(5, $prices->count());
@@ -51,12 +51,12 @@ class PricesTest extends \PHPUnit_Framework_TestCase
     }
     public function testFilterOnlySingleItemPrices()
     {
-        $price1 = new Price(45, new \DateTime());
+        $price1 = new Price(45, new \DateTimeImmutable());
         $price1->setItems([
             new PriceItem($price1, new Dish(1), 'small'),
         ]);
 
-        $price2 = new Price(70, new \DateTime());
+        $price2 = new Price(70, new \DateTimeImmutable());
         $price2->setItems([
             new PriceItem($price2, new Dish(1), 'big'),
             new PriceItem($price2, new Dish(2), 'big')
@@ -73,11 +73,11 @@ class PricesTest extends \PHPUnit_Framework_TestCase
         $lineItem->setDish(new Dish(1));
         $lineItem->setSize('big');
 
-        $price1 = new Price(45, new \DateTime());
+        $price1 = new Price(45, new \DateTimeImmutable());
         $price1->setItems([
             new PriceItem($price1, new Dish(1), 'small'),
         ]);
-        $price2 = new Price(55, new \DateTime());
+        $price2 = new Price(55, new \DateTimeImmutable());
         $price2->setItems([
             new PriceItem($price2, new Dish(1), 'big'),
         ]);
@@ -101,7 +101,7 @@ class PricesTest extends \PHPUnit_Framework_TestCase
     public function testFindOrderPriceForSpecifiedDate()
     {
         $order = $this->getOrder();
-        $order->setShipmentDate(new \DateTime('tomorrow'));
+        $order->setShipmentDate(new \DateTimeImmutable('tomorrow'));
 
         $prices = $this->createValidPrices();
         $orderPrice = $prices->getOrderPrice($order);
@@ -121,28 +121,28 @@ class PricesTest extends \PHPUnit_Framework_TestCase
 
     private function createValidPrices()
     {
-        $price1 = new Price(25, new \DateTime());
+        $price1 = new Price(25, new \DateTimeImmutable());
         $price1->setItems([
             new PriceItem($price1, new Dish(3), 'big'),
         ]);
-        $price2 = new Price(30, new \DateTime());
+        $price2 = new Price(30, new \DateTimeImmutable());
         $price2->setItems([
             new PriceItem($price2, new Dish(4), 'big')
         ]);
-        $price3 = new Price(45, new \DateTime());
+        $price3 = new Price(45, new \DateTimeImmutable());
         $price3->setItems([
             new PriceItem($price3, new Dish(1), 'small'),
             new PriceItem($price3, new Dish(2), 'small')
         ]);
 
-        $price4 = new Price(70, new \DateTime());
+        $price4 = new Price(70, new \DateTimeImmutable());
         $price4->setItems([
             new PriceItem($price4, new Dish(1), 'big'),
             new PriceItem($price4, new Dish(2), 'big')
         ]);
 
         // tomorrow
-        $price5 = new Price(75, new \DateTime('tomorrow'));
+        $price5 = new Price(75, new \DateTimeImmutable('tomorrow'));
         $price5->setItems([
             new PriceItem($price5, new Dish(1), 'big'),
             new PriceItem($price5, new Dish(2), 'big')

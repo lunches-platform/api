@@ -109,8 +109,8 @@ class DishImagesController
         $dishImage->setDish($dish);
         $dishImage->setImage($image);
         $dishImage->setIsCover($params->get('isCover'));
-        $dishImage->setCreated(new \DateTime('now'));
-        $dishImage->setUpdated(new \DateTime('now'));
+        $dishImage->setCreated(new \DateTimeImmutable('now'));
+        $dishImage->setUpdated(new \DateTimeImmutable('now'));
 
         if ($dish->hasImage($dishImage)) {
             throw new BadRequestHttpException('Duplicate image');

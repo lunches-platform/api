@@ -93,7 +93,7 @@ class Order implements \JsonSerializable
      */
     protected $status;
     /**
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @ORM\Column(type="date", name="shipment_date")
      * @SWG\Property()
      */
@@ -150,7 +150,7 @@ class Order implements \JsonSerializable
             'price' => $this->price,
             'orderNumber' => $this->orderNumber,
             'user' => $this->user,
-            'shipmentDate' => $this->shipmentDate instanceof \DateTime ? $this->shipmentDate->format('Y-m-d') : null,
+            'shipmentDate' => $this->shipmentDate instanceof \DateTimeImmutable ? $this->shipmentDate->format('Y-m-d') : null,
             'address' => $this->address,
             'items' => $this->lineItems,
             'status' => $this->status,
@@ -185,7 +185,7 @@ class Order implements \JsonSerializable
 
     private function orderCreated()
     {
-        $this->createdOrder = new CreatedOrder($this, new \DateTime());
+        $this->createdOrder = new CreatedOrder($this, new \DateTimeImmutable());
         $this->status = self::STATUS_CREATED;
     }
 
@@ -198,7 +198,7 @@ class Order implements \JsonSerializable
     public function deliver($carrier)
     {
         $this->assertStatus(self::STATUS_IN_PROGRESS, 'Only "in progress" orders can become "delivered"');
-        $this->deliveredOrder = new DeliveredOrder($this, new \DateTime(), $carrier);
+        $this->deliveredOrder = new DeliveredOrder($this, new \DateTimeImmutable(), $carrier);
         $this->status = self::STATUS_DELIVERED;
     }
 
@@ -222,7 +222,7 @@ class Order implements \JsonSerializable
     {
         $this->assertStatus(self::STATUS_CREATED, 'Just "created" orders can be canceled');
 
-        $this->canceledOrder = new CanceledOrder($this, new \DateTime(), $reason);
+        $this->canceledOrder = new CanceledOrder($this, new \DateTimeImmutable(), $reason);
 
         if ($this->getPayment()->isPaid()) {
             return new Transaction(Transaction::TYPE_REFUND, $this->price, $this->user);
@@ -240,7 +240,7 @@ class Order implements \JsonSerializable
         if ($this->status === self::STATUS_REJECTED) {
             throw OrderException::failedToChangeStatus('Such order has been already rejected');
         }
-        $this->rejectedOrder = new RejectedOrder($this, new \DateTime(), $reason);
+        $this->rejectedOrder = new RejectedOrder($this, new \DateTimeImmutable(), $reason);
         $this->status = self::STATUS_REJECTED;
 
         if ($this->getPayment()->isPaid()) {
@@ -344,7 +344,7 @@ class Order implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getShipmentDate()
     {
@@ -352,7 +352,7 @@ class Order implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $shipmentDate
+     * @param \DateTimeImmutable $shipmentDate
      * TODO remove all methods-accessors
      */
     public function setShipmentDate($shipmentDate)
