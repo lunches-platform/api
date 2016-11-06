@@ -135,6 +135,14 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 
         self::assertEquals($date, $order->getShipmentDate());
     }
+
+    public function testOrderAfter18pm()
+    {
+        $this->setExpectedException(ValidationException::class, 'It is too late to order for tomorrow. Allowed until 18 p.m.');
+        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTimeImmutable('tomorrow'))->format('Y-m-d')]));
+
+        self::assertEquals($date, $order->getShipmentDate());
+    }
     public function testNoLineItems()
     {
         $this->setExpectedException(ValidationException::class, 'Invalid order. There are no valid LineItems provided');
