@@ -58,7 +58,7 @@ class Image implements \JsonSerializable
     protected $height;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTimeImmutable $created
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
@@ -67,7 +67,7 @@ class Image implements \JsonSerializable
     private $created;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTimeImmutable $updated
      *
      * @Gedmo\Timestampable(on="update")
      * @Column(type="datetime")
@@ -108,7 +108,7 @@ class Image implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getUpdated()
     {
@@ -116,7 +116,7 @@ class Image implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $updated
+     * @param \DateTimeImmutable $updated
      */
     public function setUpdated($updated)
     {
@@ -124,7 +124,7 @@ class Image implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getCreated()
     {
@@ -132,7 +132,7 @@ class Image implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $created
+     * @param \DateTimeImmutable $created
      */
     public function setCreated($created)
     {

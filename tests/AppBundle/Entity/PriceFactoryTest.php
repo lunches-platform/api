@@ -140,7 +140,7 @@ class PriceFactoryTest extends \PHPUnit_Framework_TestCase
     private function getPriceData(array $override = [])
     {
         return array_replace([
-            'date' => new \DateTime('tomorrow'),
+            'date' => new \DateTimeImmutable('tomorrow'),
             'price' => 45,
             'items' => [
                 [

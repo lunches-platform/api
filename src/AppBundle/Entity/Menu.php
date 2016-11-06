@@ -41,7 +41,7 @@ class Menu implements \JsonSerializable
     protected $type;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTimeImmutable $created
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="date")
@@ -52,10 +52,10 @@ class Menu implements \JsonSerializable
     /**
      * Menu constructor.
      *
-     * @param \DateTime $date
+     * @param \DateTimeImmutable $date
      * @param string $type
      */
-    public function __construct(\DateTime $date, $type)
+    public function __construct(\DateTimeImmutable $date, $type)
     {
         $this->menuDishes = new MenuDishes();
         $this->date = $date;

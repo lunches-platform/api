@@ -20,14 +20,14 @@ class OrderPayment
     /**
      * Date and time when order payment process was started
      *
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime", nullable=false, name="started_at")
      */
     protected $startedAt;
     /**
      * Date and time when order payment was proceed successfully
      *
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime", nullable=true, name="paid_at")
      */
     protected $paidAt;
@@ -53,7 +53,7 @@ class OrderPayment
     public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->startedAt = new \DateTime();
+        $this->startedAt = new \DateTimeImmutable();
     }
 
     public function pay()
@@ -72,7 +72,7 @@ class OrderPayment
         try {
             $transaction = new Transaction(Transaction::TYPE_OUTCOME, $price, $user);
             $this->status = true;
-            $this->paidAt = new \DateTime();
+            $this->paidAt = new \DateTimeImmutable();
             $user->payCredit($price);
         } catch (UserException $e) {
             $this->addError($e->getMessage());

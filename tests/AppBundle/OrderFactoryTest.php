@@ -124,14 +124,14 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     public function testOrderForToday()
     {
         $this->setExpectedException(ValidationException::class, 'Invalid date provided. Can not order dish for today or in the past');
-        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTime())->format('Y-m-d')]));
+        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTimeImmutable())->format('Y-m-d')]));
 
         self::assertEquals($date, $order->getShipmentDate());
     }
     public function testOrderInThePast()
     {
         $this->setExpectedException(ValidationException::class, 'Invalid date provided. Can not order dish for today or in the past');
-        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTime('yesterday'))->format('Y-m-d')]));
+        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $date = (new \DateTimeImmutable('yesterday'))->format('Y-m-d')]));
 
         self::assertEquals($date, $order->getShipmentDate());
     }
@@ -225,7 +225,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(RuntimeException::class);
 
         $this->factory->createNewFromArray($this->getOrderData([
-            'shipmentDate' => (new \DateTime('+2 day'))->format('Y-m-d'),
+            'shipmentDate' => (new \DateTimeImmutable('+2 day'))->format('Y-m-d'),
             'items' => [
                 [
                     'size' => 'big',
@@ -289,7 +289,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $menuRepo->method('findByDate')->will(self::returnCallback(function (\DateTime $date) {
+        $menuRepo->method('findByDate')->will(self::returnCallback(function (\DateTimeImmutable $date) {
             /** @noinspection TypeUnsafeComparisonInspection */
             if ($date == $this->getDate('tomorrow', true)) {
                 /** @var DishRepository $dishRepo */
@@ -313,7 +313,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $priceRepo->method('findByDate')->will(self::returnCallback(function (\DateTime $dateTime) {
+        $priceRepo->method('findByDate')->will(self::returnCallback(function (\DateTimeImmutable $dateTime) {
 
             $tomorrow = $this->getDate('tomorrow', true);
             
@@ -372,11 +372,11 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     }
     private function getDate($time, $asDateTime = false)
     {
-        $tomorrow = new \DateTime($time);
+        $dateTime = new \DateTimeImmutable($time);
         if ($asDateTime ===  true) {
-            return $tomorrow;
+            return $dateTime;
         }
-        return $tomorrow->format('Y-m-d');
+        return $dateTime->format('Y-m-d');
     }
     private function getOrderData(array $override = [])
     {

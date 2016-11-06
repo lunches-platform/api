@@ -38,7 +38,7 @@ class Ingredient implements \JsonSerializable
     protected $name;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTimeImmutable $created
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
@@ -47,7 +47,7 @@ class Ingredient implements \JsonSerializable
     private $created;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTimeImmutable $updated
      *
      * @Gedmo\Timestampable(on="update")
      * @Column(type="datetime")
@@ -76,12 +76,12 @@ class Ingredient implements \JsonSerializable
         if (array_key_exists('created', $data)) {
             $ingredient->setCreated($data['created']);
         } else {
-            $ingredient->setCreated(new \DateTime());
+            $ingredient->setCreated(new \DateTimeImmutable());
         }
         if (array_key_exists('updated', $data)) {
             $ingredient->setUpdated($data['updated']);
         } else {
-            $ingredient->setUpdated(new \DateTime());
+            $ingredient->setUpdated(new \DateTimeImmutable());
         }
 
         return $ingredient;
@@ -141,7 +141,7 @@ class Ingredient implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getUpdated()
     {
@@ -149,7 +149,7 @@ class Ingredient implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $updated
+     * @param \DateTimeImmutable $updated
      */
     public function setUpdated($updated)
     {
@@ -157,7 +157,7 @@ class Ingredient implements \JsonSerializable
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     public function getCreated()
     {
@@ -165,7 +165,7 @@ class Ingredient implements \JsonSerializable
     }
 
     /**
-     * @param \DateTime $created
+     * @param \DateTimeImmutable $created
      */
     public function setCreated($created)
     {

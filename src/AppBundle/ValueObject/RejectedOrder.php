@@ -22,7 +22,7 @@ class RejectedOrder
     /**
      * Date and time when order was rejected
      *
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime", nullable=true)
      * @SWG\Property
      */
@@ -36,7 +36,7 @@ class RejectedOrder
      */
     protected $reason;
 
-    public function __construct(Order $order, \DateTime $at, $reason)
+    public function __construct(Order $order, \DateTimeImmutable $at, $reason)
     {
         $this->order = $order;
         $this->at = $at;

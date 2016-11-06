@@ -30,7 +30,7 @@ class RuntimeException extends \Exception
     public static function priceNotFound($type = '')
     {
         $msg = 'Price not found';
-        if ($type instanceof \DateTime) {
+        if ($type instanceof \DateTimeImmutable) {
             $msg .= ' for specified date';
         }
         if ($type instanceof Dish) {

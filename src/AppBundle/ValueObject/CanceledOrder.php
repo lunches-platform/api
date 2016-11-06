@@ -22,7 +22,7 @@ class CanceledOrder
     /**
      * Date and time when order was canceled
      *
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime", nullable=true)
      * @SWG\Property
      */
@@ -36,7 +36,7 @@ class CanceledOrder
      */
     protected $reason;
 
-    public function __construct(Order $order, \DateTime $at, $reason = '')
+    public function __construct(Order $order, \DateTimeImmutable $at, $reason = '')
     {
         $this->order = $order;
         $this->at = $at;

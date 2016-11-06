@@ -69,7 +69,7 @@ class User implements \JsonSerializable
     protected $address;
 
     /**
-     * @var \DateTime $created
+     * @var \DateTimeImmutable $created
      *
      * @Gedmo\Timestampable(on="create")
      * @Column(type="datetime")
@@ -90,7 +90,7 @@ class User implements \JsonSerializable
         $this->clientId = $clientId;
         $this->setUsername($name);
         $this->setAddress($address);
-        $this->created = new \DateTime();
+        $this->created = new \DateTimeImmutable();
         $this->balance = 0;
         $this->credit = 0;
     }

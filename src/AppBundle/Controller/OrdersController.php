@@ -307,11 +307,11 @@ class OrdersController
     {
         $start = $params->get('startDate');
         if (!$start && $default === true) {
-            $start = new \DateTime('monday last week');
+            $start = new \DateTimeImmutable('monday last week');
         }
         $end = $params->get('endDate');
         if (!$end && $default === true) {
-            $end = new \DateTime('friday next week');
+            $end = new \DateTimeImmutable('friday next week');
         }
         if (!$required && !($start || $end)) {
             return null;
@@ -328,7 +328,7 @@ class OrdersController
 
     private function getShipmentDate(ParamFetcher $params)
     {
-        return $params->get('shipmentDate') ? new \DateTime($params->get('shipmentDate')) : null;
+        return $params->get('shipmentDate') ? new \DateTimeImmutable($params->get('shipmentDate')) : null;
     }
     private function getItemsFilter(ParamFetcher $params)
     {

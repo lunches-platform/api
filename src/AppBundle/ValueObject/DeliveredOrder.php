@@ -21,7 +21,7 @@ class DeliveredOrder
     /**
      * Date and time when order was delivered
      *
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Column(type="datetime", nullable=true)
      * @SWG\Property
      */
@@ -35,7 +35,7 @@ class DeliveredOrder
      */
     protected $carrier;
 
-    public function __construct(Order $order, \DateTime $at, $carrier)
+    public function __construct(Order $order, \DateTimeImmutable $at, $carrier)
     {
         $this->order = $order;
         $this->at = $at;

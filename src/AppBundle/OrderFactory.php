@@ -102,7 +102,7 @@ class OrderFactory
         return $user;
     }
 
-    private function getMenus(\DateTime $shipmentDate)
+    private function getMenus(\DateTimeImmutable $shipmentDate)
     {
         // TODO refactor to getByDate() and incapsulate exception
         $menus = $this->menuRepo->findByDate($shipmentDate);
@@ -126,7 +126,7 @@ class OrderFactory
 
     /**
      * @param array $data
-     * @param \DateTime $shipmentDate
+     * @param \DateTimeImmutable $shipmentDate
      *
      * @return LineItem[]
      * @throws \AppBundle\Exception\LineItemException
@@ -157,13 +157,13 @@ class OrderFactory
 
     /**
      * @param array $line
-     * @param \DateTime $shipmentDate
+     * @param \DateTimeImmutable $shipmentDate
      *
      * @return bool|LineItem
      * @throws \AppBundle\Exception\LineItemException
      * @throws \AppBundle\Exception\ValidationException
      */
-    private function createLineItem(array $line, \DateTime $shipmentDate)
+    private function createLineItem(array $line, \DateTimeImmutable $shipmentDate)
     {
         $this->assertRequiredExists($line);
 
@@ -176,11 +176,11 @@ class OrderFactory
 
     /**
      * @param int $dishId
-     * @param \DateTime $shipmentDate
+     * @param \DateTimeImmutable $shipmentDate
      * @return Dish|null
      * @throws LineItemException
      */
-    private function getDish($dishId, \DateTime $shipmentDate)
+    private function getDish($dishId, \DateTimeImmutable $shipmentDate)
     {
         $dish = $this->dishRepository->get($dishId);
 
@@ -204,6 +204,11 @@ class OrderFactory
         }
     }
 
+    /**
+     * @param array $data
+     * @return \DateTimeImmutable
+     * @throws ValidationException
+     */
     private function createDate($data)
     {
         if (!array_key_exists('shipmentDate', $data)) {
@@ -214,12 +219,12 @@ class OrderFactory
             throw ValidationException::invalidDate('Date must be specified');
         }
         try {
-            $date = new \DateTime($dateStr);
+            $date = new \DateTimeImmutable($dateStr);
         } catch (\Exception $e) {
             throw ValidationException::invalidDate();
         }
 
-        $currentDate = new \DateTime((new \DateTime())->format('Y-m-d')); // remove time part
+        $currentDate = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d')); // remove time part
         if ($date <= $currentDate) {
             throw ValidationException::invalidDate('Can not order dish for today or in the past');
         }

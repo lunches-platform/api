@@ -9,10 +9,10 @@ class LineItemException extends \Exception
 {
     /**
      * @param Dish $dish
-     * @param \DateTime $today
+     * @param \DateTimeImmutable $today
      * @return static
      */
-    public static function notCookingToday(Dish $dish, \DateTime $today = null)
+    public static function notCookingToday(Dish $dish, \DateTimeImmutable $today = null)
     {
         $date = null !== $today ? $today->format('Y-m-d') : 'specified date';
 

@@ -53,12 +53,12 @@ class PricesController
      *         @SWG\Schema(ref="#/definitions/Price")
      *     ),
      * )
-     * @param \DateTime $date
+     * @param \DateTimeImmutable $date
      * @return Price[]
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @View
      */
-    public function getPriceAction(\DateTime $date)
+    public function getPriceAction(\DateTimeImmutable $date)
     {
         $prices = $this->doctrine->getRepository('AppBundle:Price')->findByDate($date);
         if ($prices->count() === 0) {
@@ -112,14 +112,14 @@ class PricesController
      * )
      * @RequestParam(name="items")
      * @RequestParam(name="value")
-     * @param \DateTime $date
+     * @param \DateTimeImmutable $date
      * @param ParamFetcher $params
      * @return Response
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @View(statusCode=201);
      */
-    public function putPriceAction(\DateTime $date, ParamFetcher $params)
+    public function putPriceAction(\DateTimeImmutable $date, ParamFetcher $params)
     {
         try {
             $price = $this->priceFactory->createFromArray([

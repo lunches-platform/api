@@ -23,7 +23,7 @@ class MenuFactory
         $this->dishRepository = $doctrine->getRepository('AppBundle:Dish');
     }
 
-    public function create(\DateTime $date, array $dishesArr, $type)
+    public function create(\DateTimeImmutable $date, array $dishesArr, $type)
     {
         if ($this->menuRepository->exists($date, $type)) {
             throw new ValidationException('Such menu exists already');
