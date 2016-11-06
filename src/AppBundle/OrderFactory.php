@@ -228,6 +228,9 @@ class OrderFactory
         if ($date <= $currentDate) {
             throw ValidationException::invalidDate('Can not order dish for today or in the past');
         }
+        if (new \DateTimeImmutable() >= $date->modify('-1 day')->modify('+18 hours')) {
+            throw ValidationException::invalidDate('It is too late to order for tomorrow. Allowed until 18 p.m.');
+        }
 
         return $date;
     }
