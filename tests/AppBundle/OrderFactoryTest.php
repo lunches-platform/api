@@ -96,10 +96,10 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
     }
     public function testOrderDate()
     {
-        $data = $this->getOrderData(['shipmentDate' => $this->getDate('tomorrow')]);
+        $data = $this->getOrderData(['shipmentDate' => $this->getDate('tomorrow + 1day')]);
         $order = $this->factory->createNewFromArray($data);
 
-        self::assertEquals($this->getDate('tomorrow', true), $order->getShipmentDate());
+        self::assertEquals($this->getDate('tomorrow + 1day', true), $order->getShipmentDate());
     }
     public function testDateIsNotProvided()
     {
@@ -225,7 +225,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(RuntimeException::class);
 
         $this->factory->createNewFromArray($this->getOrderData([
-            'shipmentDate' => (new \DateTimeImmutable('+2 day'))->format('Y-m-d'),
+            'shipmentDate' => (new \DateTimeImmutable('tomorrow +2day'))->format('Y-m-d'),
             'items' => [
                 [
                     'size' => 'big',
@@ -237,7 +237,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testPriceShouldBeFloat()
     {
-        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $this->getDate('tomorrow')]));
+        $order = $this->factory->createNewFromArray($this->getOrderData(['shipmentDate' => $this->getDate('tomorrow + 1day')]));
         
         self::assertTrue(is_float($order->getPrice()));
     }
@@ -291,7 +291,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $menuRepo->method('findByDate')->will(self::returnCallback(function (\DateTimeImmutable $date) {
             /** @noinspection TypeUnsafeComparisonInspection */
-            if ($date == $this->getDate('tomorrow', true)) {
+            if ($date == $this->getDate('tomorrow + 1day', true)) {
                 /** @var DishRepository $dishRepo */
                 $dishRepo = $this->getDishRepo();
                 $dish = $dishRepo->get($this->existId());
@@ -315,7 +315,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
 
         $priceRepo->method('findByDate')->will(self::returnCallback(function (\DateTimeImmutable $dateTime) {
 
-            $tomorrow = $this->getDate('tomorrow', true);
+            $tomorrow = $this->getDate('tomorrow + 1day', true);
             
             if ($dateTime == $tomorrow) {
                 /** @var DishRepository $dishRepo */
@@ -383,7 +383,7 @@ class OrderFactoryTest extends \PHPUnit_Framework_TestCase
         $data = [
             'address' => $address = 'Some address',
             'userId' => $this->existId(),
-            'shipmentDate' => $this->getDate('tomorrow'),
+            'shipmentDate' => $this->getDate('tomorrow + 1day'),
             'items' => [
                 [
                     'dishId' => $this->existId(),
