@@ -10,6 +10,7 @@ use FOS\RestBundle\Request\ParamFetcher;
 use AppBundle\Exception\ValidationException;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Swagger\Annotations as SWG;
 
@@ -41,15 +42,16 @@ class UsersController
      * )
      * @QueryParam(name="like")
      * @param ParamFetcher $params
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @View
      */
-    public function getUsersAction(ParamFetcher $params)
+    public function getUsersAction(ParamFetcher $params, Request $request)
     {
-        $like = $params->get('like');
         $repo = $this->doctrine->getRepository('AppBundle:User');
-        if ($like) {
-            $users = $repo->findByLikePattern($like);
+        if ($request->query->has('like')) {
+            $users = $repo->findByLikePattern($params->get('like'));
         } else {
             $users = $repo->findAll();
         }
