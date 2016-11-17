@@ -210,6 +210,15 @@ class OrderTest extends \PHPUnit_Framework_TestCase
         $order->startProgress();
     }
 
+    public function testStartProgressAtShipmentDateOnly()
+    {
+        $order = new Order();
+        $order->setShipmentDate(new \DateTimeImmutable('yesterday'));
+        $order->startProgress();
+
+        self::assertEquals(Order::STATUS_CREATED, $order->currentStatus());
+    }
+
     public function testDeliverOrder()
     {
         $order = new Order();

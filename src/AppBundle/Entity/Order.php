@@ -131,6 +131,7 @@ class Order implements \JsonSerializable
         $this->lineItems = new ArrayCollection();
         $this->orderCreated();
         $this->payment = new OrderPayment($this);
+        $this->shipmentDate = new \DateTimeImmutable();
     }
     public function changeAddress($address)
     {
@@ -192,7 +193,9 @@ class Order implements \JsonSerializable
     public function startProgress()
     {
         $this->assertStatus(self::STATUS_CREATED, 'Just "created" orders can became in progress');
-        $this->status = self::STATUS_IN_PROGRESS;
+        if ($this->shipmentDate->diff(new \DateTimeImmutable())->days === 0) {
+            $this->status = self::STATUS_IN_PROGRESS;
+        }
     }
 
     public function deliver($carrier)

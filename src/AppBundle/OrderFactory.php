@@ -77,7 +77,7 @@ class OrderFactory
 
     private function getAddress(array $data, User $user)
     {
-        return array_key_exists('address', $data) ? $data['address'] : $user->getAddress();
+        return array_key_exists('address', $data) && !empty($data['address']) ? $data['address'] : $user->getAddress();
     }
 
     /**
