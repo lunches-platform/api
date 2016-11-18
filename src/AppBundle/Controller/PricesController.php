@@ -53,14 +53,15 @@ class PricesController
      *         @SWG\Schema(ref="#/definitions/Price")
      *     ),
      * )
-     * @param \DateTimeImmutable $date
+     * @param \DateTime $date
      * @return Price[]
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @View
      */
-    public function getPriceAction(\DateTimeImmutable $date)
+    public function getPriceAction(\DateTime $date)
     {
-        $prices = $this->doctrine->getRepository('AppBundle:Price')->findByDate($date);
+        $priceDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $date->format(\DateTime::ISO8601), $date->getTimezone());
+        $prices = $this->doctrine->getRepository('AppBundle:Price')->findByDate($priceDate);
         if ($prices->count() === 0) {
             throw new NotFoundHttpException('There are no prices for this date');
         }
@@ -112,18 +113,19 @@ class PricesController
      * )
      * @RequestParam(name="items")
      * @RequestParam(name="value")
-     * @param \DateTimeImmutable $date
+     * @param \DateTime $date
      * @param ParamFetcher $params
      * @return Response
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @View(statusCode=201);
      */
-    public function putPriceAction(\DateTimeImmutable $date, ParamFetcher $params)
+    public function putPriceAction(\DateTime $date, ParamFetcher $params)
     {
+        $priceDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $date->format(\DateTime::ISO8601), $date->getTimezone());
         try {
             $price = $this->priceFactory->createFromArray([
-                'date' => $date,
+                'date' => $priceDate,
                 'items' => $params->get('items'),
                 'price' => $params->get('value'),
             ]);

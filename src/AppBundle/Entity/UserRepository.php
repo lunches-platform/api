@@ -56,6 +56,7 @@ class UserRepository extends EntityRepository
 
     public function findByLikePattern($like)
     {
+        $like = trim($like);
         Assert::notEmpty($like, 'Expected non-empty value for "like" param');
         $dql = 'SELECT u FROM AppBundle\Entity\User u WHERE u.fullname LIKE :like';
 

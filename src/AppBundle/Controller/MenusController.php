@@ -89,14 +89,16 @@ class MenusController
      *         @SWG\Schema(ref="#/definitions/Menu")
      *     ),
      * )
-     * @param \DateTimeImmutable $concrete
+     * @param \DateTime $concrete
      * @View
      * @return Menu[]
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function getMenuAction(\DateTimeImmutable $concrete)
+    public function getMenuAction(\DateTime $concrete)
     {
-        return $this->getByDateRange($concrete);
+        $date = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $concrete->format(\DateTime::ISO8601), $concrete->getTimezone());
+
+        return $this->getByDateRange($date);
     }
 
     /**
@@ -201,18 +203,19 @@ class MenusController
      * @RequestParam(name="products")
      * @RequestParam(name="type", requirements="(diet|regular)")
      * @QueryParam(name="accessToken", description="Access token")
-     * @param \DateTimeImmutable $date
+     * @param \DateTime $date
      * @param ParamFetcher $params
      * @return Menu
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @View(statusCode=201);
      */
-    public function putMenuAction(\DateTimeImmutable $date, ParamFetcher $params)
+    public function putMenuAction(\DateTime $date, ParamFetcher $params)
     {
+        $menuDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $date->format(\DateTime::ISO8601), $date->getTimezone());
         $this->assertAccessGranted($params);
         try {
-            $menu = $this->menuFactory->create($date, (array) $params->get('products'), $params->get('type'));
+            $menu = $this->menuFactory->create($menuDate, (array) $params->get('products'), $params->get('type'));
         } catch (ValidationException $e) {
             throw new BadRequestHttpException('Can not create menu:'.$e->getMessage());
         }
