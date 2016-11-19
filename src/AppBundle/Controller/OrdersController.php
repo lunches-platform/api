@@ -153,7 +153,7 @@ class OrdersController
      * )
      * @QueryParam(name="startDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="endDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
-     * @QueryParam(name="paid", requirements="(0|1|true|false)", default=false)
+     * @QueryParam(name="paid", requirements="(0|1|true|false)", default=null)
      * @QueryParam(name="withCanceled", requirements="(0|1|true|false)", default=false)
      * @QueryParam(name="shipmentDate", requirements=@Assert\DateTime(format="Y-m-d"), strict=false)
      * @QueryParam(name="items")
@@ -169,8 +169,8 @@ class OrdersController
         $filters = [
             'dateRange' => $this->createDateRange($params),
             'items' => $this->getItemsFilter($params),
-            'paid' => $params->get('paid'),
-            'withCanceled' => $params->get('withCanceled'),
+            'paid' => $params->get('paid', null),
+            'withCanceled' => $params->get('withCanceled', false),
             'shipmentDate' => $this->getShipmentDate($params),
         ];
         $orders = $this->doctrine->getRepository('AppBundle:Order')->findByUser($user, $filters);

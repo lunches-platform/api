@@ -23,7 +23,7 @@ class OrderRepository extends EntityRepository
     public function getList(array $filters)
     {
         $filters = array_filter($filters, function ($item) {
-            return $item !== null;
+            return $item !== null && $item !== '';
         });
         if (count($filters) === 0) {
             return [];
